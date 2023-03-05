@@ -1,0 +1,453 @@
+{% extends 'admins/base_template.html' %}
+{% load static %}
+
+
+{% block main %}
+  <main class="right" id="main-layout">
+    <header>
+      <nav class="navbar">
+        <div class="nav__left">
+          <h1 class="title">Клиенты</h1>
+          <button type="button" class="create" id="create-btn">
+            <i class="bx bx-plus"></i>Создать клиента
+          </button>
+        </div>
+        <div class="nav__right evanescence">
+          <div class="operator">
+            <img src="{% static 'img/operator.svg' %}" alt="" />
+            <p>Operator: {{ request.user.first_name }} {{ request.user.last_name }}</p>
+          </div>
+          <a href="{% url 'admins:logout_url' %}" class="out__btn">
+            <img src="{% static 'img/log-out.svg' %}" alt="" />
+          </a>
+        </div>
+      </nav>
+    </header>
+    <div class="background">
+      <div class="buttons">
+        <a href="{{ request.path }}" class="button">
+          <img src="{% static 'img/logo/user.svg' %}" alt="" /> Все заказы
+        </a>
+        <a href="{{ status_url }}status=Yangi mijoz" {% if request.GET.status == 'Yangi mijoz' %} class="button active" {% else %} class="button" {% endif %}>
+          <img src="{% static 'img/logo/clock.svg' %}" alt="" /> Новые заказы
+        </a>
+        <a href="{{ status_url }}status=Operator qabul qildi" {% if request.GET.status == 'Operator qabul qildi' %} class="button active" {% else %} class="button" {% endif %}>
+          <img src="{% static 'img/logo/download.svg' %}" alt="" /> Оператор принял
+        </a>
+        <a href="{{ status_url }}status=Mijozga aloqaga chiqildi" {% if request.GET.status == 'Mijozga aloqaga chiqildi' %} class="button active" {% else %} class="button" {% endif %}>
+          <img src="{% static 'img/logo/phone.svg' %}" alt="" /> Клиент вышел на связь
+        </a>
+        <a href="{{ status_url }}status=To‘lov qilindi" {% if request.GET.status == 'To‘lov qilindi' %} class="button active" {% else %} class="button" {% endif %}>
+          <img src="{% static 'img/logo/cash.svg' %}" alt="" /> Оплачено
+        </a>
+        <a href="{{ status_url }}status=Operator tomonidan bekor qilish" {% if request.GET.status == 'Operator tomonidan bekor qilish' %} class="button active" {% else %} class="button" {% endif %}>
+          <img src="{% static 'img/logo/circle.svg' %}" alt="" /> Оператор отменил
+        </a>
+        <a href="{{ status_url }}status=GreenCard oldi" {% if request.GET.status == 'GreenCard oldi' %} class="button active" {% else %} class="button" {% endif %}>
+          <img src="{% static 'img/logo/happy.svg' %}" alt="" /> Грин-карта одобрена
+        </a>
+        <a href="{{ status_url }}status=GreenCard tomonidan bekor qilindi" {% if request.GET.status == 'GreenCard tomonidan bekor qilindi' %} class="button active" {% else %} class="button" {% endif %}>
+          <img src="{% static 'img/logo/x.svg' %}" alt="" /> Грин-карта отменена
+        </a>
+      </div>
+
+      <section class="list">
+        <div class="list__header">
+          <div class="list__header-left">
+            <h2 class="list__title">Клиенты</h2>
+
+            <div class="search__wrap">
+              <form action="">
+                {% for key, val in request.GET.items %}
+                {% if key != "q" %}
+                <input type="hidden" name="{{ key }}" value="{{ val }}">
+                {% endif %}
+                {% endfor %}
+                <div class="search">
+                  <input
+                    id="search" name="q"
+                    {% if request.GET.q %} value="{{ request.GET.q }}" {% endif %}
+                    type="text"
+                    placeholder="Поиск клиентов"
+                  />
+                  <label for="search">
+                    <i class="bx bx-search"></i>
+                  </label>
+                </div>
+                <button class="search__btn">Поиск</button>
+              </form>
+            </div>
+          </div>
+          <div class="list__header-right">
+            <a id="" href="{{ request.get_full_path }}" class="list__settings">
+              Yangilash
+              <i
+                class="bi bi-arrow-clockwise cocky"
+                style="transform: rotate(-160deg)"
+              ></i>
+            </a>
+            <button id="setting-btn" class="list__settings">
+              Filtr
+              <i class="bi bi-chevron-down cocky"></i>
+            </button>
+            <div class="list__setting-body filtr" id="setting-body">
+              <form action="">
+                {% if request.user.is_superuser %}
+                <div class="item">
+                  <label for="education-1"> Filial </label>
+                  <div class="custom-select">
+                    <i class="bi bi-chevron-down abs__icon"></i>
+                    <select name="filial">
+                      <option value="0">Filiallar:</option>
+                      {% for filial in filials %}
+                      <option value="{{ filial.id }}">{{ filial.name }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                </div>
+                {% endif %}
+                <div class="item">
+                  <label for="education-1"> Operator </label>
+                  <div class="custom-select">
+                    <i class="bi bi-chevron-down abs__icon"></i>
+                    <select>
+                      <option value="0">Select car:</option>
+                      <option value="1">Audi</option>
+                      <option value="2">BMW</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="item">
+                  <label for="address"> Agentlar</label>
+                  <input
+                    id="address"
+                    type="text"
+                    class="item__input w-100"
+                    placeholder="Barcha agentlar"
+                  />
+                </div>
+                <div class="flex__item">
+                  <div class="item">
+                    <label for="address"> Boshlanishi</label>
+                    <input
+                      id="address"
+                      type="text"
+                      class="item__input w-100"
+                      placeholder="Boshlanishi"
+                    />
+                  </div>
+                  <div class="item">
+                    <label for="address"> Tugallanishi</label>
+                    <input
+                      id="address"
+                      type="text"
+                      class="item__input w-100"
+                      placeholder="Tugallanishi"
+                    />
+                  </div>
+                </div>
+                <div class="filter__btns">
+                  <button id="" type="reset" class="list__settings">
+                    Yangilash
+                    <i
+                      class="bi bi-arrow-clockwise cocky"
+                      style="transform: rotate(-160deg)"
+                    ></i>
+                  </button>
+                  <button id="" class="confirm">Tasdiqlash</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="list-wrap">
+          <table class="table">
+            <tr class="table__header">
+              <th>
+                <div class="list__item">
+                  <p class="list__item-title">№</p>
+                </div>
+              </th>
+              <th>
+                <div class="list__item">
+                  <button class="confirm disable">
+                    <img src="{% static 'img/download.svg' %}" alt="" /> Действие
+                  </button>
+                </div>
+              </th>
+              <th>
+                <div class="list__item">
+                  <p class="list__item-title">Ф.И.О. клиента</p>
+                </div>
+              </th>
+              <th>
+                <div class="list__item">
+                  <p class="list__item-title">Номер телефона</p>
+                </div>
+              </th>
+              <th>
+                <div class="list__item">
+                  <p class="list__item-title">Этап заказа</p>
+                </div>
+              </th>
+              <th>
+                <div class="list__item">
+                  <p class="list__item-title">Operator</p>
+                </div>
+              </th>
+              <th>
+                <div class="list__item">
+                  <p class="list__item-title">Регион</p>
+                </div>
+              </th>
+              <th>
+                <div class="list__item">
+                  <p class="list__item-title">Дата регистрации</p>
+                </div>
+              </th>
+              <th>
+                <div class="list__item">
+                  <p class="list__item-title">Агент</p>
+                </div>
+              </th>
+              <th>
+                <div class="list__item">
+                  <p class="list__item-title">информация</p>
+                </div>
+              </th>
+              <th>
+                <div class="list__item">
+                  <p class="list__item-title">PDF-файл</p>
+                </div>
+              </th>
+              <th></th>
+            </tr>
+            {% for obj, i in objects.pairs %}
+            <tr>
+              <td>
+                <div class="list__item">
+                  <p class="list__item-txt num">{{ i }}</p>
+                </div>
+              </td>
+              <th>
+                <div class="list__item">
+                  <button
+                    onclick="location.href=`{% url 'admins:clients_detail' obj.id %}`;"
+                    class="confirm">
+                    <img src="{% static 'img/download.svg' %}" alt="" /> Принять
+                  </button>
+                </div>
+              </th>
+              <td>
+                <div class="list__item">
+                  <p class="list__item-txt name">{{ obj.full_name }}</p>
+                </div>
+              </td>
+              <td>
+                <div class="list__item">
+                  <p class="list__item-txt num">{{ obj.nbm }}</p>
+                </div>
+              </td>
+              <td>
+                <div class="list__item level salad">
+                  <p class="list__item-txt">{{ obj.status }}</p>
+                </div>
+              </td>
+              <td>
+                <div class="list__item">
+                  <p class="list__item-txt">Не определено</p>
+                </div>
+              </td>
+              <td>
+                <div class="list__item">
+                  <p class="list__item-txt">Andijan</p>
+                </div>
+              </td>
+              <td>
+                <div class="list__item">
+                  <p class="list__item-txt">{{ obj.agent_date }}</p>
+                </div>
+              </td>
+              <td>
+                <div class="list__item">
+                  <p class="list__item-txt">{{ obj.get_agent }}</p>
+                </div>
+              </td>
+              <td>
+                <div class="list__item">
+                  <div class="list__item-txt">
+                    <div class="percent"></div>
+                    78%
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div class="list__item">
+                  <p class="list__item-txt name">
+                    {% if obj.files.exists %}
+                    Есть
+                    {% else %}
+                    Нет
+                    {% endif %}
+                  </p>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </table>
+        </div>
+
+        <div class="list__bottom">
+          <div class="list__pagination">
+            <!-- pagination for Shoha aka -->
+          </div>
+          <form class="list__select-wrap" id="page-size-form" method="get">
+            <label for="select">Показать по: </label>
+            <select name="page_size" id="select-page-size" class="list__select">
+              <option value="16" {% if page_size == 16 %} selected {% endif %}>16</option>
+              <option value="12" {% if page_size == 12 %} selected {% endif %}>12</option>
+              <option value="8" {% if page_size == 8 %} selected {% endif %}>8</option>
+              <option value="4" {% if page_size == 4 %} selected {% endif %}>4</option>
+            </select>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+{% endblock %}
+{% block modals %}
+  <div class="create__modal" id="create-body">
+    <div class="create__wrapper">
+      <div class="kreator gwyn">
+        <div class="create__header">
+          <h4 class="create__title">Создать клиента</h4>
+          <button class="create__x" id="create-x">
+            <i class="bx bx-x"></i>
+          </button>
+        </div>
+        <form class="epilogue" action="{% url 'admins:clients_create' %}" method="post">
+          {% csrf_token %}
+          <div class="create__body">
+            <p class="select__title">Пол</p>
+            <div class="flexer__select">
+              <div class="">
+                <input type="radio" name="sex" value="Erkak" id="test1" checked />
+                <label class="radiohead" for="test1">
+                  <p class="radio__txt">Мужской</p>
+                </label>
+              </div>
+              <div class="">
+                <input type="radio" name="sex" value="Ayol" id="test2" />
+                <label class="radiohead" for="test2">
+                  <p class="radio__txt">Женский</p>
+                </label>
+              </div>
+            </div>
+            <div class="user__info">
+              <p class="info__title">Данные клиента</p>
+              <div class="">
+                <div class="info__item">
+                  <label for="namer">Ф.И.О</label>
+                  <input
+                    id="namer"
+                    type="text" name="full_name"
+                    class="item__input"
+                    placeholder="Ф.И.О"
+                  />
+                </div>
+                <div class="info__item">
+                  <label for="birthdayer">День рождение</label>
+                  <input
+                    id="birthdayer"
+                    type="date" name="bith_date"
+                    class="item__input"
+                    placeholder="День рождение"
+                  />
+                </div>
+                <div class="info__item">
+                  <label for="nicker">Полный адрес</label>
+                  <input
+                    id="nicker"
+                    type="text" name="adres"
+                    class="item__input"
+                    placeholder="Полный адрес"
+                  />
+                </div>
+                <div class="info__item">
+                  <label for="statuser">Образование</label>
+                  <div class="custom-select">
+                    <i class="bi bi-chevron-down abs__icon"></i>
+                    <select name="education">
+                      <option value="">Образование</option>
+                      <option value="Oliy">Oliy</option>
+                      <option value="Orta">Orta</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="info__item">
+                  <label for="namer">Контактный телефон</label>
+                  <input
+                    id="telegramer"
+                    type="text" name="nbm"
+                    class="item__input"
+                    placeholder="Контактный телефон"
+                  />
+                </div>
+                <div class="info__item">
+                  <label for="namer">Oyilaviy xolati</label>
+                  <input
+                    id="telegramer"
+                    type="text" name="family_status"
+                    class="item__input"
+                    placeholder="Oyilaviy xolati"
+                  />
+                </div>
+                <div class="info__item">
+                  <label for="namer">Farzandlar soni</label>
+                  <input
+                    id="telegramer"
+                    type="text" name="child_count"
+                    class="item__input"
+                    placeholder="Farzandlar soni"
+                  />
+                </div>
+
+                <div class="info__item">
+                  <label for="namer">Turmush ortog’i F.I.Sh.</label>
+                  <input
+                    id="telegramer"
+                    type="text" name="spouse"
+                    class="item__input"
+                    placeholder="Turmush ortog’i F.I.Sh."
+                  />
+                </div>
+                <div class="info__item">
+                  <label for="namer">Tugilgan sana</label>
+                  <input
+                    id="telegramer"
+                    type="date" name="spouse_birth_date"
+                    class="item__input"
+                    placeholder="Tugilgan sana"
+                  />
+                </div>
+                <div class="info__item">
+                  <label for="namer">Malumoti</label>
+                  <select name="spouse_education">
+                    <option value="">Образование</option>
+                    <option value="Oliy">Oliy</option>
+                    <option value="Orta">Orta</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="create__bottom">
+            <button class="create__cancel">Отмена</button>
+            <button class="create__confirm">Создать клиента</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,417 @@
+{% extends 'admins/base_template.html' %}
+{% load static %}
+
+
+  {% block main %}
+    <main class="right" id="main-layout">
+      <header>
+        <nav class="navbar">
+          <div class="nav__left">
+            <h1 class="title">Operatorlar</h1>
+            <button type="button" class="create" id="create-btn">
+              <i class="bx bx-plus"></i>Создать оператора
+            </button>
+          </div>
+          <div class="nav__right evanescence">
+            <div class="operator">
+              <img src="{% static 'img/operator.svg' %}" alt="" />
+              <p>Operator: Ikromova Gulbahor</p>
+            </div>
+            <a href="{% url 'admins:logout_url' %}" class="out__btn">
+              <img src="{% static 'img/log-out.svg' %}" alt="" />
+            </a>
+          </div>
+        </nav>
+      </header>
+      <div class="background">
+        <div class="buttons">
+          {% if request.user.is_superuser %}
+          <a href="{% url 'admins:filials' %}" class="button"> Filiallar </a>
+          {% endif %}
+          <a href="{% url 'admins:operators' %}" class="button active"> Operatorlar </a>
+          <a href="{% url 'admins:agents' %}" class="button"> Agentlar </a>
+        </div>
+
+        <section class="list">
+          <div class="list__header">
+            <div class="list__header-left">
+              <h2 class="list__title">Operatorlar</h2>
+
+              <div class="search__wrap">
+                <form action="">
+                  {% for key, val in request.GET.items %} 
+                    {% if key != "q" %}
+                      <input type="hidden" name="{{ key }}" value="{{ val }}">
+                    {% endif %}
+                  {% endfor %}
+                  <div class="search">
+                    <input
+                      id="search" name="q"
+                      {% if request.GET.q %} value="{{ request.GET.q }}" {% endif %}
+                      type="text"
+                      placeholder="Поиск клиентов"
+                    />
+                    <label for="search">
+                      <i class="bx bx-search"></i>
+                    </label>
+                  </div>
+                  <button type="submit" class="search__btn">Поиск</button>
+                </form>
+              </div>
+            </div>
+            <div class="list__header-right">
+              <a id="" class="list__settings" href="{{ request.get_full_path }}">
+                Yangilash
+                <i
+                  class="bi bi-arrow-clockwise cocky"
+                  style="transform: rotate(-160deg)"
+                ></i>
+              </a>
+
+              {% if request.user.is_superuser %}
+              <button id="setting-btn" class="list__settings">
+                Filtr
+                <i class="bi bi-chevron-down cocky"></i>
+              </button>
+              <div class="list__setting-body filtr" id="setting-body">
+                <form action="">
+                  <div class="item">
+                    <label for="education-1"> Filial </label>
+                    <div class="custom-select">
+                      <i class="bi bi-chevron-down abs__icon"></i>
+                      <select name="filial">
+                        <option value="0">Filiallar:</option>
+                        {% for filial in filials %}
+                        <option value="{{ filial.id }}">{{ filial.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="filter__btns">
+                    <button id="" type="reset" class="list__settings">
+                      Yangilash
+                      <i class="bi bi-arrow-clockwise cocky" style="transform: rotate(-160deg)"></i>
+                    </button>
+                    <button id="" class="confirm">Tasdiqlash</button>
+                  </div>
+
+                </form>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="list-wrap">
+            <table class="table">
+              <tr class="table__header">
+                <th>
+                  <div class="list__item">
+                    <p class="list__item-title">№</p>
+                  </div>
+                </th>
+                <th>
+                  <div class="list__item">
+                    <p class="list__item-title">Filial nomi</p>
+                  </div>
+                </th>
+                <th>
+                  <div class="list__item">
+                    <p class="list__item-title">Operator</p>
+                  </div>
+                </th>
+                <th>
+                  <div class="list__item">
+                    <p class="list__item-title">Login</p>
+                  </div>
+                </th>
+                <th>
+                  <div class="list__item">
+                    <p class="list__item-title">Telefon raqami</p>
+                  </div>
+                </th>
+                <th>
+                  <div class="list__item">
+                    <p class="list__item-title">Anketalar soni</p>
+                  </div>
+                </th>
+                <th>
+                  <div class="list__item">
+                    <p class="list__item-title">Status</p>
+                  </div>
+                </th>
+                <th>
+                  <div class="list__item">
+                    <p class="list__item-title">Kirish vaqti</p>
+                  </div>
+                </th>
+                <th></th>
+              </tr>
+              {% for obj, i in objects.pairs %}
+                <tr>
+                  <td>
+                    <div class="list__item">
+                      <p class="list__item-txt num">{{ i }}</p>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="list__item">
+                      <p class="list__item-txt name">{% if obj.filial %} {{ obj.filial.name }} {% endif %}</p>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="list__item">
+                      <p class="list__item-txt">{{ obj.user.first_name }} {{ obj.user.last_name }}</p>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="list__item">
+                      <p class="list__item-txt">{{ obj.user.username }}</p>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="list__item">
+                      <p class="list__item-txt">{{ obj.nbm }}</p>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="list__item">
+                      <p class="list__item-txt">{{ obj.agent_users.count }}</p>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="list__item">
+                      <p class="list__item-txt">{{ obj.status }}</p>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="list__item">
+                      <p class="list__item-txt">{{ obj.user.last_login }}</p>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="numb">
+                      <button class="list__item-btn redactors" data-user="{{ obj.id }}">
+                        <img src="{% static 'img/pencil.svg' %}" alt="" style="pointer-events: none;"/>
+                      </button>
+                      <button class="list__item-btn"
+                        onclick="var result = confirm('Want to delete?');if (result){event.preventDefault();document.getElementById('del_user_{{ obj.id }}').submit();}">
+                        <img src="{% static 'img/delete.svg' %}" alt="" />
+                      </button>
+                      <form action="{% url 'admins:del_user' %}" id="del_user_{{ obj.id }}" style="display: none;" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="id" value="{{ obj.user.id }}">
+                        <input type="hidden" name="url" value="{{ request.get_full_path }}">
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </table>
+          </div>
+
+          <div class="list__bottom">
+            <div class="list__pagination">
+              <!-- pagination for Shoha aka -->
+            </div>
+            <form class="list__select-wrap" id="page-size-form" method="get">
+              {% for key, val in request.GET.items %}
+                {% if key != "page_size" %}
+                  <input type="hidden" name="{{ key }}" value="{{ val }}">
+                {% endif %}
+              {% endfor %}
+              <label for="select">Показать по: </label>
+              <select name="page_size" id="select-page-size" class="list__select">
+                <option value="16" {% if page_size == 16 %} selected {% endif %}>16</option>
+                <option value="12" {% if page_size == 12 %} selected {% endif %}>12</option>
+                <option value="8" {% if page_size == 8 %} selected {% endif %}>8</option>
+                <option value="4" {% if page_size == 4 %} selected {% endif %}>4</option>
+              </select>
+            </form>
+          </div>
+        </section>
+      </div>
+    </main>
+  {% endblock %}
+  
+  {% block modals %}
+    <div class="create__modal" id="create-body">
+      <div class="create__wrapper">
+        <div class="kreator gwyn">
+          <div class="create__header">
+            <h4 class="create__title">Operator yaratish</h4>
+            <button class="create__x" id="create-x">
+              <i class="bx bx-x"></i>
+            </button>
+          </div>
+          <form class="epilogue" action="{% url 'admins:operators_create' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="url" value="{{ request.get_full_path }}">
+            <div class="create__body">
+              <div class="user__info">
+                <p class="info__title">Filial malumotlar</p>
+                <div class="">
+                  <div class="item d-flex flex-column align-items-start mb-3">
+                    <label for="education-1"> Filial tanlang </label>
+                    <div class="custom-select">
+                      <i class="bi bi-chevron-down abs__icon"></i>
+                      <select name="filial">
+                        <option value="0">Filiallar:</option>
+                        {% for filial in filials %}
+                        <option value="{{ filial.id }}">{{ filial.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="info__item">
+                    <label for="birthdayer">Operator F.I.Sh.</label>
+                    <input
+                      id="birthdayer"
+                      type="text" name="full_name"
+                      class="item__input"
+                      placeholder="Operator F.I.Sh."
+                    />
+                  </div>
+                  <div class="info__item half__item">
+                    <label for="num">Tel. raqami</label>
+                    <input
+                      id="num"
+                      type="text" name="nbm"
+                      class="item__input"
+                      placeholder="Tel. raqami"
+                    />
+                  </div>
+                  <div class="item__grid">
+                    <div class="info__item">
+                      <label for="num">Login</label>
+                      <input
+                        id="num"
+                        type="text" name="username"
+                        class="item__input"
+                        placeholder="Login"
+                      />
+                    </div>
+                    <div class="info__item">
+                      <label for="num">Parol</label>
+                      <input
+                        id="num"
+                        type="text" name="password"
+                        class="item__input"
+                        placeholder="Parol"
+                      />
+                    </div>
+                    <div class="info__item">
+                      <label for="education-1"> Status </label>
+                      <div class="custom-select">
+                        <i class="bi bi-chevron-down abs__icon"></i>
+                        <select name="status">
+                          <option value="0">Select status:</option>
+                          <option value="Active">Active</option>
+                          <option value="Inactive">Inactive</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="create__bottom">
+              <button class="create__cancel">Отмена</button>
+              <button class="create__confirm">Создать клиента</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="create__modal" id="edit-body">
+      <div class="create__wrapper">
+        <div class="kreator gwyn">
+          <div class="create__header">
+            <h4 class="create__title">Operator yaratish</h4>
+            <button class="create__x" id="edit-x">
+              <i class="bx bx-x"></i>
+            </button>
+          </div>
+          <form class="epilogue" action="{% url 'admins:operators_create' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="id">
+            <input type="hidden" name="url" value="{{ request.get_full_path }}">
+            <div class="create__body">
+              <div class="user__info">
+                <p class="info__title">Filial malumotlar</p>
+                <div class="">
+                  <div class="item d-flex flex-column align-items-start mb-3">
+                    <label for="education-1"> Filial tanlang </label>
+                    <div class="custom-select">
+                      <i class="bi bi-chevron-down abs__icon"></i>
+                      <select name="filial">
+                        <option value="0">Filiallar:</option>
+                        {% for filial in filials %}
+                        <option value="{{ filial.id }}">{{ filial.name }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="info__item">
+                    <label for="birthdayer">Operator F.I.Sh.</label>
+                    <input
+                      id="birthdayer"
+                      type="text" name="full_name"
+                      class="item__input"
+                      placeholder="Operator F.I.Sh."
+                    />
+                  </div>
+                  <div class="info__item half__item">
+                    <label for="num">Tel. raqami</label>
+                    <input
+                      id="num" name="nbm"
+                      type="text"
+                      class="item__input"
+                      placeholder="Tel. raqami"
+                    />
+                  </div>
+                  <div class="item__grid">
+                    <div class="info__item">
+                      <label for="num">Login</label>
+                      <input
+                        id="num"
+                        type="text" name="username"
+                        class="item__input"
+                        placeholder="Login"
+                      />
+                    </div>
+                    <div class="info__item">
+                      <label for="num">Parol</label>
+                      <input
+                        id="num"
+                        type="text" name="password"
+                        class="item__input"
+                        placeholder="Parol"
+                      />
+                    </div>
+                    <div class="info__item">
+                      <label for="education-1"> Status </label>
+                      <div class="custom-select">
+                        <i class="bi bi-chevron-down abs__icon"></i>
+                        <select name="status">
+                          <option value="0">Select status:</option>
+                          <option value="Active">Active</option>
+                          <option value="Inactive">Inactive</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="create__bottom">
+              <button class="create__cancel">Отмена</button>
+              <button class="create__confirm">Создать клиента</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endblock %}
+
+

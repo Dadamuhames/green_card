@@ -1,0 +1,317 @@
+{% extends 'admins/base_template.html' %}
+{% load static %}
+
+
+{% block main %}
+  <main class="right" id="main-layout">
+    <header>
+      <nav class="navbar" style="height: 83px">
+        <div class="nav__left">
+          <h1 class="title">Клиент: {{ object.full_name }}</h1>
+          <div class="two__btns d-flex align-items-center">
+            <button id="clear-btn" class="list__item-btn me-1">
+              <img src="{% static 'img/trash.svg' %}" alt="" />
+            </button>
+            <a href="{% url 'admins:clients_edit' object.id %}" class="list__item-btn d-flex">
+              <img src="{% static 'img/pencil.svg' %}" alt="" />
+            </a>
+          </div>
+        </div>
+        <div class="nav__right">
+          <button class="back">
+            <i class="bx bx-left-arrow-alt"></i> Назад
+          </button>
+        </div>
+      </nav>
+    </header>
+    <div class="background">
+      <div class="row">
+        <div class="col-6">
+          <div class="cardo client__info mb-4">
+            <h4 class="card__title">Информация о клиенте</h4>
+            <form action="">
+              <div class="items">
+                <div class="item">
+                  <label for="name"> Имя Фамилия Отчество </label>
+                  <input
+                    id="name"
+                    type="text" value="{{ object.full_name }}"
+                    class="item__input"
+                    placeholder="Имя Фамилия Отчество"
+                    disabled
+                  />
+                </div>
+                <div class="item half__item">
+                  <label for="birthday"> Дата рождения</label>
+                  <input
+                    id="birthday"
+                    type="text" value="{{ object.bith_date }}"
+                    class="item__input"
+                    placeholder="Дата рождения"
+                    disabled
+                  />
+                </div>
+                <div class="item">
+                  <label for="address"> Полный адрес</label>
+                  <input
+                    id="address"
+                    type="text" value="{{ object.adress }}" 
+                    class="item__input"
+                    placeholder="Полный адрес"
+                    disabled
+                  />
+                </div>
+                <div class="item half__item disabled__item">
+                  <label for="education"> Образование </label>
+                  <div class="custom-select" style="width: 200px">
+                    <select>
+                      <option value="">Образование</option>
+                      <option value="Oliy" {% if object.education == 'Oliy' %} selected {% endif %}>Oliy</option>
+                      <option value="Orta" {% if object.education == 'Orta' %} selected {% endif %}>Orta</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="item half__item">
+                  <label for="num"> Контактный телефон </label>
+                  <input
+                    id="num"
+                    type="text" value="{{ object.nbm }}"
+                    class="item__input"
+                    placeholder="Контактный телефон "
+                    disabled
+                  />
+                </div>
+                <div class="item radio__item disabled__item">
+                  <label class="">Тип клиента</label>
+                  <div class="flexer__select m-0">
+                    <div class="">
+                      <input
+                        type="radio"
+                        id="test1" 
+                        name="radio-group"
+                        {% if object.sex == 'Erkak' %} checked {% endif %}
+                      />
+                      <label class="radiohead radio-1" for="test1">
+                        <p class="radio__txt">Erkak</p>
+                      </label>
+                    </div>
+                    <div class="">
+                      <input type="radio" id="test2" name="radio-group" {% if object.sex == 'Ayol' %} checked {% endif %} />
+                      <label class="radiohead radio-2" for="test2">
+                        <p class="radio__txt">Ayol</p>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                <hr />
+                <div class="item disabled__item">
+                  <label for="education-1"> Oyilaviy xolati </label>
+                    <input id="num" type="text" value='{{ object.family_status }}' class="item__input" placeholder="Oyilaviy xolati" disabled />
+                </div>
+                <div class="item half__item">
+                  <label for="children"> Дети </label>
+                  <input
+                    id="children"
+                    type="text" value="{{ object.child_count }}"
+                    class="item__input"
+                    placeholder="Дети "
+                    disabled
+                  />
+                </div>
+                <hr />
+                <div class="item">
+                  <label for="husband"> Супруг/Супруга </label>
+                  <input
+                    id="husband"
+                    type="text" value="{{ object.spouse }}"
+                    class="item__input"
+                    placeholder="Супруг/Супруга "
+                    disabled
+                  />
+                </div>
+                <div class="item half__item">
+                  <label for="birthday-2"> Дата рождение </label>
+                  <input
+                    id="birthday-2"
+                    type="text" value="{{ object.spouse_birth_date }}"
+                    class="item__input"
+                    placeholder="Дата рождение"
+                    disabled
+                  />
+                </div>
+
+                <div class="item half__item disabled__item">
+                  <label for="education-1"> Образование </label>
+                    <input type="text" class="item__input"
+                    placeholder="Дети "
+                    disabled
+                    value="{{ object.spouse_education }}"
+                    />
+                </div>
+              </div>
+              <hr />
+              <button class="confirm">Сохранить</button>
+            </form>
+          </div>
+
+          <div class="cardo file__card">
+            <h4 class="card__title">Файлы</h4>
+
+            <div class="file__items">
+              <form action="">
+                <div class="file__item mb-4">
+                  <label for="passport"> Добавить копия паспорта </label>
+                
+                </div>
+                <div class="file__item mb-4">
+                  <label for="passport"> Добавить PDF файл </label>
+
+                  <!-- ПОСТАВЬ ДРОПЗОН СЮДА -->
+                </div>
+                <button class="confirm">Сохранить</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-3">
+          <div class="cardo mb-4">
+            <h4 class="card__title">Клиент:</h4>
+            <div class="item direct__item disabled__item">
+              <label for="status"> Статус клиента </label>
+                <input type="text" class="item__input" value="{{ object.status }}">
+            </div>
+            <p class="item__sub">Последнее изменение: {{ object.last_update }}</p>
+            <button class="confirm w-50">Изменить статус</button>
+          </div>
+          <div class="cardo mb-4">
+            <div class="info__item">
+              <label class="info__sup">Принял(а) оператор</label>
+              <div class="input__wrap">
+                <input
+                  type="text"
+                  disabled value="{{ object.operator.firts_name }} {{ object.operator.last_name }}"
+                  placeholder="Принял(а) оператор "
+                />
+                <i class="bi bi-person"></i>
+              </div>
+            </div>
+            <div class="info__item">
+              <label class="info__sup">Время принятие</label>
+              <div class="input__wrap">
+                <input type="text" disabled placeholder="Время принятие " value="{{ object.oper_date }}" />
+                <i class="bi bi-clock"></i>
+              </div>
+            </div>
+            <hr />
+            <div class="info__item">
+              <label class="info__sup">Добавил(а) (Agent)</label>
+              <div class="input__wrap">
+                <input
+                  type="text"
+                  disabled value="{{ object.agent.firts_name }} {{ object.agent.last_name }}"
+                  placeholder="Добавил(а) (Agent) "
+                />
+                <i class="bi bi-person"></i>
+              </div>
+            </div>
+            <div class="info__item">
+              <label class="info__sup">Дата добавление</label>
+              <div class="input__wrap">
+                <input
+                  type="text"
+                  disabled value="{{ object.agent_date }}"
+                  placeholder="Дата добавление "
+                />
+                <i class="bi bi-clock"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="cardo p-0">
+            <div class="accordion" id="accordionExample">
+              <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                  <button
+                    class="accordion-button acc__title"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseOne"
+                    aria-expanded="true"
+                    aria-controls="collapseOne"
+                  >
+                    Комментарии
+                  </button>
+                </h2>
+                <div
+                  id="collapseOne"
+                  class="accordion-collapse collapse show"
+                  aria-labelledby="headingOne"
+                  data-bs-parent="#accordionExample"
+                >
+                  <div class="accordion-body">
+                    {% for comment in object.comments.all %}
+                    <div class="comment">
+                      <div class="com__header">
+                        <p class="com__name">{{ comment.user.first_name }} {{ comment.user.last_name }}</p>
+                        <p class="com__date">{{ comment.date }}</p>
+                      </div>
+                      <p class="com__txt">
+                        {{ comment.text }}
+                      </p>
+                    </div>
+                    {% endfor %}
+                    <div class="leave">
+                      <form action="">
+                        <textarea placeholder="Оставить комментарии"></textarea>
+                        <button type="submit" class="confirm">Оставить</button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+{% endblock %}
+
+    {% block modals %}
+    <div class="modal delete-modal" id="clear-modal">
+      <div class="modal__wrap" id="clear-wrap"></div>
+      <div class="modal__body" id="clear-body">
+        <div class="delete__header">
+          <h4 class="delete__title">Подтверждение на удаление</h4>
+        </div>
+        <div class="delete__body">
+          <p class="delete__icon">
+            <i class="bx bxs-error-circle"></i>
+          </p>
+          <p class="delete__txt">Вы уверены, что хотите удалить?</p>
+        </div>
+        <div class="delete__bottom">
+          <button type="button" id="clear-cancel" class="delete__btn-1">
+            Отмена
+          </button>
+          <button class="delete__btn-2">Удалить</button>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://code.jquery.com/jquery-3.6.3.min.js"
+      integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://unpkg.com/imask"></script>
+    <script src="./js/app.js"></script>
+  </body>
+</html>
