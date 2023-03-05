@@ -11,6 +11,7 @@ from .utils import *
 from django.core.cache import cache
 from .serializers import UserInfoSerializer
 from .forms import ClientForm, CommentForm
+from datetime import datetime
 # Create your views here.
 
 
@@ -98,9 +99,11 @@ class BasedListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         paginate_by = self.get_paginate_by_castom()
+        print(paginate_by)
+        page_obj = paginate(self.get_queryset(), self.request, paginate_by)
 
         context['objects'] = get_lst_data(self.get_queryset(), self.request, paginate_by)
-        context['page_obj'] = paginate(self.get_queryset(), self.request, paginate_by)
+        context['page_obj'] = page_obj
         context['filials'] = UserInfo.objects.filter(is_filial=True)
         context['page_size'] = paginate_by
 
@@ -111,6 +114,22 @@ class BasedListView(ListView):
                 pang_url += f'{key}={val}&'
 
         context['pgn_url'] = pang_url
+        print(pang_url)
+
+        page_count = page_obj.paginator.num_pages
+        print(page_count)
+        curent_page = page_obj.number
+        page_range = range(1, page_count+1)
+
+        if page_count > 6:
+            if curent_page+6 <= page_count:
+                page_range = range(curent_page, curent_page+6)
+            else:
+                page_range = range(curent_page, page_count)
+
+        #context['page_range'] = page_range = page_obj.paginator.get_elided_page_range(number=curent_page)
+        #print(context['page_range'])
+        #print(page_range)
 
 
         return context
@@ -175,11 +194,14 @@ class ClientsList(ListView):
         return paginate_by
 
     def get_queryset(self):
-        queryset = Clients.objects.all()
+        queryset = Clients.objects.order_by("-id")
         user = self.request.user
 
         status = self.request.GET.get("status", '')
         q = self.request.GET.get("q", '')
+        operator_id = self.request.GET.get("operator")
+        agent_id = self.request.GET.get("agent")
+        filial_id = self.request.GET.get('filial')
 
         if not user.is_superuser:
             if user.info.is_operator:
@@ -187,12 +209,43 @@ class ClientsList(ListView):
                 if status == 'Operator qabul qildi':
                     queryset = queryset.filter(operator=user)
                     status = ''
+                else:
+                    queryset = queryset.filter(operator__isnull=True)
+                
 
             elif user.info.is_filial:
                 queryset = queryset.filter(filial=user.info)
 
             elif user.info.is_agent:
                 queryset = queryset.filter(agent=user)
+        
+        if user.is_superuser or user.info.is_filial:
+            if operator_id:
+                try:
+                    operators = UserInfo.objects.filter(is_operator=True)
+                    if user.info.is_filial:
+                        operators.filter(filial=user.info)
+                    
+                    operator = operators.get(id=int(operator_id))
+                    queryset = queryset.filter(operator=operator.user)
+                except:
+                    pass
+
+            if agent_id:
+                try:
+                    agent = UserInfo.objects.filter(is_agent=True).get(id=int(agent_id))
+                    queryset = queryset.filter(agent=agent.user)
+                except:
+                    pass
+        
+        if user.is_superuser:
+            if filial_id:
+                try:
+                    filial = UserInfo.objects.filter(is_operator=True).get(id=int(filial_id))
+                    queryset = queryset.filter(filial=filial)
+                except:
+                    pass
+
 
         
         if q != '':
@@ -200,6 +253,28 @@ class ClientsList(ListView):
 
         if status != '':
             queryset = queryset.filter(status=status)
+
+
+        clients = queryset.order_by("agent_date")
+
+        if clients.exists():
+            from_date = self.request.GET.get('from_date')
+            to_date = self.request.GET.get('to_date')
+
+            if from_date:
+                from_date = datetime.strptime(from_date, '%Y-%m-%d')
+            else:
+                from_date = clients.first().agent_date
+
+
+            if to_date:
+                to_date = datetime.strptime(to_date, '%Y-%m-%d')
+            else:
+                to_date = datetime.today()
+
+            if from_date and to_date:
+                queryset = queryset.filter(agent_date__gte=from_date, agent_date__lte=to_date)
+
 
         return queryset
     
@@ -233,19 +308,13 @@ class ClientsList(ListView):
 
         context['pgn_url'] = pang_url
 
-        return context
-
-
-
-
-        '''if not user.is_superuser:
+        if not user.is_superuser:
             if user.info.is_agent or user.info.is_operator:
                 context['operators'] = UserInfo.objects.filter(filial=user.info.filial).filter(is_operator=True)
                 context['agents'] = UserInfo.objects.filter(filial=user.info.filial).filter(is_agent=True)
             elif user.info.is_filial:
                 context['operators'] = UserInfo.objects.filter(filial=user.info).filter(is_operator=True)
-                context['agents'] = UserInfo.objects.filter(filial=user.info).filter(is_agent=True)'''
-
+                context['agents'] = UserInfo.objects.filter(filial=user.info).filter(is_agent=True)
 
         return context
 
@@ -255,16 +324,14 @@ class ClientsList(ListView):
 class ClientsCreate(CreateView):
     model = Clients
     fields = '__all__'
-    template_name = ''
+    template_name = 'admins/client-create.html'
 
 
     def get(self, request, *args, **kwargs):
         user = request.user
 
-        if not user.is_superuser:
-            if user.info.is_agent == False:
-                return redirect("/admin/")
-
+        if user.is_superuser or user.info.is_agent == False:
+            return redirect("admins:clients")
 
         return super().get(request, *args, **kwargs)
 
@@ -272,11 +339,14 @@ class ClientsCreate(CreateView):
     def form_valid(self, form):
         agent = self.request.user
 
+        if agent.is_superuser:
+            return redirect("admins:clients")
+        
         if agent.info.is_agent:
             client = form.save()
 
             client.agent = agent
-            client.filial = agent.filial
+            client.filial = agent.info.filial
             client.agent_date = datetime.now()
             client.last_update = datetime.now()
             client.save()
@@ -295,14 +365,14 @@ class ClientsCreate(CreateView):
                     client_image = ClientImages(client=client, file=file['name'])
                     client_image.save()
 
-            return client
+            return redirect("admins:clients")
         
 
     def post(self, request, *args, **kwargs):
         user = self.request.user
 
-        if user.is_superuser == False and user.info.is_agent == False:
-            return redirect('/admin/')
+        if user.is_superuser or user.info.is_agent == False:
+            return redirect('admins:clients')
 
         return super().post(request, *args, **kwargs)
     
@@ -373,15 +443,15 @@ class ClientsDetailView(DetailView):
 
         if not user.is_superuser:
             if user.info.is_operator:
-                if inst.operator and inst.operator != user.info:
-                    return redirect("/admin/")
+                if inst.operator and inst.operator != user:
+                    return redirect("admins:clients")
                 elif inst.operator is None:
-                    inst.operator = user.info
+                    inst.operator = user
                     inst.oper_date = datetime.now()
                     inst.save()
             elif user.info.is_agent:
-                if inst.agent != user.info:
-                    return redirect("")
+                if inst.agent != user:
+                    return redirect("admins:clients")
 
         return super().get(request, *args, **kwargs)
 
@@ -392,7 +462,7 @@ class ClientsDetailView(DetailView):
 # client edit
 class ClientEdit(UpdateView):
     model = Clients
-    fields = '__all__'
+    form_class = ClientForm
     template_name = 'admins/inner-edit.html'
 
     def get_queryset(self):
@@ -413,15 +483,15 @@ class ClientEdit(UpdateView):
 
         if not user.is_superuser:
             if user.info.is_operator:
-                if inst.operator and inst.operator != user.info:
-                    return redirect("/admin/")
+                if inst.operator and inst.operator != user:
+                    return redirect("admins:clients")
                 elif inst.operator is None:
-                    inst.operator = user.info
+                    inst.operator = user
                     inst.oper_date = datetime.now()
                     inst.save()
             elif user.info.is_agent:
-                if inst.agent != user.info:
-                    return redirect("")
+                if inst.agent != user:
+                    return redirect("admins:clients")
 
         return super().get(request, *args, **kwargs)
 
@@ -614,3 +684,14 @@ def add_comment(request):
 
     return redirect(url)
         
+
+# delete client 
+def delete_client(request, pk):
+    try:
+        client = Clients.objects.get(id=int(pk))
+        if request.user == client.agent or request.user.info == client.filial or request.user.is_superuser:
+            client.delete()
+    except:
+        pass
+
+    return redirect("admins:clients")

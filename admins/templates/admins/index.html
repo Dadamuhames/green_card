@@ -8,14 +8,26 @@
       <nav class="navbar">
         <div class="nav__left">
           <h1 class="title">Клиенты</h1>
-          <button type="button" class="create" id="create-btn">
+          {% if request.user.info.is_agent %}
+          <button onclick="window.location=`{% url 'admins:clients_create' %}`" type="button" class="create" id="create-btn">
             <i class="bx bx-plus"></i>Создать клиента
           </button>
+          {% endif %}
         </div>
         <div class="nav__right evanescence">
           <div class="operator">
             <img src="{% static 'img/operator.svg' %}" alt="" />
-            <p>Operator: {{ request.user.first_name }} {{ request.user.last_name }}</p>
+            <p>
+              {% if request.user.info.is_operator %}
+              Operator: 
+              {% elif request.user.info.is_agent %}
+              Agent:
+              {% elif request.user.info.is_filial %}
+              Filial admin:
+              {% elif request.user.is_superuser %}
+              Admin:
+              {% endif %}
+              {{ request.user.first_name }} {{ request.user.last_name }}</p>
           </div>
           <a href="{% url 'admins:logout_url' %}" class="out__btn">
             <img src="{% static 'img/log-out.svg' %}" alt="" />
@@ -79,7 +91,7 @@
             </div>
           </div>
           <div class="list__header-right">
-            <a id="" href="{{ request.get_full_path }}" class="list__settings">
+            <a id="" href="{{ request.path }}" class="list__settings">
               Yangilash
               <i
                 class="bi bi-arrow-clockwise cocky"
@@ -92,6 +104,11 @@
             </button>
             <div class="list__setting-body filtr" id="setting-body">
               <form action="">
+                {% for key, val in request.GET.items %}
+                  {% if key == "q" or key == 'page_size' or key == 'status' %}
+                    <input type="hidden" name="{{ key }}" value="{{ val }}">
+                  {% endif %}
+                {% endfor %}
                 {% if request.user.is_superuser %}
                 <div class="item">
                   <label for="education-1"> Filial </label>
@@ -106,32 +123,46 @@
                   </div>
                 </div>
                 {% endif %}
+                {% if request.user.is_superuser or request.user.info..is_filial %}
                 <div class="item">
                   <label for="education-1"> Operator </label>
                   <div class="custom-select">
                     <i class="bi bi-chevron-down abs__icon"></i>
-                    <select>
-                      <option value="0">Select car:</option>
-                      <option value="1">Audi</option>
-                      <option value="2">BMW</option>
+                    <select name="operator">
+                      <option value="0">Select operator:</option>
+                      {% for oper in operators %}
+                        {% if request.GET.operator == oper.id %}
+                          <option value="{{ oper.id }}" selected>{{ oper.user.username }}</option>
+                        {% else %}
+                          <option value="{{ oper.id }}">{{ oper.user.username }}</option>
+                        {% endif %}
+                      {% endfor %}
                     </select>
                   </div>
                 </div>
                 <div class="item">
                   <label for="address"> Agentlar</label>
-                  <input
-                    id="address"
-                    type="text"
-                    class="item__input w-100"
-                    placeholder="Barcha agentlar"
-                  />
+                  <div class="custom-select">
+                    <i class="bi bi-chevron-down abs__icon"></i>
+                      <select name="agent">
+                        <option value="0">Select agentls:</option>
+                          {% for oper in agents %}
+                            {% if request.GET.agent == oper.id %}
+                              <option value="{{ oper.id }}" selected>{{ oper.user.username }}</option>
+                            {% else %}
+                              <option value="{{ oper.id }}">{{ oper.user.username }}</option>
+                            {% endif %}
+                          {% endfor %}
+                      </select>
+                  </div>
                 </div>
+                {% endif %}
                 <div class="flex__item">
                   <div class="item">
                     <label for="address"> Boshlanishi</label>
                     <input
                       id="address"
-                      type="text"
+                      type="date" name="from_date"
                       class="item__input w-100"
                       placeholder="Boshlanishi"
                     />
@@ -140,20 +171,20 @@
                     <label for="address"> Tugallanishi</label>
                     <input
                       id="address"
-                      type="text"
+                      type="date" name="to_date"
                       class="item__input w-100"
                       placeholder="Tugallanishi"
                     />
                   </div>
                 </div>
                 <div class="filter__btns">
-                  <button id="" type="reset" class="list__settings">
+                  <a id="" href="{{ request.path }}" type="reset" class="list__settings">
                     Yangilash
                     <i
                       class="bi bi-arrow-clockwise cocky"
                       style="transform: rotate(-160deg)"
                     ></i>
-                  </button>
+                  </a>
                   <button id="" class="confirm">Tasdiqlash</button>
                 </div>
               </form>
@@ -256,7 +287,13 @@
               </td>
               <td>
                 <div class="list__item">
-                  <p class="list__item-txt">Не определено</p>
+                  <p class="list__item-txt">
+                    {% if obj.operator %}
+                      {{ obj.operator.username }}
+                    {% else %}
+                      Не определено
+                    {% endif %}
+                  </p>
                 </div>
               </td>
               <td>
@@ -278,7 +315,7 @@
                 <div class="list__item">
                   <div class="list__item-txt">
                     <div class="percent"></div>
-                    78%
+                    {{ obj.get_percent }}%
                   </div>
                 </div>
               </td>
@@ -303,6 +340,11 @@
             <!-- pagination for Shoha aka -->
           </div>
           <form class="list__select-wrap" id="page-size-form" method="get">
+            {% for key, val in request.GET.items %}
+            {% if key != "page_size" %}
+            <input type="hidden" name="{{ key }}" value="{{ val }}">
+            {% endif %}
+            {% endfor %}
             <label for="select">Показать по: </label>
             <select name="page_size" id="select-page-size" class="list__select">
               <option value="16" {% if page_size == 16 %} selected {% endif %}>16</option>
@@ -315,139 +357,4 @@
       </section>
     </div>
   </main>
-{% endblock %}
-{% block modals %}
-  <div class="create__modal" id="create-body">
-    <div class="create__wrapper">
-      <div class="kreator gwyn">
-        <div class="create__header">
-          <h4 class="create__title">Создать клиента</h4>
-          <button class="create__x" id="create-x">
-            <i class="bx bx-x"></i>
-          </button>
-        </div>
-        <form class="epilogue" action="{% url 'admins:clients_create' %}" method="post">
-          {% csrf_token %}
-          <div class="create__body">
-            <p class="select__title">Пол</p>
-            <div class="flexer__select">
-              <div class="">
-                <input type="radio" name="sex" value="Erkak" id="test1" checked />
-                <label class="radiohead" for="test1">
-                  <p class="radio__txt">Мужской</p>
-                </label>
-              </div>
-              <div class="">
-                <input type="radio" name="sex" value="Ayol" id="test2" />
-                <label class="radiohead" for="test2">
-                  <p class="radio__txt">Женский</p>
-                </label>
-              </div>
-            </div>
-            <div class="user__info">
-              <p class="info__title">Данные клиента</p>
-              <div class="">
-                <div class="info__item">
-                  <label for="namer">Ф.И.О</label>
-                  <input
-                    id="namer"
-                    type="text" name="full_name"
-                    class="item__input"
-                    placeholder="Ф.И.О"
-                  />
-                </div>
-                <div class="info__item">
-                  <label for="birthdayer">День рождение</label>
-                  <input
-                    id="birthdayer"
-                    type="date" name="bith_date"
-                    class="item__input"
-                    placeholder="День рождение"
-                  />
-                </div>
-                <div class="info__item">
-                  <label for="nicker">Полный адрес</label>
-                  <input
-                    id="nicker"
-                    type="text" name="adres"
-                    class="item__input"
-                    placeholder="Полный адрес"
-                  />
-                </div>
-                <div class="info__item">
-                  <label for="statuser">Образование</label>
-                  <div class="custom-select">
-                    <i class="bi bi-chevron-down abs__icon"></i>
-                    <select name="education">
-                      <option value="">Образование</option>
-                      <option value="Oliy">Oliy</option>
-                      <option value="Orta">Orta</option>
-                    </select>
-                  </div>
-                </div>
-                <div class="info__item">
-                  <label for="namer">Контактный телефон</label>
-                  <input
-                    id="telegramer"
-                    type="text" name="nbm"
-                    class="item__input"
-                    placeholder="Контактный телефон"
-                  />
-                </div>
-                <div class="info__item">
-                  <label for="namer">Oyilaviy xolati</label>
-                  <input
-                    id="telegramer"
-                    type="text" name="family_status"
-                    class="item__input"
-                    placeholder="Oyilaviy xolati"
-                  />
-                </div>
-                <div class="info__item">
-                  <label for="namer">Farzandlar soni</label>
-                  <input
-                    id="telegramer"
-                    type="text" name="child_count"
-                    class="item__input"
-                    placeholder="Farzandlar soni"
-                  />
-                </div>
-
-                <div class="info__item">
-                  <label for="namer">Turmush ortog’i F.I.Sh.</label>
-                  <input
-                    id="telegramer"
-                    type="text" name="spouse"
-                    class="item__input"
-                    placeholder="Turmush ortog’i F.I.Sh."
-                  />
-                </div>
-                <div class="info__item">
-                  <label for="namer">Tugilgan sana</label>
-                  <input
-                    id="telegramer"
-                    type="date" name="spouse_birth_date"
-                    class="item__input"
-                    placeholder="Tugilgan sana"
-                  />
-                </div>
-                <div class="info__item">
-                  <label for="namer">Malumoti</label>
-                  <select name="spouse_education">
-                    <option value="">Образование</option>
-                    <option value="Oliy">Oliy</option>
-                    <option value="Orta">Orta</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="create__bottom">
-            <button class="create__cancel">Отмена</button>
-            <button class="create__confirm">Создать клиента</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
 {% endblock %}

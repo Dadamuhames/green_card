@@ -14,7 +14,15 @@
         <div class="nav__right evanescence">
           <div class="operator">
             <img src="{% static 'img/operator.svg' %}" alt="" />
-            <p>Operator: Ikromova Gulbahor</p>
+            <p>{% if request.user.info.is_operator %}
+            Operator:
+            {% elif request.user.info.is_agent %}
+            Agent:
+            {% elif request.user.info.is_filial %}
+            Filial admin:
+            {% elif request.user.is_superuser %}
+            Admin:
+            {% endif %}Ikromova Gulbahor</p>
           </div>
           <a href="{% url 'admins:logout_url' %}" class="out__btn">
             <img src="{% static 'img/log-out.svg' %}" alt="" />
@@ -177,6 +185,7 @@
                 </div>
               </td>
               <td>
+                {% if request.user.is_superuser or request.user.is_filail %}
                 <div class="numb">
                   <button class="list__item-btn redactors" data-user="{{ obj.id }}">
                     <img src="{% static 'img/pencil.svg' %}" alt="" style="pointer-events: none;"/>
@@ -191,6 +200,7 @@
                         <input type="hidden" name="url" value="{{ request.get_full_path }}">
                     </form>
                 </div>
+                {% endif %}
               </td>
             </tr>
             {% endfor %}
@@ -199,6 +209,15 @@
 
         <div class="list__bottom">
           <div class="list__pagination">
+            <div class="pagination">
+              {% for i in page_range %}
+              {% if i == page_obj.number %}
+              <a href="{{ pgn_url }}page={{ i }}" class="active">{{ i }}</a>
+              {% else %}
+              <a href="{{ pgn_url }}page={{ i }}">{{ i }}</a>
+              {% endif %}
+              {% endfor %}
+            </div>
             <!-- pagination for Shoha aka -->
           </div>
           <form class="list__select-wrap" id="page-size-form" method="get">
@@ -221,7 +240,10 @@
   </main>
 {% endblock %}
 
+
+
 {% block modals %}
+{% if request.user.info.is_filial or request.user.is_superuser %}
   <div class="create__modal" id="create-body">
     <div class="create__wrapper">
       <div class="kreator gwyn">
@@ -372,4 +394,5 @@
       </div>
     </div>
   </div>
+{% endif %}
 {% endblock %}

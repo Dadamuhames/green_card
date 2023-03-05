@@ -1,6 +1,6 @@
 {% extends 'admins/base_template.html' %}
 {% load static %}
-
+{% load image_thumb %}
 
 {% block main %}
   <main class="right" id="main-layout">
@@ -9,12 +9,11 @@
         <div class="nav__left">
           <h1 class="title">Клиент: {{ object.full_name }}</h1>
           <div class="two__btns d-flex align-items-center">
+            {% if request.user == object.agent or request.user.is_superuser or request.user.info == object.filial %}
             <button id="clear-btn" class="list__item-btn me-1">
               <img src="{% static 'img/trash.svg' %}" alt="" />
             </button>
-            <a href="{% url 'admins:clients_edit' object.id %}" class="list__item-btn d-flex">
-              <img src="{% static 'img/pencil.svg' %}" alt="" />
-            </a>
+            {% endif %}
           </div>
         </div>
         <div class="nav__right">
@@ -25,209 +24,273 @@
       </nav>
     </header>
     <div class="background">
-      <div class="row">
-        <div class="col-6">
-          <div class="cardo client__info mb-4">
-            <h4 class="card__title">Информация о клиенте</h4>
-            <form method="post">
-              {{ form.errors }}
-              {% csrf_token %}
-              <div class="items">
-                <div class="item">
-                  <label for="name"> Имя Фамилия Отчество </label>
-                  <input id="name" name="full_name" type="text" value="{{ object.full_name }}" class="item__input"
-                    placeholder="Имя Фамилия Отчество"  />
-                </div>
-                <div class="item half__item">
-                  <label for="birthday"> Дата рождения</label>
-                  <input id="birthday" name="bith_date" type="text" value="{{ object.bith_date }}" class="item__input"
-                    placeholder="Дата рождения"  />
-                </div>
-                <div class="item">
-                  <label for="address"> Полный адрес</label>
-                  <input id="address" name="adres" type="text" value="{{ object.adress }}" class="item__input"
-                    placeholder="Полный адрес"  />
-                </div>
-                <div class="item half__item">
-                  <label for="education"> Образование </label>
-                  <div class="custom-select" style="width: 200px">
-                    <select name="education">
-                      <option value="">Образование</option>
-                      <option value="Oliy" {% if object.education == 'Oliy' %} selected {% endif %}>Oliy</option>
-                      <option value="Orta" {% if object.education == 'Orta' %} selected {% endif %}>Orta</option>
-                    </select>
+      <form action="" method="post">
+        <div class="row">
+          {{ form.errors }}
+          {% csrf_token %}
+          <div class="col-6">
+            <div class="cardo client__info mb-4">
+              <h4 class="card__title">Информация о клиенте</h4>
+                <div class="items">
+                  <div class="item">
+                    <label for="name"> Имя Фамилия Отчество </label>
+                    <input id="name" name="full_name" type="text" {% if object.full_name %} value="{{ object.full_name }}" {% endif %} class="item__input"
+                      placeholder="Имя Фамилия Отчество"  />
                   </div>
-                </div>
-  
-                <div class="item half__item">
-                  <label for="num"> Контактный телефон </label>
-                  <input id="num" name="nbm" type="text" value="{{ object.nbm }}" class="item__input"
-                    placeholder="Контактный телефон " />
-                </div>
-                <div class="item radio__item">
-                  <label class="">Пол клиента</label>
-                  <div class="flexer__select m-0">
-                    <div class="">
-                      <input type="radio" value="Erkak" id="test1" name="sex" {% if object.sex == 'Erkak' %} checked {% endif %} />
-                      <label class="radiohead radio-1" for="test1">
-                        <p class="radio__txt">Erkak</p>
-                      </label>
+                  <div class="item half__item">
+                    <label for="birthday"> Дата рождения</label>
+                    <input id="birthday" name="bith_date" type="date" {% if object.bith_date %} value="{{ object.bith_date|date:'Y-m-d' }}" {% endif %} class="item__input"
+                      placeholder="Дата рождения"  />
+                  </div>
+                  <div class="item">
+                    <label for="address"> Полный адрес</label>
+                    <input id="address" name="adres" type="text" {% if object.adres %} value="{{ object.adres }}" {% endif %} class="item__input"
+                      placeholder="Полный адрес"  />
+                  </div>
+                  <div class="item half__item">
+                    <label for="education"> Образование </label>
+                    <div class="custom-select" style="width: 200px">
+                      <select name="education">
+                        <option value="">Образование</option>
+                        <option value="Oliy" {% if object.education == 'Oliy' %} selected {% endif %}>Oliy</option>
+                        <option value="Orta" {% if object.education == 'Orta' %} selected {% endif %}>Orta</option>
+                      </select>
                     </div>
-                    <div class="">
-                      <input type="radio" value="Ayol" id="test2" name="sex" {% if object.sex == 'Ayol' %} checked {% endif %} />
-                      <label class="radiohead radio-2" for="test2">
-                        <p class="radio__txt">Ayol</p>
-                      </label>
+                  </div>
+    
+                  <div class="item half__item">
+                    <label for="num"> Контактный телефон </label>
+                    <input id="num" name="nbm" type="text" value="{{ object.nbm }}" class="item__input"
+                      placeholder="Контактный телефон " />
+                  </div>
+                  <div class="item radio__item">
+                    <label class="">Пол клиента</label>
+                    <div class="flexer__select m-0">
+                      <div class="">
+                        <input type="radio" value="Erkak" id="test1" name="sex" {% if object.sex == 'Erkak' %} checked {% endif %} />
+                        <label class="radiohead radio-1" for="test1">
+                          <p class="radio__txt">Erkak</p>
+                        </label>
+                      </div>
+                      <div class="">
+                        <input type="radio" value="Ayol" id="test2" name="sex" {% if object.sex == 'Ayol' %} checked {% endif %} />
+                        <label class="radiohead radio-2" for="test2">
+                          <p class="radio__txt">Ayol</p>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <hr />
+                  <div class="item">
+                    <label for="education-1"> Oyilaviy xolati </label>
+                      <input id="num" type="text" name="family_status" {% if object.family_status %} value='{{ object.family_status }}' {% endif %} class="item__input"
+                        placeholder="Oyilaviy xolati"  />
+                  </div>
+                  <div class="item half__item">
+                    <label for="children"> Дети </label>
+                    <input id="children" min="0" name="child_count" type="number" {% if object.child_count %} value="{{ object.child_count }}" {% endif %} class="item__input"
+                      placeholder="Дети "  />
+                  </div>
+                  <hr />
+                  <div class="item">
+                    <label for="husband"> Супруг/Супруга </label>
+                    <input id="husband" name="spouse" type="text" {% if object.spouse %} value="{{ object.spouse }}" {% endif %} class="item__input"
+                      placeholder="Супруг/Супруга "  />
+                  </div>
+                  <div class="item half__item">
+                    <label for="birthday-2"> Дата рождение </label>
+                    <input id="birthday-2" name="spouse_birth_date" type="date" {% if object.spouse_birth_date %} value="{{ object.spouse_birth_date|date:'Y-m-d' }}" {% endif %} class="item__input"
+                      placeholder="Дата рождение"  />
+                  </div>
+    
+                  <div class="item half__item">
+                    <label for="education-1"> Образование </label>
+                    <div class="custom-select" style="width: 200px">
+                      <select name="spouse_education">
+                        <option value="">Образование</option>
+                        <option value="Oliy" {% if object.spouse_education == 'Oliy' %} selected {% endif %}>Oliy</option>
+                        <option value="Orta" {% if object.spouse_education == 'Orta' %} selected {% endif %}>Orta</option>
+                      </select>
                     </div>
                   </div>
                 </div>
                 <hr />
-                <div class="item">
-                  <label for="education-1"> Oyilaviy xolati </label>
-                    <input id="num" type="text" name="family_status" value='{{ object.family_status }}' class="item__input"
-                      placeholder="Oyilaviy xolati"  />
-                </div>
-                <div class="item half__item">
-                  <label for="children"> Дети </label>
-                  <input id="children" name="child_count" type="text" value="{{ object.child_count }}" class="item__input"
-                    placeholder="Дети "  />
-                </div>
-                <hr />
-                <div class="item">
-                  <label for="husband"> Супруг/Супруга </label>
-                  <input id="husband" name="spouse" type="text" value="{{ object.spouse }}" class="item__input"
-                    placeholder="Супруг/Супруга "  />
-                </div>
-                <div class="item half__item">
-                  <label for="birthday-2"> Дата рождение </label>
-                  <input id="birthday-2" name="spouse_birth_date" type="text" value="{{ object.spouse_birth_date }}" class="item__input"
-                    placeholder="Дата рождение"  />
-                </div>
-  
-                <div class="item half__item">
-                  <label for="education-1"> Образование </label>
-                  <div class="custom-select" style="width: 200px">
-                    <select name="spouse_education">
-                      <option value="">Образование</option>
-                      <option value="Oliy" {% if object.spouse_education == 'Oliy' %} selected {% endif %}>Oliy</option>
-                      <option value="Orta" {% if object.spouse_education == 'Orta' %} selected {% endif %}>Orta</option>
-                    </select>
+                <button class="confirm">Сохранить</button>
+            </div>
+    
+            <div class="cardo file__card">
+              <h4 class="card__title">Файлы</h4>
+    
+              <div class="file__items">
+                  <div class="file__item mb-4">
+                    <label for="passport"> Добавить копия паспорта </label>
+                    <!-- Dropzone -->
+                    <div class="dropzone dropzone-multiple border-0" data-max="1" data-delete="/admin/images/delete"
+                      data-url="/admin/images/save" data-key="{{ dropzone_key }}">
+                      <!-- Fallback -->
+                      <div class="dz-preview d-none"></div>
+                      <div class="fallback">
+                        <div class="custom-file">
+                          <input type="file" name="file" class="form-control" id="customFileUploadMultiple">
+                          <label class="form-label" for="customFileUploadMultiple">Choose file</label>
+                        </div>
+                      </div>
+                    
+                      <!-- Preview -->
+                      <div class="dz-preview-container" id="article-image" style="padding: 0;">
+                        {% if object %}
+                        <div class="dz-preview dz-processing dz-complete dz-image-preview d-none" style="position: relative; margin: 0;">
+                          <div class="dz-image">
+                            <img data-dz-thumbnail="" src="" alt="">
+                          </div>
+                          <div class="dz-details">
+                            <div class="dz-filename"><span data-dz-name=""></span></div>
+                          </div>
+                          <a class="dz-remove" data-file="" data-dz-remove>Удалить</a>
+                        </div>
+                        {% if object.image and object.image.path|is_file %}
+                        <div class="dz-preview dz-processing dz-complete dz-image-preview" style="position: relative;">
+                          <div class="dz-image">
+                            <img data-dz-thumbnail="" src='{% image_thumb object.image alias="ten" request=request %}'
+                              alt="{{ object.image }}">
+                          </div>
+                          <div class="dz-details">
+                            <div class="dz-filename"><span data-dz-name="">{{ object.image }}</span></div>
+                          </div>
+                          <a class="dz-remove"
+                            onclick="var result = confirm('Want to delete?');if (result){submit_form('delete-form{{ object.id }}')}"
+                            data-dz-remove>Удалить</a>
+                          <div action="{% url 'admins:del_article_img' %}" id="delete-form{{ object.id }}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="item_id" value="{{ object.id }}">
+                          </div>
+                        </div>
+                        {% endif %}
+                        {% else %}
+                        {% for img in images %}
+                        <div class="dz-preview dz-processing dz-complete dz-image-preview">
+                          <div class="dz-image">
+                            <img data-dz-thumbnail="" src="/media/{{ img.name }}" alt="{{ img.name }}">
+                          </div>
+                          <div class="dz-details">
+                            <div class="dz-filename"><span data-dz-name="">{{ img.name }}</span></div>
+                          </div>
+                          <a class="dz-remove" data-file="{{ img }}"
+                            onclick="var result = confirm('Want to delete?');if (result){submit_form('delete-form{{ img.id }}')}"
+                            data-dz-remove>Удалить</a>
+                          <div action="{% url 'admins:del-img' %}" id="delete-form{{ img.id }}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="url" value="{{ request.get_full_path }}">
+                            <input type="hidden" name="key" value="{{ dropzone_key }}">
+                            <input type="hidden" name="file" value="{{ img.name }}">
+                          </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                      </div>
+                    
+                    </div>
                   </div>
+                  <div class="file__item mb-4">
+                    <label for="passport"> Добавить PDF файл </label>
+                    <!-- ПОСТАВЬ ДРОПЗОН СЮДА -->
+                  </div>
+                  <button class="confirm">Сохранить</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="cardo mb-4">
+              <h4 class="card__title">Клиент:</h4>
+              <div class="item direct__item">
+                <label for="status"> Статус клиента </label>
+                  <select id="status" name="status" class="item__select select_custom">
+                    <option value="0">Статус клиента:</option>
+                    <option value="Yangi mijoz" {% if object.status == 'Yangi mijoz' %} selected {% endif %}>Yangi mijoz
+                    </option>
+                    <option value="Operator qabul qildi" {% if object.status == 'Operator qabul qildi' %} selected {% endif %}>Operator qabul qildi</option>
+                    <option value="Mijozga aloqaga chiqildi" {% if object.status == 'Mijozga aloqaga chiqildi' %} selected 
+                    {% endif %}>Mijozga aloqaga chiqildi</option>
+                    <option value="To‘lov qilindi" {% if object.status == 'To‘lov qilindi' %} selected {% endif %}>To‘lov
+                      qilindi</option>
+                    <option value="Operator tomonidan bekor qilish" {% if object.status == 'Operator tomonidan bekor qilish' %} selected {% endif %}>Operator tomonidan bekor qilish</option>
+                    <option value="GreenCard oldi" {% if object.status == 'GreenCard oldi' %} selected {% endif %}>GreenCard
+                      oldi</option>
+                    <option value="GreenCard tomonidan bekor qilindi" {% if object.status == 'GreenCard tomonidan bekor qilindi' %} selected {% endif %}>GreenCard tomonidan bekor
+                      qilindi</option>
+                  </select>
+              </div>
+              <p class="item__sub">Последнее изменение: {{ object.last_update }}</p>
+              <button class="confirm w-50">Изменить статус</button>
+            </div>
+            <div class="cardo mb-4">
+              <div class="info__item">
+                <label class="info__sup">Принял(а) оператор</label>
+                <div class="input__wrap">
+                  <input type="text" {% if object.operator %} value="{{ object.operator.firts_name }} {{ object.operator.last_name }}" {% endif %}
+                    placeholder="Принял(а) оператор " disabled />
+                  <i class="bi bi-person"></i>
+                </div>
+              </div>
+              <div class="info__item">
+                <label class="info__sup">Время принятие</label>
+                <div class="input__wrap">
+                  <input type="text" disabled placeholder="Время принятие" {% if object.oper_date %} value="{{ object.oper_date|date:'Y-m-d' }}" {% endif %} />
+                  <i class="bi bi-clock"></i>
                 </div>
               </div>
               <hr />
-              <button class="confirm">Сохранить</button>
-            </form>
-          </div>
-  
-          <div class="cardo file__card">
-            <h4 class="card__title">Файлы</h4>
-  
-            <div class="file__items">
-              <form action="">
-                <div class="file__item mb-4">
-                  <label for="passport"> Добавить копия паспорта </label>
-                  <!-- ПОСТАВЬ ДРОПЗОН СЮДА -->
+              <div class="info__item">
+                <label class="info__sup">Добавил(а) (Agent)</label>
+                <div class="input__wrap">
+                  <input type="text" disabled {% if object.agent %} value="{{ object.agent.firts_name }} {{ object.agent.last_name }}" {% endif %}
+                    placeholder="Добавил(а) (Agent) " />
+                  <i class="bi bi-person"></i>
                 </div>
-                <div class="file__item mb-4">
-                  <label for="passport"> Добавить PDF файл </label>
-                  <!-- ПОСТАВЬ ДРОПЗОН СЮДА -->
+              </div>
+              <div class="info__item">
+                <label class="info__sup">Дата добавление</label>
+                <div class="input__wrap">
+                  <input type="text" disabled {% if object.agent_date %} value="{{ object.agent_date|date:'Y-m-d' }}" {% endif %} placeholder="Дата добавление " />
+                  <i class="bi bi-clock"></i>
                 </div>
-                <button class="confirm">Сохранить</button>
-              </form>
-            </div>
-          </div>
-        </div>
-        <div class="col-3">
-          <div class="cardo mb-4">
-            <h4 class="card__title">Клиент:</h4>
-            <div class="item direct__item">
-              <label for="status"> Статус клиента </label>
-                <select id="status" name="status" class="item__select">
-                  <option value="0">Статус клиента:</option>
-                  <option value="Yangi mijoz" {% if object.status == 'Yangi mijoz' %} selected {% endif %}>Yangi mijoz
-                  </option>
-                  <option value="Operator qabul qildi" {% if object.status == 'Operator qabul qildi' %} selected {% endif %}>Operator qabul qildi</option>
-                  <option value="Mijozga aloqaga chiqildi" {% if object.status == 'Mijozga aloqaga chiqildi' %} selected 
-                  {% endif %}>Mijozga aloqaga chiqildi</option>
-                  <option value="To‘lov qilindi" {% if object.status == 'To‘lov qilindi' %} selected {% endif %}>To‘lov
-                    qilindi</option>
-                  <option value="Operator tomonidan bekor qilish" {% if object.status == 'Operator tomonidan bekor qilish' %} selected {% endif %}>Operator tomonidan bekor qilish</option>
-                  <option value="GreenCard oldi" {% if object.status == 'GreenCard oldi' %} selected {% endif %}>GreenCard
-                    oldi</option>
-                  <option value="GreenCard tomonidan bekor qilindi" {% if object.status == 'GreenCard tomonidan bekor qilindi' %} selected {% endif %}>GreenCard tomonidan bekor
-                    qilindi</option>
-                </select>
-            </div>
-            <p class="item__sub">Последнее изменение: {{ object.last_update }}</p>
-            <button class="confirm w-50">Изменить статус</button>
-          </div>
-          <div class="cardo mb-4">
-            <div class="info__item">
-              <label class="info__sup">Принял(а) оператор</label>
-              <div class="input__wrap">
-                <input type="text"  value="{{ object.operator.firts_name }} {{ object.operator.last_name }}"
-                  placeholder="Принял(а) оператор " />
-                <i class="bi bi-person"></i>
               </div>
             </div>
-            <div class="info__item">
-              <label class="info__sup">Время принятие</label>
-              <div class="input__wrap">
-                <input type="text"  placeholder="Время принятие " value="{{ object.oper_date }}" />
-                <i class="bi bi-clock"></i>
-              </div>
-            </div>
-            <hr />
-            <div class="info__item">
-              <label class="info__sup">Добавил(а) (Agent)</label>
-              <div class="input__wrap">
-                <input type="text"  value="{{ object.agent.firts_name }} {{ object.agent.last_name }}"
-                  placeholder="Добавил(а) (Agent) " />
-                <i class="bi bi-person"></i>
-              </div>
-            </div>
-            <div class="info__item">
-              <label class="info__sup">Дата добавление</label>
-              <div class="input__wrap">
-                <input type="text"  value="{{ object.agent_date }}" placeholder="Дата добавление " />
-                <i class="bi bi-clock"></i>
-              </div>
-            </div>
-          </div>
-  
-          <div class="cardo p-0">
-            <div class="accordion" id="accordionExample">
-              <div class="accordion-item">
-                <h2 class="accordion-header" id="headingOne">
-                  <button class="accordion-button acc__title" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                    Комментарии
-                  </button>
-                </h2>
-                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
-                  data-bs-parent="#accordionExample">
-                  <div class="accordion-body">
-                    {% for comment in object.comments.all %}
-                    <div class="comment">
-                      <div class="com__header">
-                        <p class="com__name">{{ comment.user.first_name }} {{ comment.user.last_name }}</p>
-                        <p class="com__date">{{ comment.date }}</p>
+    
+            <div class="cardo p-0">
+              <div class="accordion" id="accordionExample">
+                <div class="accordion-item">
+                  <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button acc__title" type="button" data-bs-toggle="collapse"
+                      data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                      Комментарии
+                    </button>
+                  </h2>
+                  <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                      {% for comment in object.comments.all %}
+                      <div class="comment">
+                        <div class="com__header">
+                          <p class="com__name">{{ comment.user.first_name }} {{ comment.user.last_name }}</p>
+                          <p class="com__date">{{ comment.date|date:'Y-m-d' }}</p>
+                        </div>
+                        <p class="com__txt">
+                          {{ comment.text }}
+                        </p>
                       </div>
-                      <p class="com__txt">
-                        {{ comment.text }}
-                      </p>
-                    </div>
-                    {% endfor %}
-                    <div class="leave">
-                      <form action="{% url 'admins:add_comment' %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="cliet" value="{{ object.id }}">
-                        <input type="hidden" name="user" value="{{ request.user.id }}">
-                        <input type="hidden" name="url" value="{{ request.path }}">
-                        <textarea name="text" placeholder="Оставить комментарии"></textarea>
-                        <button type="submit" class="confirm">Оставить</button>
-                      </form>
+                      {% endfor %}
+                      <div class="leave">
+                        <form action="{% url 'admins:add_comment' %}" method="post">
+                          {% csrf_token %}
+                          <input type="hidden" name="cliet" value="{{ object.id }}">
+                          <input type="hidden" name="user" value="{{ request.user.id }}">
+                          <input type="hidden" name="url" value="{{ request.path }}">
+                          <textarea name="text" placeholder="Оставить комментарии"></textarea>
+                          <button type="submit" class="confirm">Оставить</button>
+                        </form>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -235,7 +298,8 @@
             </div>
           </div>
         </div>
-      </div>
+      </form>
+      
     </div>
   </main>
 {% endblock %}
@@ -257,7 +321,7 @@
         <button type="button" id="clear-cancel" class="delete__btn-1">
           Отмена
         </button>
-        <button class="delete__btn-2">Удалить</button>
+        <button onclick="window.location=`{% url 'admins:del_client' object.id %}`" class="delete__btn-2">Удалить</button>
       </div>
     </div>
   </div>

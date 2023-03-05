@@ -373,7 +373,7 @@ table tr {
   gap: 12px;
 }
 .flexer__select {
-  max-width: 227px;
+  width: fit-content;
 }
 .card__title {
   margin-bottom: 16px;
@@ -712,3 +712,52 @@ hr {
 .create__modal.show .kreator {
   transform: translateX(0);
 }
+
+
+
+.select_custom {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 10px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+
+.dropzone {
+  background: white;
+  border-radius: 5px;
+  border: 2px dashed rgb(0, 135, 247);
+  border-image: none;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.pagination {
+  display: inline-block;
+}
+
+.pagination a {
+  color: black;
+  float: left;
+  border-radius: 50%;
+  padding: 8px 11px;
+  margin-left: 5px;
+  text-decoration: none;
+  transition: background-color .3s;
+  border: 1px solid #ddd;
+}
+
+.pagination a.active {
+  background-color: #3661eb;
+  color: white;
+  border: 1px solid #3661eb;
+}
+
+.pagination a:hover:not(.active) {
+  background-color: #ddd;
+}
+
+

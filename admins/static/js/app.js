@@ -1,3 +1,8 @@
+$('#page-size-form').on("change", () => {
+  $('#page-size-form').submit()
+})
+
+
 let clearBtn = document.getElementById("clear-btn");
 let clearModal = document.getElementById("clear-modal");
 let clearWrap = document.getElementById("clear-wrap");
@@ -299,11 +304,5 @@ tabs2.forEach((tab2) => {
     tab2.classList.add("active");
   });
 });
-
-
-
-$('#page-size-form').on("change", () => {
-  $('#page-size-form').submit()
-})
 
 

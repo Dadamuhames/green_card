@@ -9,7 +9,7 @@ urlpatterns = [
     path("operators", views.OperatorsList.as_view(), name='operators'),
     path('agents', views.AgentsList.as_view(), name='agents'),
     path("clients", views.ClientsList.as_view(), name='clients'),
-    path("clients/create", views.client_create, name='clients_create'),
+    path("clients/create", views.ClientsCreate.as_view(), name='clients_create'),
     path('clients/<int:pk>', views.ClientsDetailView.as_view(), name='clients_detail'),
     path('clients/<int:pk>/edit', views.ClientEdit.as_view(), name='clients_edit'),
     path('filials/create', views.create_filial, name='filials_create'),
@@ -22,5 +22,6 @@ urlpatterns = [
     ), name='login_admin'),
     path("delete_user_info", views.delete_user, name='del_user'),
     path('logout', views.logout_view, name='logout_url'),
-    path('add_comment', views.add_comment, name='add_comment')
+    path('add_comment', views.add_comment, name='add_comment'),
+    path("delete_client/<int:pk>", views.delete_client, name='del_client')
 ]

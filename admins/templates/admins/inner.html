@@ -35,7 +35,7 @@
                   <label for="name"> Имя Фамилия Отчество </label>
                   <input
                     id="name"
-                    type="text" value="{{ object.full_name }}"
+                    type="text" {% if object.full_name %} value="{{ object.full_name }}" {% endif %}
                     class="item__input"
                     placeholder="Имя Фамилия Отчество"
                     disabled
@@ -45,7 +45,7 @@
                   <label for="birthday"> Дата рождения</label>
                   <input
                     id="birthday"
-                    type="text" value="{{ object.bith_date }}"
+                    type="text" {% if object.bith_date %} value="{{ object.bith_date|date:'Y-m-d' }}" {% endif %}
                     class="item__input"
                     placeholder="Дата рождения"
                     disabled
@@ -55,7 +55,7 @@
                   <label for="address"> Полный адрес</label>
                   <input
                     id="address"
-                    type="text" value="{{ object.adress }}" 
+                    type="text" {% if object.adres %} value="{{ object.adres }}" {% endif %}
                     class="item__input"
                     placeholder="Полный адрес"
                     disabled
@@ -76,7 +76,7 @@
                   <label for="num"> Контактный телефон </label>
                   <input
                     id="num"
-                    type="text" value="{{ object.nbm }}"
+                    type="text" {% if object.nbm %} value="{{ object.nbm }}" {% endif %}
                     class="item__input"
                     placeholder="Контактный телефон "
                     disabled
@@ -107,13 +107,13 @@
                 <hr />
                 <div class="item disabled__item">
                   <label for="education-1"> Oyilaviy xolati </label>
-                    <input id="num" type="text" value='{{ object.family_status }}' class="item__input" placeholder="Oyilaviy xolati" disabled />
+                    <input id="num" type="text" {% if object.family_status %} value='{{ object.family_status }}' {% endif %} class="item__input" placeholder="Oyilaviy xolati" disabled />
                 </div>
                 <div class="item half__item">
                   <label for="children"> Дети </label>
                   <input
                     id="children"
-                    type="text" value="{{ object.child_count }}"
+                    type="text" {% if object.child_count %} value="{{ object.child_count }}" {% endif %}
                     class="item__input"
                     placeholder="Дети "
                     disabled
@@ -124,7 +124,7 @@
                   <label for="husband"> Супруг/Супруга </label>
                   <input
                     id="husband"
-                    type="text" value="{{ object.spouse }}"
+                    type="text" {% if object.spouse %} value="{{ object.spouse }}" {% endif %}
                     class="item__input"
                     placeholder="Супруг/Супруга "
                     disabled
@@ -134,7 +134,7 @@
                   <label for="birthday-2"> Дата рождение </label>
                   <input
                     id="birthday-2"
-                    type="text" value="{{ object.spouse_birth_date }}"
+                    type="text" {% if object.spouse_birth_date %} value="{{ object.spouse_birth_date|date:'Y-m-d' }}" {% endif %}
                     class="item__input"
                     placeholder="Дата рождение"
                     disabled
@@ -145,13 +145,13 @@
                   <label for="education-1"> Образование </label>
                     <input type="text" class="item__input"
                     placeholder="Дети "
-                    disabled
+                    disabled {% if object.spouse_education %}
                     value="{{ object.spouse_education }}"
+                    {% endif %}
                     />
                 </div>
               </div>
               <hr />
-              <button class="confirm">Сохранить</button>
             </form>
           </div>
 
@@ -162,14 +162,13 @@
               <form action="">
                 <div class="file__item mb-4">
                   <label for="passport"> Добавить копия паспорта </label>
-                
+                  
                 </div>
                 <div class="file__item mb-4">
                   <label for="passport"> Добавить PDF файл </label>
 
                   <!-- ПОСТАВЬ ДРОПЗОН СЮДА -->
                 </div>
-                <button class="confirm">Сохранить</button>
               </form>
             </div>
           </div>
@@ -181,16 +180,16 @@
               <label for="status"> Статус клиента </label>
                 <input type="text" class="item__input" value="{{ object.status }}">
             </div>
-            <p class="item__sub">Последнее изменение: {{ object.last_update }}</p>
-            <button class="confirm w-50">Изменить статус</button>
+            <p class="item__sub">Последнее изменение: {{ object.last_update|date:'Y-m-d' }}</p>
           </div>
           <div class="cardo mb-4">
             <div class="info__item">
               <label class="info__sup">Принял(а) оператор</label>
               <div class="input__wrap">
                 <input
-                  type="text"
-                  disabled value="{{ object.operator.firts_name }} {{ object.operator.last_name }}"
+                  type="text" 
+                  disabled {% if object.operator %} value="{{ object.operator.firts_name }} {{ object.operator.last_name }}" 
+                  {% endif %}
                   placeholder="Принял(а) оператор "
                 />
                 <i class="bi bi-person"></i>
@@ -199,7 +198,7 @@
             <div class="info__item">
               <label class="info__sup">Время принятие</label>
               <div class="input__wrap">
-                <input type="text" disabled placeholder="Время принятие " value="{{ object.oper_date }}" />
+                <input type="text" disabled placeholder="Время принятие" {% if object.oper_date %} value="{{ object.oper_date|date:'Y-m-d' }}" {% endif %}/>
                 <i class="bi bi-clock"></i>
               </div>
             </div>
@@ -208,8 +207,8 @@
               <label class="info__sup">Добавил(а) (Agent)</label>
               <div class="input__wrap">
                 <input
-                  type="text"
-                  disabled value="{{ object.agent.firts_name }} {{ object.agent.last_name }}"
+                  type="text" disabled {% if object.agent %}
+                  value="{{ object.agent.firts_name }} {{ object.agent.last_name }}" {% endif %}
                   placeholder="Добавил(а) (Agent) "
                 />
                 <i class="bi bi-person"></i>
@@ -220,7 +219,7 @@
               <div class="input__wrap">
                 <input
                   type="text"
-                  disabled value="{{ object.agent_date }}"
+                  disabled value="{{ object.agent_date|date:'Y-m-d' }}"
                   placeholder="Дата добавление "
                 />
                 <i class="bi bi-clock"></i>
@@ -254,19 +253,13 @@
                     <div class="comment">
                       <div class="com__header">
                         <p class="com__name">{{ comment.user.first_name }} {{ comment.user.last_name }}</p>
-                        <p class="com__date">{{ comment.date }}</p>
+                        <p class="com__date">{{ comment.date|date:'Y-m-d' }}</p>
                       </div>
                       <p class="com__txt">
                         {{ comment.text }}
                       </p>
                     </div>
                     {% endfor %}
-                    <div class="leave">
-                      <form action="">
-                        <textarea placeholder="Оставить комментарии"></textarea>
-                        <button type="submit" class="confirm">Оставить</button>
-                      </form>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -295,23 +288,9 @@
           <button type="button" id="clear-cancel" class="delete__btn-1">
             Отмена
           </button>
-          <button class="delete__btn-2">Удалить</button>
+        <button onclick="window.location=`{% url 'admins:del_client' object.id %}`" class="delete__btn-2">Удалить</button>
         </div>
       </div>
     </div>
     {% endblock %}
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://code.jquery.com/jquery-3.6.3.min.js"
-      integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU="
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://unpkg.com/imask"></script>
-    <script src="./js/app.js"></script>
-  </body>
-</html>

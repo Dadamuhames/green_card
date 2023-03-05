@@ -59,6 +59,28 @@ class Clients(models.Model):
     def get_agent(self):
         if self.agent:
             return str(self.agent.first_name) + ' ' + str(self.agent.last_name)
+        
+
+    def get_percent(self):
+        fields = self._meta.fields
+        count = len(fields)
+        not_null = 0
+        
+        print(fields)
+
+        data_dict = self.__dict__
+        print(data_dict)
+        for field in fields:
+            key = str(field.name)
+            if str(field.get_internal_type()) == 'ForeignKey':
+                key += '_id'
+            if data_dict[key] != None:
+                not_null += 1
+        
+        perc = not_null * 100 // count
+
+
+        return perc
 
 
 # client images

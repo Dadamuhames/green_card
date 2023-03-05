@@ -1,0 +1,151 @@
+{% extends 'admins/base_template.html' %}
+{% load static %}
+
+
+{% block main %}
+<main class="right" id="main-layout">
+    <header>
+        <nav class="navbar" style="height: 83px">
+            <div class="nav__right">
+                <button class="back">
+                    <i class="bx bx-left-arrow-alt"></i> Назад
+                </button>
+            </div>
+        </nav>
+    </header>
+    <div class="background">
+        <form method="post">
+            <div class="row">
+                {{ form.errors }}
+                {% csrf_token %}
+                <div class="col-6">
+                    <div class="cardo client__info mb-4">
+                        <h4 class="card__title">Информация о клиенте</h4>
+                        <div class="items">
+                            <div class="item">
+                                <label for="name"> Имя Фамилия Отчество </label>
+                                <input id="name" name="full_name" type="text" value="{{ object.full_name }}"
+                                    class="item__input" placeholder="Имя Фамилия Отчество" />
+                            </div>
+                            <div class="item half__item">
+                                <label for="birthday"> Дата рождения</label>
+                                <input id="birthday" name="bith_date" type="date" value="{{ object.bith_date }}"
+                                    class="item__input" placeholder="Дата рождения" />
+                            </div>
+                            <div class="item">
+                                <label for="address"> Полный адрес</label>
+                                <input id="address" name="adres" type="text" value="{{ object.adress }}"
+                                    class="item__input" placeholder="Полный адрес" />
+                            </div>
+                            <div class="item half__item">
+                                <label for="education"> Образование </label>
+                                <div class="custom-select" style="width: 200px">
+                                    <select name="education">
+                                        <option value="">Образование</option>
+                                        <option value="Oliy">Oliy
+                                        </option>
+                                        <option value="Orta">Orta
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="item half__item">
+                                <label for="num"> Контактный телефон </label>
+                                <input id="num" name="nbm" type="text" value="{{ object.nbm }}" class="item__input"
+                                    placeholder="Контактный телефон " />
+                            </div>
+                            <div class="item radio__item">
+                                <label class="">Пол клиента</label>
+                                <div class="flexer__select m-0">
+                                    <div class="">
+                                        <input type="radio" value="Erkak" id="test1" name="sex" checked/>
+                                        <label class="radiohead radio-1" for="test1">
+                                            <p class="radio__txt">Erkak</p>
+                                        </label>
+                                    </div>
+                                    <div class="">
+                                        <input type="radio" value="Ayol" id="test2" name="sex" />
+                                        <label class="radiohead radio-2" for="test2">
+                                            <p class="radio__txt">Ayol</p>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="item">
+                                <label for="education-1"> Oyilaviy xolati </label>
+                                <input id="num" type="text" name="family_status"
+                                    class="item__input" placeholder="Oyilaviy xolati" />
+                            </div>
+                            <div class="item half__item">
+                                <label for="children"> Дети </label>
+                                <input id="children" name="child_count" type="text"
+                                    class="item__input" placeholder="Дети " />
+                            </div>
+                            <hr />
+                            <div class="item">
+                                <label for="husband"> Супруг/Супруга </label>
+                                <input id="husband" name="spouse" type="text"
+                                    class="item__input" placeholder="Супруг/Супруга " />
+                            </div>
+                            <div class="item half__item">
+                                <label for="birthday-2"> Дата рождение </label>
+                                <input id="birthday-2" name="spouse_birth_date" type="date" class="item__input"
+                                    placeholder="Дата рождение" />
+                            </div>
+
+                            <div class="item half__item">
+                                <label for="education-1"> Образование </label>
+                                <div class="custom-select" style="width: 200px">
+                                    <select name="spouse_education">
+                                        <option value="">Образование</option>
+                                        <option value="Oliy">Oliy</option>
+                                        <option value="Orta">Orta</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <hr />
+                        <button class="confirm">Сохранить</button>
+                    </div>
+
+                    <div class="cardo file__card">
+                        <h4 class="card__title">Файлы</h4>
+
+                        <div class="file__items">
+                            <div class="file__item mb-4">
+                                <label for="passport"> Добавить копия паспорта </label>
+                                <!-- ПОСТАВЬ ДРОПЗОН СЮДА -->
+                            </div>
+                            <div class="file__item mb-4">
+                                <label for="passport"> Добавить PDF файл </label>
+                                <!-- ПОСТАВЬ ДРОПЗОН СЮДА -->
+                            </div>
+                            <button class="confirm">Сохранить</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="cardo mb-4">
+                        <h4 class="card__title">Клиент:</h4>
+                        <div class="item direct__item">
+                            <label for="status"> Статус клиента </label>
+                            <select id="status" required name="status" class="item__select">
+                                <option value="Yangi mijoz" selected>Yangi mijoz</option>
+                                <option value="Operator qabul qildi">Operator qabul qildi</option>
+                                <option value="Mijozga aloqaga chiqildi">Mijozga aloqaga chiqildi</option>
+                                <option value="To‘lov qilindi">To‘lov qilindi</option>
+                                <option value="Operator tomonidan bekor qilish">Operator tomonidan bekor qilish</option>
+                                <option value="GreenCard oldi" >GreenCard oldi</option>
+                                <option value="GreenCard tomonidan bekor qilindi" >GreenCard tomonidan bekor qilindi</option>
+                            </select>
+                        </div>
+                        <button class="confirm w-50">Изменить статус</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+{% endblock %}
