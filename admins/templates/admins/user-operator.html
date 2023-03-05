@@ -250,6 +250,7 @@
               <div class="user__info">
                 <p class="info__title">Filial malumotlar</p>
                 <div class="">
+                  {% if request.user.is_superuser %}
                   <div class="item d-flex flex-column align-items-start mb-3">
                     <label for="education-1"> Filial tanlang </label>
                     <div class="custom-select">
@@ -262,6 +263,7 @@
                       </select>
                     </div>
                   </div>
+                  {% endif %}
                   <div class="info__item">
                     <label for="birthdayer">Operator F.I.Sh.</label>
                     <input
@@ -340,8 +342,9 @@
               <div class="user__info">
                 <p class="info__title">Filial malumotlar</p>
                 <div class="">
+                  {% if request.user.is_superuser %}
                   <div class="item d-flex flex-column align-items-start mb-3">
-                    <label for="education-1"> Filial tanlang </label>
+                    <label for="education-1"> Operator tanlang </label>
                     <div class="custom-select">
                       <i class="bi bi-chevron-down abs__icon"></i>
                       <select name="filial">
@@ -352,6 +355,7 @@
                       </select>
                     </div>
                   </div>
+                  {% endif %}
                   <div class="info__item">
                     <label for="birthdayer">Operator F.I.Sh.</label>
                     <input

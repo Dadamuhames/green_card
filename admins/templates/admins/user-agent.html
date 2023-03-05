@@ -326,8 +326,9 @@
           <input type="hidden" name="url" value="{{ request.get_full_path }}">
           <div class="create__body">
             <div class="user__info">
-              <p class="info__title">Filial malumotlar</p>
+              <p class="info__title">Agent malumotlar</p>
               <div class="">
+                {% if request.user.is_superuser %}
                 <div class="item d-flex flex-column align-items-start mb-3">
                   <label for="education-1"> Filial tanlang </label>
                   <div class="custom-select">
@@ -340,6 +341,7 @@
                     </select>
                   </div>
                 </div>
+                {% endif %}
                 <div class="info__item">
                   <label for="birthdayer">Operator F.I.Sh.</label>
                   <input
