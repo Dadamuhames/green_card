@@ -25,7 +25,7 @@
               {% elif request.user.info.is_filial %}
               Filial admin:
               {% elif request.user.is_superuser %}
-              Admin:
+              Super Admin:
               {% endif %}
               {{ request.user.first_name }} {{ request.user.last_name }}</p>
           </div>
@@ -263,11 +263,17 @@
               </td>
               <th>
                 <div class="list__item">
+                  {% if request.user.info.is_operator and obj.operator is None %}
                   <button
                     onclick="location.href=`{% url 'admins:clients_detail' obj.id %}`;"
                     class="confirm">
                     <img src="{% static 'img/download.svg' %}" alt="" /> Принять
                   </button>
+                  {% else %}
+                  <button onclick="location.href=`{% url 'admins:clients_detail' obj.id %}`;" class="confirm">
+                    <img src="{% static 'img/eye.svg' %}" alt="" /> Смотреть
+                  </button>
+                  {% endif %}
                 </div>
               </th>
               <td>
@@ -282,7 +288,7 @@
               </td>
               <td>
                 <div class="list__item level salad">
-                  <p class="list__item-txt">{{ obj.status }}</p>
+                  <p class="list__item-txt">{{ obj.get_status_display }}</p>
                 </div>
               </td>
               <td>
@@ -303,7 +309,7 @@
               </td>
               <td>
                 <div class="list__item">
-                  <p class="list__item-txt">{{ obj.agent_date }}</p>
+                  <p class="list__item-txt">{{ obj.agent_date|date:'Y-m-d' }}</p>
                 </div>
               </td>
               <td>
@@ -314,7 +320,9 @@
               <td>
                 <div class="list__item">
                   <div class="list__item-txt">
-                    <div class="percent"></div>
+                    <div class="percent">
+                      <div class="width" style="width: {{ obj.get_percent }}%;"></div>
+                    </div>                    
                     {{ obj.get_percent }}%
                   </div>
                 </div>

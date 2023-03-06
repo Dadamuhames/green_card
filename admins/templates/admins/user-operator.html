@@ -22,8 +22,8 @@
               {% elif request.user.info.is_filial %}
               Filial admin:
               {% elif request.user.is_superuser %}
-              Admin:
-              {% endif %} Ikromova Gulbahor</p>
+              Super Admin:
+              {% endif %} {{ request.user.first_name }} {{ request.user.last_name }}</p>
             </div>
             <a href="{% url 'admins:logout_url' %}" class="out__btn">
               <img src="{% static 'img/log-out.svg' %}" alt="" />
@@ -222,17 +222,21 @@
           <div class="list__bottom">
             <div class="list__pagination">
               <div class="pagination">
-                {% for i in page_obj.paginator.get_elided_page_range %}
-                  {% if i == page_obj.number %}
-                    <a href="{{ pgn_url }}page={{ i }}" class="active">{{ i }}</a>
-                  {% else %}
-                    {% if i == page_obj.paginator.ELLIPSIS %}
-                      <a class="page-link">{{ i }}</a>
-                    {% else %}
-                      <a href="{{ pgn_url }}page={{ i }}">{{ i }}</a>
-                    {% endif %}
+                {% if page_obj.number|add:'-3' > 1 %}
+                <a href="{{ pgn_url }}page={{ page_obj.number|add:'-4' }}">&hellip;</a>
+                {% endif %}
+                
+                {% for i in page_obj.paginator.page_range %}
+                  {% if page_obj.number == i %}
+                      <a href="{{ pgn_url }}page={{ i }}" class="active">{{ i }}</a>
+                  {% elif i > page_obj.number|add:'-4' and i < page_obj.number|add:'4' %} 
+                    <a href="{{ pgn_url }}page={{ i }}">{{ i }}</a>
                   {% endif %}
                 {% endfor %}
+                
+                  {% if page_obj.paginator.num_pages > page_obj.number|add:'3' %}
+                  <a href="{{ pgn_url }}page={{ page_obj.number|add:'4' }}">&hellip;</a>
+                  {% endif %}
 
               </div>
               <!-- pagination for Shoha aka -->

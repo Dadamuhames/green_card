@@ -21,8 +21,8 @@
             {% elif request.user.info.is_filial %}
             Filial admin:
             {% elif request.user.is_superuser %}
-            Admin:
-            {% endif %}Ikromova Gulbahor</p>
+            Super Admin:
+            {% endif %} {{ request.user.first_name }} {{ request.user.last_name }}</p>
           </div>
           <a href="{% url 'admins:logout_url' %}" class="out__btn">
             <img src="{% static 'img/log-out.svg' %}" alt="" />

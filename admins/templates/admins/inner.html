@@ -176,11 +176,68 @@
         <div class="col-3">
           <div class="cardo mb-4">
             <h4 class="card__title">Клиент:</h4>
-            <div class="item direct__item disabled__item">
-              <label for="status"> Статус клиента </label>
-                <input type="text" class="item__input" value="{{ object.status }}">
-            </div>
-            <p class="item__sub">Последнее изменение: {{ object.last_update|date:'Y-m-d' }}</p>
+            <form action="{% url 'admins:change_client_status' %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="id" value="{{ object.id }}">
+              <input type="hidden" name="url" value="{{ request.path }}">
+              <div class="drop">
+                <div class="drop__header" id="status-btn">
+                  <div class="main__variant {{ object.status }}" id="main-variant">
+                    {% if object.get_status_display == 'Operator qabul qildi' %}
+                    <img src="{% static 'img/logo/download-black.svg' %}" alt="" />
+                    Operator qabul qildi
+                    {% elif object.get_status_display == 'Mijozga aloqaga chiqildi' %}
+                    <img src="{% static 'img/logo/phone-outgoing.svg' %}" alt="" />
+                    Mijozga aloqaga chiqildi
+                    {% elif object.get_status_display == 'To‘lov qilindi' %}
+                    <img src="{% static 'img/logo/refund.svg' %}" alt="" />
+                    To‘lov qilindi
+                    {% elif object.get_status_display == 'Operator tomonidan bekor qilish' %}
+                    <img src="{% static 'img/logo/circle-exclamation.svg' %}" alt="" />
+                    Operator tomonidan bekor qilish
+                    {% elif object.get_status_display == 'GreenCard oldi' %}
+                    <img src="{% static 'img/logo/happy-again.svg' %}" alt="" />
+                    GreenCard oldi
+                    {% elif object.get_status_display == 'GreenCard tomonidan bekor qilindi' %}
+                    <img src="{% static 'img/logo/circle-x.svg' %}" alt="" />
+                    GreenCard tomonidan bekor qilindi
+                    {% endif %}
+                  </div>
+                  <div>
+                    <i class="bx bx-chevron-down"></i>
+                  </div>
+                  <input type="hidden" id="hidden-input" name="status" value="{{ object.status }}" />
+                </div>
+                <div class="drop__body" id="status-body">
+                  <button data-name="recieved" type="button" class="body__variant">
+                    <img src="{% static 'img/logo/download-black.svg' %}" alt="" />
+                    Operator qabul qildi
+                  </button>
+                  <button type="button" data-name="contacted" class="body__variant">
+                    <img src="{% static 'img/logo/phone-outgoing.svg' %}" alt="" />
+                    Mijozga aloqaga chiqildi
+                  </button>
+                  <button type="button" data-name="paid" class="body__variant">
+                    <img src="{% static 'img/logo/refund.svg' %}" alt="" />
+                    To‘lov qilindi
+                  </button>
+                  <button data-name="cancelled" type="button" class="body__variant">
+                    <img src="{% static 'img/logo/circle-exclamation.svg' %}" alt="" />
+                    Operator tomonidan bekor qilish
+                  </button>
+                  <button data-name="accepted" type="button" class="body__variant">
+                    <img src="{% static 'img/logo/happy-again.svg' %}" alt="" />
+                    GreenCard oldi
+                  </button>
+                  <button data-name="rejected" type="button" class="body__variant">
+                    <img src="{% static 'img/logo/circle-x.svg' %}" alt="" />
+                    GreenCard tomonidan bekor qilindi
+                  </button>
+                </div>
+              </div>
+              <p class="item__sub">Последнее изменение: {{ object.last_update }}</p>
+              <button type="submit" class="confirm w-50">Изменить статус</button>
+            </form>
           </div>
           <div class="cardo mb-4">
             <div class="info__item">
@@ -260,6 +317,16 @@
                       </p>
                     </div>
                     {% endfor %}
+                    <div class="leave">
+                      <form action="{% url 'admins:add_comment' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="cliet" value="{{ object.id }}">
+                        <input type="hidden" name="user" value="{{ request.user.id }}">
+                        <input type="hidden" name="url" value="{{ request.path }}">
+                        <textarea name="text" placeholder="Оставить комментарии"></textarea>
+                        <button type="submit" class="confirm">Оставить</button>
+                      </form>
+                    </div>
                   </div>
                 </div>
               </div>

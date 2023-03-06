@@ -15,6 +15,21 @@ from datetime import datetime
 # Create your views here.
 
 
+# delete image
+def delete_image(request):
+    if request.method == 'POST':
+        key = request.POST.get('key')
+        file = request.POST.get("file")
+
+        if request.session.get(key):
+            for it in request.session[key]:
+                if it['name'] == file:
+                    request.session[key].remove(it)
+                    request.session.modified = True
+
+    return redirect(request.META.get("HTTP_REFERER"))
+
+
 # save images
 def save_images(request):
     if request.method == 'POST':
@@ -22,7 +37,8 @@ def save_images(request):
         file = request.FILES.get('file')
         id = request.POST.get("id")
 
-        request.session[f'clients_{key}'] = request.session.get('clients', [])
+        request.session[f'clients_{key}'] = request.session.get(
+            f'clients_{key}', [])
         file_name = default_storage.save('dropzone/' + file.name, file)
 
         data = {
@@ -32,6 +48,8 @@ def save_images(request):
 
         request.session[f'clients_{key}'].append(data)
         request.session.modified = True
+
+        print(request.session[f'clients_{key}'])
 
     return JsonResponse(file_name, safe=False)
 
@@ -206,12 +224,11 @@ class ClientsList(ListView):
         if not user.is_superuser:
             if user.info.is_operator:
                 queryset = queryset.filter(filial=user.info.filial)
-                if status == 'Operator qabul qildi':
-                    queryset = queryset.filter(operator=user)
+                if status == 'Yangi mijoz':
+                    queryset = queryset.filter(operator__isnull=True)
                     status = ''
                 else:
-                    queryset = queryset.filter(operator__isnull=True)
-                
+                    queryset = queryset.filter(operator=user)
 
             elif user.info.is_filial:
                 queryset = queryset.filter(filial=user.info)
@@ -329,9 +346,19 @@ class ClientsCreate(CreateView):
 
     def get(self, request, *args, **kwargs):
         user = request.user
+        keys = ['clients_images', 'clients_files']
+
+        for key in keys:
+            if request.session.get(key):
+                for it in list(request.session[key]):
+                    if it['id'] == 'undefined':
+                        request.session[key].remove(it)
+                        request.session.modified = True
 
         if user.is_superuser or user.info.is_agent == False:
             return redirect("admins:clients")
+
+        print(request.session.get('clients_images'))
 
         return super().get(request, *args, **kwargs)
 
@@ -693,5 +720,27 @@ def delete_client(request, pk):
             client.delete()
     except:
         pass
+
+    return redirect("admins:clients")
+
+
+
+# change client status
+def change_status(request):
+    if request.method == 'POST':
+        id = request.POST.get("id")
+        url = request.POST.get("url")
+        status = request.POST.get("status")
+        user = request.user
+
+        try:
+            client = Clients.objects.get(id=int(id))
+            if client.operator == user or client.agent == user or user.is_superuser:
+                client.status = status
+                client.save()
+        except:
+            pass
+
+        return redirect(url)
 
     return redirect("admins:clients")

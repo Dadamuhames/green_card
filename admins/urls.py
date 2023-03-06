@@ -23,5 +23,7 @@ urlpatterns = [
     path("delete_user_info", views.delete_user, name='del_user'),
     path('logout', views.logout_view, name='logout_url'),
     path('add_comment', views.add_comment, name='add_comment'),
-    path("delete_client/<int:pk>", views.delete_client, name='del_client')
+    path("delete_client/<int:pk>", views.delete_client, name='del_client'),
+    path("change_status", views.change_status, name='change_client_status'),
+    path("images/delete", views.delete_image, name='del-img'),
 ]

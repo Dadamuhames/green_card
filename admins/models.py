@@ -29,29 +29,30 @@ class UserInfo(models.Model):
 # clients
 class Clients(models.Model):
     GANDERS = [("Erkak", "Erkak"), ('Ayol', 'Ayol')]
-    STATUS = [('Yangi mijoz', 'Yangi mijoz'),
-              ('Operator qabul qildi', 'Operator qabul qildi'), ('Mijozga aloqaga chiqildi', 'Mijozga aloqaga chiqildi'), 
-              ('To‘lov qilindi', 'To‘lov qilindi'), ('Operator tomonidan bekor qilish', 'Operator tomonidan bekor qilish'), 
-              ("GreenCard oldi", "GreenCard oldi"), ("GreenCard tomonidan bekor qilindi", "GreenCard tomonidan bekor qilindi")]
+    STATUS = [('new', 'Yangi mijoz'),
+              ('recieved', 'Operator qabul qildi'), ('contacted', 'Mijozga aloqaga chiqildi'),
+              ('paid', 'To‘lov qilindi'), ('cancelled', 'Operator tomonidan bekor qilish'),
+              ("accepted", "GreenCard oldi"), ("rejected", "GreenCard tomonidan bekor qilindi")]
     EDUCATIONS = [("Oliy", 'Oliy'), ('Orta', 'Orta')]
-    FAMILY = [('Some', 'Some')]
+    FAMILY = [('Boydoq', 'Boydoq'), ('Uylangan', 'Uylangan'), ("Turmishga chiqgan", "Turmishga chiqgan")]
 
     full_name = models.CharField("Full name", max_length=255, blank=True, null=True)
-    bith_date = models.DateField('Birth date', blank=True, null=True)
+    bith_date = models.DateField('Birth date', blank=True, null=True, default=None)
     adres = models.CharField("Adres", blank=True, null=True, max_length=255)
     nbm = models.CharField('Nbm', max_length=255, blank=True, null=True)
     sex = models.CharField("Sex", max_length=255, choices=GANDERS, blank=True, null=True)
     education = models.CharField("Education", max_length=255, blank=True, null=True, choices=EDUCATIONS)
-    family_status = models.CharField('Family status', blank=True, null=True, max_length=255)
-    child_count = models.PositiveIntegerField('Child count', blank=True, null=True)
+    family_status = models.CharField('Family status', blank=True, null=True, choices=FAMILY, max_length=255)
+    child_count = models.PositiveIntegerField('Child count', blank=True, null=True, default=0)
     spouse = models.CharField("Spouse", blank=True, null=True, max_length=255)
-    spouse_birth_date = models.DateField(blank=True, null=True)
+    spouse_birth_date = models.DateField(blank=True, null=True, default=None)
     spouse_education = models.CharField(max_length=255, blank=True, null=True)
     operator = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='operator_clients')
     oper_date = models.DateTimeField(blank=True, null=True)
     agent = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='agent_users')
     agent_date = models.DateTimeField(blank=True, null=True)
-    status = models.CharField("Status", max_length=255, default='Yangi mijoz', choices=STATUS, blank=True, null=True)
+    status = models.CharField(
+        "Status", max_length=255, default='new', choices=STATUS, blank=True, null=True)
     last_update = models.DateTimeField(blank=True, null=True)
     filial = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='clients', blank=True, null=True)
 
