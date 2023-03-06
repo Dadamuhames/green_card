@@ -37,28 +37,31 @@
     </header>
     <div class="background">
       <div class="buttons">
+
+        {% if not request.user.info.is_operator %}
         <a href="{{ request.path }}" class="button">
           <img src="{% static 'img/logo/user.svg' %}" alt="" /> Все заказы
         </a>
-        <a href="{{ status_url }}status=Yangi mijoz" {% if request.GET.status == 'Yangi mijoz' %} class="button active" {% else %} class="button" {% endif %}>
+        {% endif %}
+        <a href="{{ status_url }}status=new" {% if request.GET.status == 'new' %} class="button active" {% else %} class="button" {% endif %}>
           <img src="{% static 'img/logo/clock.svg' %}" alt="" /> Новые заказы
         </a>
-        <a href="{{ status_url }}status=Operator qabul qildi" {% if request.GET.status == 'Operator qabul qildi' %} class="button active" {% else %} class="button" {% endif %}>
+        <a href="{{ status_url }}status=recieved" {% if request.GET.status == 'recieved' %} class="button active" {% else %} class="button" {% endif %}>
           <img src="{% static 'img/logo/download.svg' %}" alt="" /> Оператор принял
         </a>
-        <a href="{{ status_url }}status=Mijozga aloqaga chiqildi" {% if request.GET.status == 'Mijozga aloqaga chiqildi' %} class="button active" {% else %} class="button" {% endif %}>
+        <a href="{{ status_url }}status=contacted" {% if request.GET.status == 'contacted' %} class="button active" {% else %} class="button" {% endif %}>
           <img src="{% static 'img/logo/phone.svg' %}" alt="" /> Клиент вышел на связь
         </a>
-        <a href="{{ status_url }}status=To‘lov qilindi" {% if request.GET.status == 'To‘lov qilindi' %} class="button active" {% else %} class="button" {% endif %}>
+        <a href="{{ status_url }}status=paid" {% if request.GET.status == 'paid' %} class="button active" {% else %} class="button" {% endif %}>
           <img src="{% static 'img/logo/cash.svg' %}" alt="" /> Оплачено
         </a>
-        <a href="{{ status_url }}status=Operator tomonidan bekor qilish" {% if request.GET.status == 'Operator tomonidan bekor qilish' %} class="button active" {% else %} class="button" {% endif %}>
+        <a href="{{ status_url }}status=cancelled" {% if request.GET.status == 'cancelled' %} class="button active" {% else %} class="button" {% endif %}>
           <img src="{% static 'img/logo/circle.svg' %}" alt="" /> Оператор отменил
         </a>
-        <a href="{{ status_url }}status=GreenCard oldi" {% if request.GET.status == 'GreenCard oldi' %} class="button active" {% else %} class="button" {% endif %}>
+        <a href="{{ status_url }}status=accepted" {% if request.GET.status == 'accepted' %} class="button active" {% else %} class="button" {% endif %}>
           <img src="{% static 'img/logo/happy.svg' %}" alt="" /> Грин-карта одобрена
         </a>
-        <a href="{{ status_url }}status=GreenCard tomonidan bekor qilindi" {% if request.GET.status == 'GreenCard tomonidan bekor qilindi' %} class="button active" {% else %} class="button" {% endif %}>
+        <a href="{{ status_url }}status=rejected" {% if request.GET.status == 'rejected' %} class="button active" {% else %} class="button" {% endif %}>
           <img src="{% static 'img/logo/x.svg' %}" alt="" /> Грин-карта отменена
         </a>
       </div>
@@ -345,6 +348,24 @@
 
         <div class="list__bottom">
           <div class="list__pagination">
+            <div class="pagination">
+              {% if page_obj.number|add:'-4' > 1 %}
+              <a href="{{ pgn_url }}page=1">1</a>
+              <a href="{{ pgn_url }}page={{ page_obj.number|add:'-5' }}">&hellip;</a>
+              {% endif %}
+              {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
+                  <a href="{{ pgn_url }}page={{ i }}" class="active">{{ i }}</a>
+                {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %} 
+                  <a href="{{ pgn_url }}page={{ i }}">{{ i }}</a>
+                {% endif %}
+              {% endfor %}
+              {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+                <a href="{{ pgn_url }}page={{ page_obj.number|add:'5' }}">&hellip;</a>
+                <a href="{{ pgn_url }}page={{ page_obj.paginator.count }}">{{ page_obj.paginator.count }}</a>
+              {% endif %}
+
+            </div>
             <!-- pagination for Shoha aka -->
           </div>
           <form class="list__select-wrap" id="page-size-form" method="get">

@@ -125,72 +125,93 @@
     
             <div class="cardo file__card">
               <h4 class="card__title">Файлы</h4>
+              <input type="hidden" name="id" value="{{ object.id }}">
     
               <div class="file__items">
                   <div class="file__item mb-4">
                     <label for="passport"> Добавить копия паспорта </label>
+                    <br><br>
                     <input type="hidden" id="id" value="{{ object.id }}">
-                    <div class="my-dropzone dropzone" data-key="file"></div>
-
-                    <div class="dz-preview-container" id="drop-image" style="padding: 0;">
-                      {% if object %}
-                      <div class="dz-preview dz-processing dz-complete dz-image-preview d-none">
-                        <div class="dz-image">
-                          <img data-dz-thumbnail="" src="" alt="">
-                        </div>
-                        <div class="dz-details">
-                          <div class="dz-filename"><span data-dz-name=""></span></div>
-                        </div>
-                        <a class="dz-remove" data-file="" data-dz-remove>Удалить</a>
-                      </div>
-                      {% if object.images %}
-                      <div class="dz-preview dz-processing dz-complete dz-image-preview" style="position: relative;">
-                        <div class="dz-image">
-                          <img data-dz-thumbnail="" src='{% image_thumb object.image alias="ten" request=request %}'
-                            alt="{{ object.image }}">
-                        </div>
-                        <div class="dz-details">
-                          <div class="dz-filename"><span data-dz-name="">{{ object.image }}</span>
+                    <div class="my-dropzone dropzone" data-key="images" data-delete="/images/delete">
+                      <div class="dz-preview-container" id="drop-image" style="padding: 0;">
+                        {% if object.images %}
+                          <div class="dz-preview dz-processing dz-complete dz-image-preview d-none">
+                            <div class="dz-image">
+                              <img data-dz-thumbnail="" src="" alt="">
+                            </div>
+                            <div class="dz-details">
+                              <div class="dz-filename"><span data-dz-name=""></span></div>
+                            </div>
+                            <a class="dz-remove" data-file="" data-dz-remove>Удалить</a>
+                            <form action="{% url 'admins:del_client_file' %}" id="delete-form" method="post"></form>
                           </div>
-                        </div>
-                        <a class="dz-remove" data-file="{{ img.id }}"
-                          onclick="var result = confirm('Want to delete?');if (result){submit_form('delete-form')}"
-                          data-dz-remove>Удалить</a>
-                        <div action="{% url 'admins:del_partner_img' %}" id="delete-form" method="post">
-                          {% csrf_token %}
-                          <input type="hidden" name="url" value="{{ request.get_full_path }}">
-                          <input type="hidden" name="obj_id" value="{{ object.id }}">
-                        </div>
+                          {% for img in object.images.all %}
+                          <div class="dz-preview dz-processing dz-complete dz-image-preview" style="position: relative;">
+                            <div class="dz-image">
+                              <img data-dz-thumbnail="" src='{% image_thumb img.image alias="ten" request=request %}' alt="{{ img.image }}">
+                            </div>
+                            <div class="dz-details">
+                              <div class="dz-filename"><span data-dz-name="">{{ img.image }}</span>
+                              </div>
+                            </div>
+                            <a class="dz-remove" data-file="{{ img.id }}"
+                              onclick="var result = confirm('Want to delete?');if (result){submit_form('delete-form_{{ img.id }}');}"
+                              data-dz-remove>Удалить</a>
+                              <form action="{% url 'admins:del_client_file' %}" id="delete-form_{{ img.id }}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="url" value="{{ request.get_full_path }}">
+                                <input type="hidden" name="obj_id" value="{{ img.id }}">
+                                <input type="hidden" name="key" value="image">
+                              </form>
+                          </div>
+                          {% endfor %}
+                        {% endif %}
                       </div>
-                      {% endif %}
-                      {% else %}
-                      {% for img in images %}
-                      <div class="dz-preview dz-processing dz-complete dz-image-preview">
-                        <div class="dz-image">
-                          <img data-dz-thumbnail="" src="/media/{{ img|get_item:'name' }}" alt="{{ img }}">
-                        </div>
-                        <div class="dz-details">
-                          <div class="dz-filename"><span data-dz-name="">{{ img.name }}</span></div>
-                        </div>
-                        <a class="dz-remove" data-file="{{ img }}"
-                          onclick="var result = confirm('Want to delete?');if (result){submit_form('delete-form{{ img.id }}')}"
-                          data-dz-remove>Удалить</a>
-                        <div action="{% url 'admins:del-img' %}" id="delete-form{{ img.id }}" method="post">
-                          {% csrf_token %}
-                          <input type="hidden" name="url" value="{{ request.get_full_path }}">
-                          <input type="hidden" name="key" value="{{ dropzone_key }}">
-                          <input type="hidden" name="file" value="{{ img.name }}">
-                        </div>
-                      </div>
-                      {% endfor %}
-                      {% endif %}
                     </div>
                   </div>
                   <div class="file__item mb-4">
                     <label for="passport"> Добавить PDF файл </label>
+                    <br><br>
                     <!-- ПОСТАВЬ ДРОПЗОН СЮДА -->
+                    <div class="my-dropzone dropzone" data-key="files" data-delete="/images/delete">
+                      <div class="dz-preview-container" id="drop-files" style="padding: 0;">
+                        <div class="dz-preview dz-processing dz-complete dz-image-preview d-none">
+                          <div class="dz-image">
+                            <img data-dz-thumbnail="" src="" alt="">
+                          </div>
+                          <div class="dz-details">
+                            <div class="dz-filename"><span data-dz-name=""></span></div>
+                          </div>
+                          <a class="dz-remove" data-file="" data-dz-remove>Удалить</a>
+                          <form action="{% url 'admins:del_client_file' %}" id="delete-form" method="post"></form>
+                        </div>
+                        {% if object.files %}
+                          {% for file in object.files.all %}
+                          <div class="dz-preview dz-processing dz-complete dz-image-preview" style="position: relative;">
+                            <div class="dz-image">
+                              <a href="{{ file.file.url }}" style="position: relative; z-index: 9;">
+                                <img data-dz-thumbnail="" src='{% static "img/pdf.png" %}' alt="{{ img.image }}">
+                              </a>
+                            </div>
+                            <div class="dz-details">
+                              <div class="dz-filename"><span data-dz-name="">{{ file.file }}</span>
+                              </div>
+                            </div>
+                            <a class="dz-remove" data-file="{{ img.id }}"
+                              onclick="var result = confirm('Want to delete?');if (result){submit_form('delete-form{{ file.id }}')}"
+                              data-dz-remove>Удалить</a>
+                            <form action="{% url 'admins:del_client_file' %}" id="delete-form_{{ file.id }}" method="post">
+                              {% csrf_token %}
+                              <input type="hidden" name="url" value="{{ request.get_full_path }}">
+                              <input type="hidden" name="obj_id" value="{{ file.id }}">
+                              <input type="hidden" name="key" value="file">
+                            </form>
+                          </div>
+                          {% endfor %}
+                        {% endif %}
+                      </div>
+                    </div>
                     <input type="hidden" id="id" value="{{ object.id }}">
-                    <div class="my-dropzone dropzone" data-key="image"></div>
                   </div>
                   <button class="confirm">Сохранить</button>
                 </form>
@@ -203,22 +224,25 @@
               <div class="drop">
                 <div class="drop__header" id="status-btn">
                   <div class="main__variant {{ object.status }}" id="main-variant">
-                    {% if object.get_status_display == 'Operator qabul qildi' %}
+                    {% if object.status == 'recieved' %}
                     <img src="{% static 'img/logo/download-black.svg' %}" alt="" />
                     Operator qabul qildi
-                    {% elif object.get_status_display == 'Mijozga aloqaga chiqildi' %}
+                    {% elif object.status == 'new' %}
+                    <img src="{% static 'img/logo/user.svg' %}" alt="" />
+                    Yangi mijoz
+                    {% elif object.status == 'contacted' %}
                     <img src="{% static 'img/logo/phone-outgoing.svg' %}" alt="" />
                     Mijozga aloqaga chiqildi
-                    {% elif object.get_status_display == 'To‘lov qilindi' %}
+                    {% elif object.status == 'paid' %}
                     <img src="{% static 'img/logo/refund.svg' %}" alt="" />
                     To‘lov qilindi
-                    {% elif object.get_status_display == 'Operator tomonidan bekor qilish' %}
+                    {% elif object.status == 'cancelled' %}
                     <img src="{% static 'img/logo/circle-exclamation.svg' %}" alt="" />
                     Operator tomonidan bekor qilish
-                    {% elif object.get_status_display == 'GreenCard oldi' %}
+                    {% elif object.status == 'accepted' %}
                     <img src="{% static 'img/logo/happy-again.svg' %}" alt="" />
                     GreenCard oldi
-                    {% elif object.get_status_display == 'GreenCard tomonidan bekor qilindi' %}
+                    {% elif object.status == 'rejected' %}
                     <img src="{% static 'img/logo/circle-x.svg' %}" alt="" />
                     GreenCard tomonidan bekor qilindi
                     {% endif %}

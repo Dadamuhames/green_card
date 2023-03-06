@@ -25,6 +25,17 @@
     <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
     <!-- Theme CSS -->
     <title>{% block title %} {% endblock %}</title>
+
+    <style>
+        .dz-image img {
+            max-width: 100%;
+            object-fit: cover;
+        }
+
+        .dropzone .dz-preview.dz-image-preview {
+            margin: 13px;
+        }
+    </style>
 </head>
 
 <body>
@@ -102,7 +113,7 @@
                     </div>
                 </div>
                 <div class="sidebar__bottom">
-                    <a href="#" class="exit sidebar__link">
+                    <a href="{% url 'admins:logout_url' %}" class="exit sidebar__link">
                         <p>Выйти</p>
                     </a>
                 </div>

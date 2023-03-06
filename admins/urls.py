@@ -26,4 +26,5 @@ urlpatterns = [
     path("delete_client/<int:pk>", views.delete_client, name='del_client'),
     path("change_status", views.change_status, name='change_client_status'),
     path("images/delete", views.delete_image, name='del-img'),
+    path("client_file/delete", views.dleete_client_file, name='del_client_file')
 ]

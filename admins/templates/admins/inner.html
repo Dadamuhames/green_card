@@ -162,11 +162,68 @@
               <form action="">
                 <div class="file__item mb-4">
                   <label for="passport"> Добавить копия паспорта </label>
+                  <br><br>
+                  <div class="my-dropzone dropzone" data-key="images" data-delete="/images/delete">
+                    <div class="dz-preview-container" id="drop-image" style="padding: 0;">
+                      {% if object.images %}
+                      <div class="dz-preview dz-processing dz-complete dz-image-preview d-none">
+                        <div class="dz-image">
+                          <img data-dz-thumbnail="" src="" alt="">
+                        </div>
+                        <div class="dz-details">
+                          <div class="dz-filename"><span data-dz-name=""></span></div>
+                        </div>
+                        <a class="dz-remove" data-file="" data-dz-remove>Удалить</a>
+                        <form action="{% url 'admins:del_client_file' %}" id="delete-form" method="post"></form>
+                      </div>
+                      {% for img in object.images.all %}
+                      <div class="dz-preview dz-processing dz-complete dz-image-preview" style="position: relative;">
+                        <div class="dz-image">
+                          <img data-dz-thumbnail="" src='{% image_thumb img.image alias="ten" request=request %}' alt="{{ img.image }}">
+                        </div>
+                        <div class="dz-details">
+                          <div class="dz-filename"><span data-dz-name="">{{ img.image }}</span>
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                      {% endif %}
+                    </div>
+                  </div>
                   
                 </div>
                 <div class="file__item mb-4">
                   <label for="passport"> Добавить PDF файл </label>
-
+                  <br><br>
+                  <div class="my-dropzone dropzone" data-key="files" data-delete="/images/delete">
+                    <div class="dz-preview-container" id="drop-files" style="padding: 0;">
+                      <div class="dz-preview dz-processing dz-complete dz-image-preview d-none">
+                        <div class="dz-image">
+                          <img data-dz-thumbnail="" src="" alt="">
+                        </div>
+                        <div class="dz-details">
+                          <div class="dz-filename"><span data-dz-name=""></span></div>
+                        </div>
+                        <a class="dz-remove" data-file="" data-dz-remove>Удалить</a>
+                        <form action="{% url 'admins:del_client_file' %}" id="delete-form" method="post"></form>
+                      </div>
+                      {% if object.files %}
+                      {% for file in object.files.all %}
+                      <div class="dz-preview dz-processing dz-complete dz-image-preview" style="position: relative;">
+                        <div class="dz-image">
+                          <a href="{{ file.file.url }}" style="position: relative; z-index: 9;">
+                            <img data-dz-thumbnail="" src='{% static "img/pdf.png" %}' alt="{{ img.image }}">
+                          </a>
+                        </div>
+                        <div class="dz-details">
+                          <div class="dz-filename"><span data-dz-name="">{{ file.file }}</span>
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                      {% endif %}
+                    </div>
+                  </div>
                   <!-- ПОСТАВЬ ДРОПЗОН СЮДА -->
                 </div>
               </form>
@@ -186,6 +243,9 @@
                     {% if object.get_status_display == 'Operator qabul qildi' %}
                     <img src="{% static 'img/logo/download-black.svg' %}" alt="" />
                     Operator qabul qildi
+                    {% elif object.status == 'new' %}
+                    <img src="{% static 'img/logo/user.svg' %}" alt="" />
+                    Yangi mijoz
                     {% elif object.get_status_display == 'Mijozga aloqaga chiqildi' %}
                     <img src="{% static 'img/logo/phone-outgoing.svg' %}" alt="" />
                     Mijozga aloqaga chiqildi

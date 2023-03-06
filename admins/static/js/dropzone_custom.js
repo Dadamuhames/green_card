@@ -14,7 +14,7 @@ $('div.my-dropzone').each((i, e) => {
     var myDropzone = new Dropzone(e, {
         url: '/save_images',
         parallelUploads: 1,
-        acceptedFiles: 'image/*',
+        //acceptedFiles: 'image/*, pdf',
         params: {
             "csrfmiddlewaretoken": document.querySelector('input[name="csrfmiddlewaretoken"]').value,
             "key": $(e).attr('data-key'),
@@ -31,7 +31,7 @@ $('div.my-dropzone').each((i, e) => {
 
                 data = {}
                 data["csrfmiddlewaretoken"] = $('input[name="csrfmiddlewaretoken"]').val()
-                data['key'] = $('input[name="dropzone-key"]').val()
+                data['key'] = $(e).attr('data-key')
                 data['file'] = response
                 console.log($(e).attr('data-delete'))
 
@@ -58,3 +58,19 @@ $('div.my-dropzone').each((i, e) => {
 
 
 
+function submit_form(id) {
+    console.log(id)
+    let form = $(`#${id}`)
+    let url = form.attr("action")
+    let data = $(`#${id} :input`).serialize()
+
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: () => {
+            $(form).parent().remove()
+        }
+    })
+
+}

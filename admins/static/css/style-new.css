@@ -932,6 +932,11 @@ hr {
   background: #f8adad;
 }
 
+.body__variant:nth-child(7),
+.main__variant.new {
+  background: #d0d0d0;
+}
+
 .drop {
   position: relative;
 }

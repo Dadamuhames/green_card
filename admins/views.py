@@ -21,10 +21,11 @@ def delete_image(request):
         key = request.POST.get('key')
         file = request.POST.get("file")
 
-        if request.session.get(key):
-            for it in request.session[key]:
+        if request.session.get(f'clients_{key}'):
+            for it in list(request.session[f'clients_{key}']):
                 if it['name'] == file:
-                    request.session[key].remove(it)
+                    print('del item', it)
+                    request.session[f'clients_{key}'].remove(it)
                     request.session.modified = True
 
     return redirect(request.META.get("HTTP_REFERER"))
@@ -117,7 +118,6 @@ class BasedListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         paginate_by = self.get_paginate_by_castom()
-        print(paginate_by)
         page_obj = paginate(self.get_queryset(), self.request, paginate_by)
 
         context['objects'] = get_lst_data(self.get_queryset(), self.request, paginate_by)
@@ -132,10 +132,8 @@ class BasedListView(ListView):
                 pang_url += f'{key}={val}&'
 
         context['pgn_url'] = pang_url
-        print(pang_url)
 
         page_count = page_obj.paginator.num_pages
-        print(page_count)
         curent_page = page_obj.number
         page_range = range(1, page_count+1)
 
@@ -224,7 +222,7 @@ class ClientsList(ListView):
         if not user.is_superuser:
             if user.info.is_operator:
                 queryset = queryset.filter(filial=user.info.filial)
-                if status == 'Yangi mijoz':
+                if status == 'new':
                     queryset = queryset.filter(operator__isnull=True)
                     status = ''
                 else:
@@ -379,18 +377,21 @@ class ClientsCreate(CreateView):
             client.save()
 
             files = self.request.session.get('clients_files')
-            if files:
-                files = [it for it in files if it['id'] == '']
-                for file in files:
-                    client_file = ClientFiles(client=client, file=file['name'])
-                    client_file.save()
+            files = [it for it in files if it['id'] == 'undefined']
+            for file in files:
+                client_file = ClientFiles.objects.create(client=client, file=file['name'])
+                client_file.save()
+                self.request.session['clients_files'].remove(file)
+                self.request.session.modified = True
 
-            images = self.request.session.get('clients_images')
-            if images:
-                images = [it for it in files if it['id'] == '']
-                for file in images:
-                    client_image = ClientImages(client=client, file=file['name'])
-                    client_image.save()
+
+            images = self.request.session.get('clients_images', [])
+            images = [it for it in images if it['id'] == 'undefined']
+            for file in images:
+                client_image = ClientImages.objects.create(client=client, image=file['name'])
+                client_image.save()
+                self.request.session['clients_images'].remove(file)
+                self.request.session.modified = True
 
             return redirect("admins:clients")
         
@@ -416,7 +417,6 @@ def client_create(request):
 
         if form.is_valid():
             client = form.save()
-            print(client.nbm)
 
             client.agent = agent
             client.filial = agent.info.filial
@@ -508,6 +508,15 @@ class ClientEdit(UpdateView):
         user = self.request.user
         inst = self.get_object()
 
+        keys = ['clients_images', 'clients_files']
+
+        for key in keys:
+            if request.session.get(key):
+                for it in list(request.session[key]):
+                    if it['id'] == str(inst.id):
+                        request.session[key].remove(it)
+                        request.session.modified = True
+
         if not user.is_superuser:
             if user.info.is_operator:
                 if inst.operator and inst.operator != user:
@@ -525,19 +534,23 @@ class ClientEdit(UpdateView):
     def form_valid(self, form):
         client = form.save()
 
-        files = self.request.session.get('clients_files')
-        if files:
-            files = [it for it in files if str(it['id']) == str(client.id)]
-            for file in files:
-                client_file = ClientFiles(client=client, file=file['name'])
-                client_file.save()
+        files = self.request.session.get('clients_files', [])
+        files = [it for it in files if str(it['id']) == str(client.id)]
+        for file in files:
+            client_file = ClientFiles.objects.create(client=client, file=file['name'])
+            client_file.save()
+            self.request.session['clients_files'].remove(file)
+            self.request.session.modified = True
 
-        images = self.request.session.get('clients_images')
-        if images:
-            images = [it for it in files if str(it['id']) == str(client.id)]
-            for file in images:
-                client_image = ClientImages(client=client, file=file['name'])
-                client_image.save()
+        images = self.request.session.get('clients_images', [])
+        images = [it for it in images if str(it['id']) == str(self.get_object().id)]
+        print('images', images)
+        for file in images:
+            print(file)
+            client_image = ClientImages.objects.create(client=client, image=file['name'])
+            client_image.save()
+            self.request.session['clients_images'].remove(file)
+            self.request.session.modified = True
 
         client.last_update = datetime.now()
         client.save()
@@ -589,9 +602,7 @@ def save_user(is_operator=False, is_agent=False, is_filial=False, request=None):
         new_user = User.objects.create(username=username)
 
     if password:
-        print(new_user.password)
         new_user.set_password(password)
-        print(new_user.password)
     new_user.is_active = is_active
 
     full_name = request.POST.get("full_name", '')
@@ -642,8 +653,6 @@ def create_filial(request):
     if request.method == 'POST':
         user = save_user(is_filial=True, request=request)
         url = request.POST.get("url")
-
-        print(user)
 
         return redirect(url)
 
@@ -724,6 +733,21 @@ def delete_client(request, pk):
     return redirect("admins:clients")
 
 
+# delete client file
+def dleete_client_file(request):
+    id = request.POST.get("obj_id")
+    key = request.POST.get("key")
+    url = request.POST.get("url")
+
+    try:
+        if key == 'image':
+            ClientImages.objects.get(id=int(id)).delete()
+        elif key == 'file':
+            ClientFiles.objects.get(id=int(id)).delete()
+    except:
+        pass
+
+    return redirect(url)
 
 # change client status
 def change_status(request):
@@ -737,6 +761,7 @@ def change_status(request):
             client = Clients.objects.get(id=int(id))
             if client.operator == user or client.agent == user or user.is_superuser:
                 client.status = status
+                client.last_update = str(datetime.now())
                 client.save()
         except:
             pass

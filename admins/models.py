@@ -66,11 +66,8 @@ class Clients(models.Model):
         fields = self._meta.fields
         count = len(fields)
         not_null = 0
-        
-        print(fields)
 
         data_dict = self.__dict__
-        print(data_dict)
         for field in fields:
             key = str(field.name)
             if str(field.get_internal_type()) == 'ForeignKey':
