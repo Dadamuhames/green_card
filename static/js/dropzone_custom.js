@@ -14,7 +14,8 @@ $('div.my-dropzone').each((i, e) => {
     var myDropzone = new Dropzone(e, {
         url: '/save_images',
         parallelUploads: 1,
-        //acceptedFiles: 'image/*, pdf',
+        acceptFiles: $(e).attr('data-accept'),
+        //acceptFiles: 'image/*',
         params: {
             "csrfmiddlewaretoken": document.querySelector('input[name="csrfmiddlewaretoken"]').value,
             "key": $(e).attr('data-key'),
