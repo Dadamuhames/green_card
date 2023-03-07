@@ -1,15 +1,25 @@
-<html>
-  <head>
-    <script
-      type="text/javascript"
-      src="https://www.gstatic.com/charts/loader.js"
-    ></script>
+{% extends 'admins/base_template.html' %}
+{% load static %}
+
+
+
+  {% block main %}
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
       google.charts.load("current", { packages: ["bar"] });
       google.charts.setOnLoadCallback(drawChart);
 
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
+          ["Year", "Sales", "Expenses", "Profit", "Endurance"],
+          ["2014", 500, 400, 200, 100],
+          ["2015", 1170, 460, 250, 90],
+          ["2016", 660, 1120, 300, 30],
+          ["2017", 1030, 540, 350, 120],
+          ["2023", 700, 10, 400, 190],
+        ]);
+
+        var data2 = google.visualization.arrayToDataTable([
           ["Year", "Sales", "Expenses", "Profit"],
           ["2014", 1000, 400, 200],
           ["2015", 1170, 460, 250],
@@ -28,11 +38,179 @@
           document.getElementById("columnchart_material")
         );
 
+        var chart2 = new google.charts.Bar(
+          document.getElementById("columnchart_material_2")
+        );
+
         chart.draw(data, google.charts.Bar.convertOptions(options));
+
+        chart2.draw(data2, google.charts.Bar.convertOptions(options));
       }
     </script>
-  </head>
-  <body>
-    <div id="columnchart_material" style="width: 800px; height: 500px"></div>
-  </body>
-</html>
+    <main class="right" id="main-layout">
+      <header>
+        <nav class="navbar">
+          <div class="nav__left">
+            <h1 class="title">Аналитика</h1>
+          </div>
+          <div class="nav__right evanescence">
+            <div class="operator">
+              <img src="{% static 'img/operator.svg' %}" alt="" />
+              <p>Operator: Ikromova Gulbahor</p>
+            </div>
+            <button class="out__btn">
+              <img src="{% static 'img/log-out.svg' %}" alt="" />
+            </button>
+          </div>
+        </nav>
+      </header>
+      <div class="background">
+        <div class="cardo first__card">
+          <div class="card__header mb-5">
+            <h4 class="cardo__title">Filiallar</h4>
+
+            <div class="header__right date__wrap">
+              <p class="date">Sana</p>
+              <div class="date__from">
+                <input type="text" placeholder="01.01.2020" />
+              </div>
+              <div class="date__to">
+                <input type="text" placeholder="01.01.2020" />
+              </div>
+            </div>
+          </div>
+
+          <table class="stat__table">
+            <tr>
+              <th class="gringo text-start">Filial nomi</th>
+              <th>
+                <p class="all">Umumiy anketalar</p>
+              </th>
+              <th>
+                <p class="recieved">Qabul qildi</p>
+              </th>
+              <th>
+                <p class="paid">Tolov qilindi</p>
+              </th>
+              <th>
+                <p class="cancelled">Bekor qilindi</p>
+              </th>
+              <th>
+                <p class="cancelled-cg">GC bekor qilindi</p>
+              </th>
+              <th>
+                <p class="accepted">GreenCard oldi</p>
+              </th>
+            </tr>
+            <tr>
+              <td class="gringo text-start">1.Filial nomi</td>
+              <td>24</td>
+              <td>23</td>
+              <td>2</td>
+              <td>24</td>
+              <td>23</td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <td class="gringo text-start">1.Filial nomi</td>
+              <td>24</td>
+              <td>23</td>
+              <td>2</td>
+              <td>24</td>
+              <td>23</td>
+              <td>2</td>
+            </tr>
+          </table>
+        </div>
+
+        <div class="cardo chart__card">
+          <div class="card__header mb-5">
+            <h4 class="cardo__title">Filiallar</h4>
+
+            <div class="header__right date__wrap">
+              <p class="date">Sana</p>
+              <div class="date__from">
+                <input type="text" placeholder="01.01.2020" />
+              </div>
+              <div class="date__to">
+                <input type="text" placeholder="01.01.2020" />
+              </div>
+            </div>
+          </div>
+          <div class="sesh">
+            <div class="lefting">
+              <table class="stat__table">
+                <tr>
+                  <th class="gringo text-start">Filial nomi</th>
+                  <th>
+                    <p class="recieved">Qabul qildi</p>
+                  </th>
+                  <th>
+                    <p class="paid">Tolov qilindi</p>
+                  </th>
+                  <th>
+                    <p class="cancelled">Bekor qilindi</p>
+                  </th>
+                </tr>
+                <tr>
+                  <td class="gringo text-start">1.Filial nomi</td>
+                  <td>24</td>
+                  <td>23</td>
+                  <td>2</td>
+                </tr>
+                <tr>
+                  <td class="gringo text-start">1.Filial nomi</td>
+                  <td>24</td>
+                  <td>23</td>
+                  <td>2</td>
+                </tr>
+              </table>
+            </div>
+            <div class="righting">
+              <div id="columnchart_material" style="width: 100%; height: 500px"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="cardo chart__card">
+          <div class="card__header mb-5">
+            <h4 class="cardo__title">Filiallar</h4>
+
+            <div class="header__right date__wrap">
+              <p class="date">Sana</p>
+              <div class="date__from">
+                <input type="text" placeholder="01.01.2020" />
+              </div>
+              <div class="date__to">
+                <input type="text" placeholder="01.01.2020" />
+              </div>
+            </div>
+          </div>
+          <div class="sesh">
+            <div class="lefting">
+              <table class="stat__table">
+                <tr>
+                  <th class="text-start">Agent FISH</th>
+                  <th>
+                    <p class="all">Yaratdi</p>
+                  </th>
+                </tr>
+                <tr>
+                  <td class="text-start">Ismoilov Munisa</td>
+                  <td>24</td>
+                </tr>
+                <tr>
+                  <td class="text-start">Bahtiyorov Akmal</td>
+                  <td>24</td>
+                </tr>
+              </table>
+            </div>
+            <div class="righting">
+              <div id="columnchart_material_2" style="width: 100%; height: 500px"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    {% endblock %}

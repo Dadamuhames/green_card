@@ -1014,3 +1014,99 @@ hr {
 }
 
 
+.sesh {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin-bottom: 32px;
+}
+
+/* */
+.first__card {
+  margin-bottom: 32px;
+}
+
+.date__wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.date {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 16px;
+}
+
+.date__wrap input {
+  border: 1px solid #dcdce4;
+  border-radius: 4px;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  padding: 14px 16px;
+  color: black;
+}
+
+.stat__table th,
+.stat__table td {
+  padding: 16px;
+  text-align: center;
+  text-transform: capitalize;
+}
+
+.stat__table tr:first-child {
+  background: #f9f9f9;
+}
+
+.stat__table {
+  width: 80%;
+}
+
+.stat__table td {
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 16px;
+}
+
+.gringo {
+  width: 300px;
+}
+
+.stat__table th p.recieved {
+  color: #f2994a;
+}
+
+.stat__table th p.paid {
+  color: #1878f3;
+}
+
+.stat__table th p.cancelled {
+  color: #eb5757;
+}
+
+.stat__table th p.cancelled-cg {
+  color: #bb2649;
+}
+
+.stat__table th p.accepted {
+  color: #009a10;
+}
+
+.file__item label {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 16px;
+  color: #334d6e;
+  margin-bottom: 16px;
+}
+
+.dropzone {
+  border: 2px dashed var(--blue) !important;
+  max-width: 416px;
+  margin: 0 !important;
+}
+
+input {
+  color: black !important;
+}
+

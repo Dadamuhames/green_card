@@ -26,6 +26,8 @@ class UserInfo(models.Model):
 
 
 
+
+
 # clients
 class Clients(models.Model):
     GANDERS = [("Erkak", "Erkak"), ('Ayol', 'Ayol')]

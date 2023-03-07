@@ -260,8 +260,8 @@
   {% endblock %}
   
   {% block modals %}
-  {% if request.user.info.is_supruser or request.user.is_superuser %}
-    <div class="create__modal" id="create-body">
+  {% if request.user.info.is_filial or request.user.is_superuser %}
+    <div {% if errors %} class="create__modal show" {% else %} class="create__modal" {% endif %} id="create-body">
       <div class="create__wrapper">
         <div class="kreator gwyn">
           <div class="create__header">
@@ -318,6 +318,7 @@
                         class="item__input"
                         placeholder="Login"
                       />
+                      <p class="error-p">{{ errors.username }}</p>
                     </div>
                     <div class="info__item">
                       <label for="num">Parol</label>
@@ -327,6 +328,7 @@
                         class="item__input"
                         placeholder="Parol"
                       />
+                      <p class="error-p"></p>
                     </div>
                     <div class="info__item">
                       <label for="education-1"> Status </label>
@@ -352,7 +354,7 @@
       </div>
     </div>
 
-    <div class="create__modal" id="edit-body">
+    <div {% if errors %} class="create__modal show" {% else %} class="create__modal" {% endif %} id="edit-body">
       <div class="create__wrapper">
         <div class="kreator gwyn">
           <div class="create__header">
@@ -410,6 +412,7 @@
                         class="item__input"
                         placeholder="Login"
                       />
+                      <p class="error-p"></p>
                     </div>
                     <div class="info__item">
                       <label for="num">Parol</label>
@@ -419,6 +422,7 @@
                         class="item__input"
                         placeholder="Parol"
                       />
+                      <p class="error-p"></p>
                     </div>
                     <div class="info__item">
                       <label for="education-1"> Status </label>

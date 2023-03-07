@@ -176,9 +176,9 @@
                 <div class="file__item mb-4">
                   <label for="passport"> Добавить копия паспорта </label>
                   <br><br>
+                  {% if object.images %}
                   <div class="my-dropzone dropzone disabled__item" data-key="images" data-delete="/images/delete">
                     <div class="dz-preview-container" id="drop-image" style="padding: 0;">
-                      {% if object.images %}
                       <div class="dz-preview dz-processing dz-complete dz-image-preview d-none">
                         <div class="dz-image">
                           <img data-dz-thumbnail="" src="" alt="">
@@ -200,14 +200,15 @@
                         </div>
                       </div>
                       {% endfor %}
-                      {% endif %}
                     </div>
                   </div>
+                  {% endif %}
                   
                 </div>
                 <div class="file__item mb-4">
                   <label for="passport"> Добавить PDF файл </label>
                   <br><br>
+                  {% if object.files %}
                   <div class="my-dropzone dropzone disabled__item" data-key="files" data-delete="/images/delete">
                     <div class="dz-preview-container" id="drop-files" style="padding: 0;">
                       <div class="dz-preview dz-processing dz-complete dz-image-preview d-none">
@@ -220,7 +221,6 @@
                         <a class="dz-remove" data-file="" data-dz-remove>Удалить</a>
                         <form action="{% url 'admins:del_client_file' %}" id="delete-form" method="post"></form>
                       </div>
-                      {% if object.files %}
                       {% for file in object.files.all %}
                       <div class="dz-preview dz-processing dz-complete dz-image-preview" style="position: relative;">
                         <div class="dz-image">
@@ -234,9 +234,9 @@
                         </div>
                       </div>
                       {% endfor %}
-                      {% endif %}
                     </div>
                   </div>
+                  {% endif %}
                   <!-- ПОСТАВЬ ДРОПЗОН СЮДА -->
                 </div>
               </form>

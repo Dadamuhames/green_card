@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.views.generic import ListView, UpdateView, CreateView, DetailView
+from django.views.generic import ListView, UpdateView, CreateView, DetailView, TemplateView
 from django.contrib.auth.models import User
 from .models import UserInfo, Clients, ClientFiles, ClientImages
 from django.db.models import Q
@@ -12,6 +12,7 @@ from django.core.cache import cache
 from .serializers import UserInfoSerializer
 from .forms import ClientForm, CommentForm
 from datetime import datetime
+from django.core.exceptions import ValidationError
 # Create your views here.
 
 
@@ -117,6 +118,7 @@ class BasedListView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        print(dict(context))
         paginate_by = self.get_paginate_by_castom()
         page_obj = paginate(self.get_queryset(), self.request, paginate_by)
 
@@ -130,23 +132,6 @@ class BasedListView(ListView):
         for key, val in self.request.GET.items():
             if key != 'page':
                 pang_url += f'{key}={val}&'
-
-        context['pgn_url'] = pang_url
-
-        page_count = page_obj.paginator.num_pages
-        curent_page = page_obj.number
-        page_range = range(1, page_count+1)
-
-        if page_count > 6:
-            if curent_page+6 <= page_count:
-                page_range = range(curent_page, curent_page+6)
-            else:
-                page_range = range(curent_page, page_count)
-
-        #context['page_range'] = page_range = page_obj.paginator.get_elided_page_range(number=curent_page)
-        #print(context['page_range'])
-        #print(page_range)
-
 
         return context
 
@@ -162,8 +147,6 @@ class FilialList(BasedListView):
             return redirect('admins:clients')
 
         return super().get(request, *args, **kwargs)
-
-
 
 
 # operators list
@@ -619,51 +602,56 @@ def save_user(is_operator=False, is_agent=False, is_filial=False, request=None):
         if new_user.username != username:
             new_user.username = username
     except:
-        new_user = User.objects.create(username=username)
-
-    if password:
-        new_user.set_password(password)
-    new_user.is_active = is_active
-
-    full_name = request.POST.get("full_name", '')
-
-    if ' ' in full_name:
-        first_name = full_name.split(' ')[0]
-        last_name = full_name.split(' ')[-1]
-        new_user.first_name = first_name
-        new_user.last_name = last_name
-    else:
-        new_user.first_name = full_name
-
-    new_user.save()
-
-    nbm = request.POST.get("nbm", '')
-    filial = request.POST.get("filial")
-    name = request.POST.get('name')
-    
-    user = request.user
-
-    if not user.is_superuser and user.info.is_filial:
-        filial = user.info
-    else:
         try:
-            filial = UserInfo.objects.get(id=int(filial))
-        except:
-            filial = None
-    
-    new_user_info, created = UserInfo.objects.update_or_create(user=new_user)
-    new_user_info.is_operator = is_operator
-    new_user_info.is_agent = is_agent
-    new_user_info.is_filial = is_filial
-    new_user_info.nbm = nbm
-    new_user_info.status = status
-    new_user_info.name = name
-    
+            new_user = User(username=username)
+            new_user.full_clean()
+            new_user.save()
+        except ValidationError as e:
+            print(e)
+    if new_user:
+        if password:
+            new_user.set_password(password)
+        new_user.is_active = is_active
 
-    if filial and not is_filial:
-        new_user_info.filial = filial
+        full_name = request.POST.get("full_name", '')
 
-    new_user_info.save()
+        if ' ' in full_name:
+            first_name = full_name.split(' ')[0]
+            last_name = full_name.split(' ')[-1]
+            new_user.first_name = first_name
+            new_user.last_name = last_name
+        else:
+            new_user.first_name = full_name
+
+        new_user.save()
+
+        nbm = request.POST.get("nbm", '')
+        filial = request.POST.get("filial")
+        name = request.POST.get('name')
+        
+        user = request.user
+
+        if not user.is_superuser and user.info.is_filial:
+            filial = user.info
+        else:
+            try:
+                filial = UserInfo.objects.get(id=int(filial))
+            except:
+                filial = None
+        
+        new_user_info, created = UserInfo.objects.update_or_create(user=new_user)
+        new_user_info.is_operator = is_operator
+        new_user_info.is_agent = is_agent
+        new_user_info.is_filial = is_filial
+        new_user_info.nbm = nbm
+        new_user_info.status = status
+        new_user_info.name = name
+        
+
+        if filial and not is_filial:
+            new_user_info.filial = filial
+
+        new_user_info.save()
 
     return new_user
 
@@ -745,7 +733,7 @@ def add_comment(request):
 def delete_client(request, pk):
     try:
         client = Clients.objects.get(id=int(pk))
-        if request.user == client.agent or request.user.info == client.filial or request.user.is_superuser:
+        if request.user == client.agent or request.user.is_superuser or request.user.info == client.filial:
             client.delete()
     except:
         pass
@@ -789,3 +777,32 @@ def change_status(request):
         return redirect(url)
 
     return redirect("admins:clients")
+
+
+
+
+# analitic page view
+class AnaliticsView(TemplateView):
+    def get_context_data(self, **kwargs):
+        context = super(self, AnaliticsView).get_context_data(**kwargs)
+        
+        context['filials'] = UserInfo.objects.filter(is_filial=True)
+        context['operators'] = UserInfo.objects.filter(is_filial=True)
+        context['agents'] = UserInfo.objects.filter(is_agent=True)
+
+        return context
+
+
+
+# check username
+def check_username(request):
+    if request.method == 'POST':
+        username = request.POST.get("username")
+
+        try:
+            user = User(username=username)
+            user.full_clean()
+            return JsonResponse("success", safe=False)
+        except ValidationError as e:
+            return JsonResponse(e.message_dict)
+
