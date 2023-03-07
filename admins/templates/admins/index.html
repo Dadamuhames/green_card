@@ -1,6 +1,6 @@
 {% extends 'admins/base_template.html' %}
 {% load static %}
-
+{% load str %}
 
 {% block main %}
   <main class="right" id="main-layout">
@@ -120,7 +120,11 @@
                     <select name="filial">
                       <option value="0">Filiallar:</option>
                       {% for filial in filials %}
-                      <option value="{{ filial.id }}">{{ filial.name }}</option>
+                        {% if request.GET.filial|to_string == filial.id|to_string %}
+                          <option value="{{ filial.id }}" selected>{{ filial.name }}</option>
+                        {% else %}
+                          <option value="{{ filial.id }}" >{{ filial.name }}</option>
+                        {% endif %}
                       {% endfor %}
                     </select>
                   </div>
@@ -134,10 +138,10 @@
                     <select name="operator">
                       <option value="0">Select operator:</option>
                       {% for oper in operators %}
-                        {% if request.GET.operator == oper.id %}
-                          <option value="{{ oper.id }}" selected>{{ oper.user.username }}</option>
+                        {% if request.GET.operator|to_string == oper.id|to_string %}
+                          <option value="{{ oper.id }}" selected>{{ oper.user.first_name }} {{ oper.user.last_name }}</option>
                         {% else %}
-                          <option value="{{ oper.id }}">{{ oper.user.username }}</option>
+                          <option value="{{ oper.id }}">{{ oper.user.first_name }} {{ oper.user.last_name }}</option>
                         {% endif %}
                       {% endfor %}
                     </select>
@@ -150,7 +154,7 @@
                       <select name="agent">
                         <option value="0">Select agentls:</option>
                           {% for oper in agents %}
-                            {% if request.GET.agent == oper.id %}
+                            {% if request.GET.agent|to_string == oper.id|to_string %}
                               <option value="{{ oper.id }}" selected>{{ oper.user.username }}</option>
                             {% else %}
                               <option value="{{ oper.id }}">{{ oper.user.username }}</option>
@@ -312,7 +316,7 @@
                 <div class="list__item">
                   <p class="list__item-txt">
                     {% if obj.operator %}
-                      {{ obj.operator.user.first_name }} {{ obj.operator.user.last_name }}
+                      {{ obj.operator.first_name }} {{ obj.operator.last_name }}
                     {% else %}
                       Не определено
                     {% endif %}

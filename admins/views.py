@@ -170,7 +170,6 @@ def get_clients_queryset(user, queryset, status=None):
             queryset = queryset.filter(filial=user.info.filial)
             if status == 'new':
                 queryset = queryset.filter(operator__isnull=True)
-                status = ''
             else:
                 queryset = queryset.filter(operator=user)
 
@@ -223,12 +222,16 @@ class ClientsList(ListView):
         filial_id = self.request.GET.get('filial')
 
         queryset = get_clients_queryset(user, queryset, status)
+
+        if not user.is_superuser and user.info.is_operator and status == 'new':
+            status = ''
         
         if user.is_superuser or user.info.is_filial:
             if operator_id:
+                print(operator_id)
                 try:
                     operators = UserInfo.objects.filter(is_operator=True)
-                    if user.info.is_filial:
+                    if not user.is_superuser and user.info.is_filial:
                         operators.filter(filial=user.info)
                     
                     operator = operators.get(id=int(operator_id))
@@ -238,7 +241,11 @@ class ClientsList(ListView):
 
             if agent_id:
                 try:
-                    agent = UserInfo.objects.filter(is_agent=True).get(id=int(agent_id))
+                    agents = UserInfo.objects.filter(is_agent=True)
+                    if not user.is_superuser and user.info.is_filial:
+                        agents.filter(filial=user.info)
+                    
+                    agent = agents.get(id=int(agent_id))
                     queryset = queryset.filter(agent=agent.user)
                 except:
                     pass
@@ -246,12 +253,10 @@ class ClientsList(ListView):
         if user.is_superuser:
             if filial_id:
                 try:
-                    filial = UserInfo.objects.filter(is_operator=True).get(id=int(filial_id))
+                    filial = UserInfo.objects.filter(is_filial=True).get(id=int(filial_id))
                     queryset = queryset.filter(filial=filial)
                 except:
                     pass
-
-
         
         if q != '':
             queryset = queryset.filter(Q(full_name__iregex=q))
@@ -291,7 +296,6 @@ class ClientsList(ListView):
             self.get_queryset(), self.request, paginate_by)
         context['page_obj'] = paginate(
             self.get_queryset(), self.request, paginate_by)
-        context['filials'] = UserInfo.objects.filter(is_filial=True)
         context['page_size'] = paginate_by
 
         user = self.request.user
@@ -314,17 +318,28 @@ class ClientsList(ListView):
         context['pgn_url'] = pang_url
 
         if not user.is_superuser:
-            if user.info.is_agent or user.info.is_operator:
+            if user.info.is_agent:
                 context['operators'] = UserInfo.objects.filter(filial=user.info.filial).filter(is_operator=True)
-                context['agents'] = UserInfo.objects.filter(filial=user.info.filial).filter(is_agent=True)
             elif user.info.is_filial:
                 context['operators'] = UserInfo.objects.filter(filial=user.info).filter(is_operator=True)
                 context['agents'] = UserInfo.objects.filter(filial=user.info).filter(is_agent=True)
+        else:
+            context['filials'] = UserInfo.objects.filter(is_filial=True)
+            context['operators'] = UserInfo.objects.filter(is_operator=True)
+            context['agents'] = UserInfo.objects.filter(is_agent=True)
+
 
         queryset = get_clients_queryset(user, Clients.objects.all())
+        print(queryset)
 
         context['all_count'] = queryset.count()
-        context['new_count'] = queryset.filter(status='new').count()
+
+        if not user.is_superuser and user.info.is_operator:
+            context['new_count'] = Clients.objects.filter(filial=user.info.filial).filter(operator__isnull=True).count()
+        else:
+            context['new_count'] = queryset.filter(status='new').count()
+
+
         context['recieved_count'] = queryset.filter(status='recieved').count()
         context['contacted_count'] = queryset.filter(status='contacted').count()
         context['paid_count'] = queryset.filter(status='paid').count()
@@ -616,7 +631,7 @@ def save_user(is_operator=False, is_agent=False, is_filial=False, request=None):
 
         full_name = request.POST.get("full_name", '')
 
-        if ' ' in full_name:
+        if '' in full_name:
             first_name = full_name.split(' ')[0]
             last_name = full_name.split(' ')[-1]
             new_user.first_name = first_name
