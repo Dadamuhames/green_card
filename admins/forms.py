@@ -4,7 +4,7 @@ from .models import Clients, ClientComments
 class ClientForm(ModelForm):
     class Meta:
         model = Clients
-        exclude = ['agent', 'filial', 'operator']
+        exclude = ['agent', 'filial', 'operator', 'agent_date', 'operator_date', 'last_update']
 
 
 class CommentForm(ModelForm):
