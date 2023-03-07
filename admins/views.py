@@ -394,7 +394,7 @@ class ClientsCreate(CreateView):
             client.last_update = datetime.now()
             client.save()
 
-            files = self.request.session.get('clients_files')
+            files = self.request.session.get('clients_files', [])
             files = [it for it in files if it['id'] == 'undefined']
             for file in files:
                 client_file = ClientFiles.objects.create(client=client, file=file['name'])
