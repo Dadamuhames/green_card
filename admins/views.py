@@ -659,25 +659,48 @@ def save_user(is_operator=False, is_agent=False, is_filial=False, request=None):
 # create filial
 def create_filial(request):
     if request.method == 'POST':
+
+        try:
+            username = request.POST.get("username")
+            user = User(username=username, password='some')
+            user.full_clean()
+        except ValidationError as e:
+            return JsonResponse(e.message_dict)
+
         user = save_user(is_filial=True, request=request)
         url = request.POST.get("url")
 
-        return redirect(url)
+        return JsonResponse("success", safe=False)
 
 
 # create operator
 def create_operator(request):
     if request.method == 'POST':
+        try:
+            username = request.POST.get("username")
+            user = User(username=username, password='some')
+            user.full_clean()
+        except ValidationError as e:
+            return JsonResponse(e.message_dict)
+
+
         user = save_user(is_operator=True, request=request)
         url = request.POST.get("url")
-        return redirect(url)
+        return JsonResponse("success", safe=False)
 
 # create agent
 def create_agent(request):
     if request.method == 'POST':
+        try:
+            username = request.POST.get("username")
+            user = User(username=username, password='some')
+            user.full_clean()
+        except ValidationError as e:
+            return JsonResponse(e.message_dict)
+        
         user = save_user(is_agent=True, request=request)
         url = request.POST.get("url")
-        return redirect(url)
+        return JsonResponse("success", safe=False)
 
 # get user
 def get_user(request):

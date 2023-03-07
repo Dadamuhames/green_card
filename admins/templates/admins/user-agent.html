@@ -197,7 +197,7 @@
                 </td>
                 <td>
                   <div class="list__item">
-                    <p class="list__item-txt">{{ obj.user.last_login|date:'d.m.Y' }} {{ obj.user.last_login.time }}</p>
+                    <p class="list__item-txt">{{ obj.user.last_login|date:'d.m.Y H:i' }} {{ obj.user.last_login.time }}</p>
                   </div>
                 </td>
                 <td>
@@ -304,13 +304,11 @@
                   <div class="info__item half__item">
                     <label for="num">Tel. raqami</label>
                     <input id="num" type="text" name="nbm" class="item__input" placeholder="Tel. raqami" />
-                    <p class="error-p">{{ errors.nbm }}</p>
                   </div>
                   <div class="item__grid">
                     <div class="info__item">
                       <label for="num">Login</label>
                       <input id="num" type="text" name="username" class="item__input" placeholder="Login" />
-                      <p class="error-p">{{ errors.username }}</p>
                     </div>
                     <div class="info__item">
                       <label for="num">Parol</label>
