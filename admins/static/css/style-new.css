@@ -172,32 +172,36 @@ table tr {
   justify-content: center;
 }
 
-.level.violet {
+.level.rejected {
   background: var(--violet);
 }
 
-.level.biege {
+.level.recieved {
   background: var(--biege);
 }
 
-.level.yellow {
+.level.contacted {
   background: var(--yellow);
 }
 
-.level.sky__blue {
+.level.paid {
   background: var(--sky-blue);
 }
 
-.level.salad {
+.level.accepted {
   background: var(--salad);
 }
 
-.level.light__pink {
+.level.cancelled {
   background: var(--light-pink);
 }
 
 .level.light__red {
   background: var(--light-red);
+}
+
+.level.new {
+  background: #d0d0d0;
 }
 
 .level-second.red {
