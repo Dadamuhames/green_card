@@ -181,7 +181,7 @@ class AgentsList(BasedListView):
 
 
 # get clients queryset
-def get_clients_queryset(user, queryset):
+def get_clients_queryset(user, queryset, status=None):
     if not user.is_superuser:
         if user.info.is_operator:
             queryset = queryset.filter(filial=user.info.filial)
@@ -239,7 +239,7 @@ class ClientsList(ListView):
         agent_id = self.request.GET.get("agent")
         filial_id = self.request.GET.get('filial')
 
-        queryset = get_clients_queryset(user, queryset)
+        queryset = get_clients_queryset(user, queryset, status)
         
         if user.is_superuser or user.info.is_filial:
             if operator_id:
