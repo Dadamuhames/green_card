@@ -40,29 +40,29 @@
 
         {% if not request.user.info.is_operator %}
         <a href="{{ request.path }}" class="button">
-          <img src="{% static 'img/logo/user.svg' %}" alt="" /> Все заказы
+          <img src="{% static 'img/logo/user.svg' %}" alt="" /> Все заказы ({{ all_count }})
         </a>
         {% endif %}
         <a href="{{ status_url }}status=new" {% if request.GET.status == 'new' %} class="button active" {% else %} class="button" {% endif %}>
-          <img src="{% static 'img/logo/clock.svg' %}" alt="" /> Новые заказы
+          <img src="{% static 'img/logo/clock.svg' %}" alt="" /> Новые заказы ({{ new_count }})
         </a>
         <a href="{{ status_url }}status=recieved" {% if request.GET.status == 'recieved' %} class="button active" {% else %} class="button" {% endif %}>
-          <img src="{% static 'img/logo/download.svg' %}" alt="" /> Оператор принял
+          <img src="{% static 'img/logo/download.svg' %}" alt="" /> Оператор принял ({{ recieved_count }})
         </a>
         <a href="{{ status_url }}status=contacted" {% if request.GET.status == 'contacted' %} class="button active" {% else %} class="button" {% endif %}>
-          <img src="{% static 'img/logo/phone.svg' %}" alt="" /> Клиент вышел на связь
+          <img src="{% static 'img/logo/phone.svg' %}" alt="" /> Клиент вышел на связь ({{ contacted_count }})
         </a>
         <a href="{{ status_url }}status=paid" {% if request.GET.status == 'paid' %} class="button active" {% else %} class="button" {% endif %}>
-          <img src="{% static 'img/logo/cash.svg' %}" alt="" /> Оплачено
+          <img src="{% static 'img/logo/cash.svg' %}" alt="" /> Оплачено ({{ paid_count }})
         </a>
         <a href="{{ status_url }}status=cancelled" {% if request.GET.status == 'cancelled' %} class="button active" {% else %} class="button" {% endif %}>
-          <img src="{% static 'img/logo/circle.svg' %}" alt="" /> Оператор отменил
+          <img src="{% static 'img/logo/circle.svg' %}" alt="" /> Оператор отменил ({{ cancelled_count }})
         </a>
         <a href="{{ status_url }}status=accepted" {% if request.GET.status == 'accepted' %} class="button active" {% else %} class="button" {% endif %}>
-          <img src="{% static 'img/logo/happy.svg' %}" alt="" /> Грин-карта одобрена
+          <img src="{% static 'img/logo/happy.svg' %}" alt="" /> Грин-карта одобрена ({{ accepted_count }})
         </a>
         <a href="{{ status_url }}status=rejected" {% if request.GET.status == 'rejected' %} class="button active" {% else %} class="button" {% endif %}>
-          <img src="{% static 'img/logo/x.svg' %}" alt="" /> Грин-карта отменена
+          <img src="{% static 'img/logo/x.svg' %}" alt="" /> Грин-карта отменена ({{ rejected_count }})
         </a>
       </div>
 
@@ -349,6 +349,29 @@
         <div class="list__bottom">
           <div class="list__pagination">
             <div class="pagination">
+              {% if page_obj.paginator.num_pages %}
+                {% if page_obj.number == i %}
+                  <a href="{{ pgn_url }}page={{ i }}" class="active">{{ i }}</a>
+                {% else %} 
+                  <a href="{{ pgn_url }}page={{ i }}">{{ i }}</a>
+                {% endif %}
+              {% else %}
+                  <a href="{{ pgn_url }}page={{ 1 }}">1</a>
+
+                  {% if page_obj.number > 3 %}
+                    <a>...</a>
+                  {% endif %}
+
+                  {% if page_obj.number == page_obj.paginator.num_pages %}
+                    <a href="{{ pgn_url }}page={{ page_obj.numer - 2 }}">{{ page_obj.numer - 2 }}</a>
+                  {% endif %}
+              {% endif %}
+
+              
+
+
+
+
               {% if page_obj.number|add:'-4' > 1 %}
               <a href="{{ pgn_url }}page=1">1</a>
               <a href="{{ pgn_url }}page={{ page_obj.number|add:'-5' }}">&hellip;</a>

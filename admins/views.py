@@ -180,6 +180,26 @@ class AgentsList(BasedListView):
     cache_key = 'agents_list'
 
 
+# get clients queryset
+def get_clients_queryset(user, queryset):
+    if not user.is_superuser:
+        if user.info.is_operator:
+            queryset = queryset.filter(filial=user.info.filial)
+            if status == 'new':
+                queryset = queryset.filter(operator__isnull=True)
+                status = ''
+            else:
+                queryset = queryset.filter(operator=user)
+
+        elif user.info.is_filial:
+            queryset = queryset.filter(filial=user.info)
+
+        elif user.info.is_agent:
+            queryset = queryset.filter(agent=user)
+
+    return queryset
+
+
 # clients list
 class ClientsList(ListView):
     model = Clients
@@ -219,20 +239,7 @@ class ClientsList(ListView):
         agent_id = self.request.GET.get("agent")
         filial_id = self.request.GET.get('filial')
 
-        if not user.is_superuser:
-            if user.info.is_operator:
-                queryset = queryset.filter(filial=user.info.filial)
-                if status == 'new':
-                    queryset = queryset.filter(operator__isnull=True)
-                    status = ''
-                else:
-                    queryset = queryset.filter(operator=user)
-
-            elif user.info.is_filial:
-                queryset = queryset.filter(filial=user.info)
-
-            elif user.info.is_agent:
-                queryset = queryset.filter(agent=user)
+        queryset = get_clients_queryset(user, queryset)
         
         if user.is_superuser or user.info.is_filial:
             if operator_id:
@@ -330,6 +337,17 @@ class ClientsList(ListView):
             elif user.info.is_filial:
                 context['operators'] = UserInfo.objects.filter(filial=user.info).filter(is_operator=True)
                 context['agents'] = UserInfo.objects.filter(filial=user.info).filter(is_agent=True)
+
+        queryset = get_clients_queryset(user, Clients.objects.all())
+
+        context['all_count'] = queryset.count()
+        context['new_count'] = queryset.filter(status='new').count()
+        context['recieved_count'] = queryset.filter(status='recieved').count()
+        context['contacted_count'] = queryset.filter(status='contacted').count()
+        context['paid_count'] = queryset.filter(status='paid').count()
+        context['cancelled_count'] = queryset.filter(status='cancelled').count()
+        context['accepted_count'] = queryset.filter(status='accepted').count()
+        context['rejected_count'] = queryset.filter(status='rejected').count()
 
         return context
 

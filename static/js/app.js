@@ -1,3 +1,34 @@
+$('#page-size-form').on("change", () => {
+  $('#page-size-form').submit()
+})
+
+
+let statusBtn = document.getElementById("status-btn");
+let statusBody = document.getElementById("status-body");
+
+if (statusBtn) {
+  statusBtn.addEventListener("click", () => {
+    statusBody.classList.toggle("show");
+  });
+}
+
+let bodyVariants = document.querySelectorAll(".body__variant");
+let mainVariant = document.getElementById("main-variant");
+let hiddenInput = document.getElementById("hidden-input");
+
+bodyVariants.forEach((bodyVariant) => {
+  bodyVariant.addEventListener("click", () => {
+    let variantName = bodyVariant.dataset.name;
+    hiddenInput.value = variantName;
+
+    mainVariant.innerHTML = bodyVariant.innerHTML;
+    mainVariant.classList = "main__variant " + variantName;
+
+    statusBody.classList.remove("show");
+  });
+});
+
+
 let clearBtn = document.getElementById("clear-btn");
 let clearModal = document.getElementById("clear-modal");
 let clearWrap = document.getElementById("clear-wrap");
@@ -161,11 +192,16 @@ editBtns.forEach((editBtn) => {
         $('#edit-body').find('[name="name"]').val(data.name)
         $('#edit-body').find('[name="username"]').val(data.user.username)
         $('#edit-body').find('[name="nbm"]').val(data.nbm)
-        $('#edit-body').find(`option[value=${data.status}]`).prop("selected", true)
-        $('#edit-body').find(`option[value=${data.filial}]`).prop("selected", true)
+        $('#edit-body').find(`option[value=${data.status}]`).attr("selected", true)
+        
+        let filial_opt = $('#edit-body').find(`option[value=${data.filial}]`)
+        $(filial_opt).attr("selected", true)
         $('#edit-body').find('[name="id"]').val(data.user.id)
-
-        console.log($('#edit-body').find(`option[value=${data.filial}]`))
+        
+        $('#edit-body').find('select[name="status"] + .select-selected').html(data.status)
+        $('#edit-body').find('select[name="filial"] + .select-selected').html($(filial_opt).html())
+        
+        $('#edit-body').find('[name="full_name"]').val(String(data.user.first_name) + ' ' + String(data.user.last_name))
       }
     })
     editBody.classList.add("show");
@@ -299,11 +335,5 @@ tabs2.forEach((tab2) => {
     tab2.classList.add("active");
   });
 });
-
-
-
-$('#page-size-form').on("change", () => {
-  $('#page-size-form').submit()
-})
 
 
