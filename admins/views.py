@@ -303,7 +303,7 @@ class ClientsList(ListView):
         status_url = self.request.path + '?'
 
         for key, val in self.request.GET.items():
-            if key != 'status':
+            if key != 'status' and key != 'page':
                 status_url += f'{key}={val}&'
 
         context['status_url'] = status_url
