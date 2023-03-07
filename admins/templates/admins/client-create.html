@@ -6,7 +6,20 @@
 <main class="right" id="main-layout">
     <header>
         <nav class="navbar" style="height: 83px">
-            <div class="nav__right">
+            <div></div>
+            <div class="nav__right evanescence">
+                <div class="operator">
+                    <img src="{% static 'img/operator.svg' %}" alt="" />
+                    <p>{% if request.user.info.is_operator %}
+                        Operator:
+                        {% elif request.user.info.is_agent %}
+                        Agent:
+                        {% elif request.user.info.is_filial %}
+                        Filial admin:
+                        {% elif request.user.is_superuser %}
+                        Super Admin:
+                        {% endif %} {{ request.user.first_name }} {{ request.user.last_name }}</p>
+                </div>
                 <button class="back">
                     <i class="bx bx-left-arrow-alt"></i> Назад
                 </button>
