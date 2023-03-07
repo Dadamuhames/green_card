@@ -39,7 +39,7 @@
                   </div>
                   <div class="item half__item">
                     <label for="birthday"> Дата рождения</label>
-                    <input id="birthday" name="bith_date" type="date" {% if object.bith_date %} value="{{ object.bith_date|date:'Y-m-d' }}" {% endif %} class="item__input"
+                    <input id="birthday" name="bith_date" type="date" {% if object.bith_date %} value="{{ object.bith_date|date:'d.m.Y' }}" {% endif %} class="item__input"
                       placeholder="Дата рождения"  />
                   </div>
                   <div class="item">
@@ -104,7 +104,7 @@
                   </div>
                   <div class="item half__item">
                     <label for="birthday-2"> Дата рождение </label>
-                    <input id="birthday-2" name="spouse_birth_date" type="date" {% if object.spouse_birth_date %} value="{{ object.spouse_birth_date|date:'Y-m-d' }}" {% endif %} class="item__input"
+                    <input id="birthday-2" name="spouse_birth_date" type="date" {% if object.spouse_birth_date %} value="{{ object.spouse_birth_date|date:'d.m.Y' }}" {% endif %} class="item__input"
                       placeholder="Дата рождение"  />
                   </div>
     
@@ -294,7 +294,7 @@
               <div class="info__item">
                 <label class="info__sup">Время принятие</label>
                 <div class="input__wrap">
-                  <input type="text" disabled placeholder="Время принятие" {% if object.oper_date %} value="{{ object.oper_date|date:'Y-m-d' }}" {% endif %} />
+                  <input type="text" disabled placeholder="Время принятие" {% if object.oper_date %} value="{{ object.oper_date|date:'d.m.Y' }}" {% endif %} />
                   <i class="bi bi-clock"></i>
                 </div>
               </div>
@@ -310,7 +310,7 @@
               <div class="info__item">
                 <label class="info__sup">Дата добавление</label>
                 <div class="input__wrap">
-                  <input type="text" disabled {% if object.agent_date %} value="{{ object.agent_date|date:'Y-m-d' }}" {% endif %} placeholder="Дата добавление " />
+                  <input type="text" disabled {% if object.agent_date %} value="{{ object.agent_date|date:'d.m.Y' }}" {% endif %} placeholder="Дата добавление " />
                   <i class="bi bi-clock"></i>
                 </div>
               </div>
@@ -332,7 +332,7 @@
                       <div class="comment">
                         <div class="com__header">
                           <p class="com__name">{{ comment.user.first_name }} {{ comment.user.last_name }}</p>
-                          <p class="com__date">{{ comment.date|date:'Y-m-d' }}</p>
+                          <p class="com__date">{{ comment.date|date:'d.m.Y' }}</p>
                         </div>
                         <p class="com__txt">
                           {{ comment.text }}
