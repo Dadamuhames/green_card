@@ -215,6 +215,13 @@
                   <p class="list__item-title">Ф.И.О. клиента</p>
                 </div>
               </th>
+              {% if request.user.is_superuser %}
+                <th>
+                  <div class="list__item">
+                    <p class="list__item-title">Filial</p>
+                  </div>
+                </th>
+              {% endif %}
               <th>
                 <div class="list__item">
                   <p class="list__item-title">Номер телефона</p>
@@ -284,6 +291,13 @@
                   <p class="list__item-txt name">{{ obj.full_name }}</p>
                 </div>
               </td>
+              {% if request.user.is_superuser %}
+              <td>
+                <div class="list__item">
+                  <p class="list__item-txt name">{{ obj.filial.name }}</p>
+                </div>
+              </td>
+              {% endif %}
               <td>
                 <div class="list__item">
                   <p class="list__item-txt num">{{ obj.nbm }}</p>
