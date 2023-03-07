@@ -39,7 +39,7 @@
       <div class="buttons">
 
         {% if not request.user.info.is_operator %}
-        <a href="{{ request.path }}" class="button">
+        <a href="{{ request.path }}" {% if request.GET.status is None %} class="button active" {% else %} class="button" {% endif %}>
           <img src="{% static 'img/logo/user.svg' %}" alt="" /> Все заказы ({{ all_count }})
         </a>
         {% endif %}
@@ -312,7 +312,7 @@
                 <div class="list__item">
                   <p class="list__item-txt">
                     {% if obj.operator %}
-                      {{ obj.operator.username }}
+                      {{ obj.operator.user.first_name }} {{ obj.operator.user.last_name }}
                     {% else %}
                       Не определено
                     {% endif %}
@@ -331,7 +331,7 @@
               </td>
               <td>
                 <div class="list__item">
-                  <p class="list__item-txt">{{ obj.get_agent }}</p>
+                  <p class="list__item-txt">{{ obj.agent_name }}</p>
                 </div>
               </td>
               <td>

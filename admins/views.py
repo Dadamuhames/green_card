@@ -374,6 +374,7 @@ class ClientsCreate(CreateView):
             client.agent = agent
             client.filial = agent.info.filial
             client.agent_date = datetime.now()
+            client.agent_name = str(agent.first_name) + ' ' + str(agent.last_name)
             client.last_update = datetime.now()
             client.save()
 
@@ -659,16 +660,21 @@ def save_user(is_operator=False, is_agent=False, is_filial=False, request=None):
 # create filial
 def create_filial(request):
     if request.method == 'POST':
+        id = request.POST.get("id")
 
         try:
             username = request.POST.get("username")
-            user = User(username=username, password='some')
-            user.full_clean()
-        except ValidationError as e:
-            return JsonResponse(e.message_dict)
+            if id:
+                user = User.objects.exclude(id=int(id)).filter(username=username)
+            else:
+                user = User.objects.filter(username=username)
+            
+            if user.exists():
+                return JsonResponse({'username': 'User with this username already exists'})
+        except:
+            pass
 
         user = save_user(is_filial=True, request=request)
-        url = request.POST.get("url")
 
         return JsonResponse("success", safe=False)
 
@@ -676,12 +682,20 @@ def create_filial(request):
 # create operator
 def create_operator(request):
     if request.method == 'POST':
+        id = request.POST.get("id")
+
         try:
             username = request.POST.get("username")
-            user = User(username=username, password='some')
-            user.full_clean()
-        except ValidationError as e:
-            return JsonResponse(e.message_dict)
+            if id:
+                user = User.objects.exclude(
+                    id=int(id)).filter(username=username)
+            else:
+                user = User.objects.filter(username=username)
+
+            if user.exists():
+                return JsonResponse({'username': 'User with this username already exists'})
+        except:
+            pass
 
 
         user = save_user(is_operator=True, request=request)
@@ -691,12 +705,20 @@ def create_operator(request):
 # create agent
 def create_agent(request):
     if request.method == 'POST':
+        id = request.POST.get("id")
+
         try:
             username = request.POST.get("username")
-            user = User(username=username, password='some')
-            user.full_clean()
-        except ValidationError as e:
-            return JsonResponse(e.message_dict)
+            if id:
+                user = User.objects.exclude(
+                    id=int(id)).filter(username=username)
+            else:
+                user = User.objects.filter(username=username)
+
+            if user.exists():
+                return JsonResponse({'username': 'User with this username already exists'})
+        except:
+            pass
         
         user = save_user(is_agent=True, request=request)
         url = request.POST.get("url")
@@ -790,7 +812,7 @@ def change_status(request):
 
         try:
             client = Clients.objects.get(id=int(id))
-            if client.operator == user or client.agent == user or user.is_superuser:
+            if client.operator == user or client.agent == user or user.is_superuser or client.filial == user.info:
                 client.status = status
                 client.last_update = str(datetime.now())
                 client.save()

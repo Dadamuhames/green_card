@@ -210,9 +210,9 @@
                               </div>
                             </div>
                             <a class="dz-remove" data-file="{{ img.id }}"
-                              onclick="var result = confirm('Want to delete?');if (result){submit_form('delete-form{{ file.id }}')}"
+                              onclick="var result = confirm('Want to delete?');if (result){submit_form('delete-file-form{{ file.id }}')}"
                               data-dz-remove>Удалить</a>
-                            <form action="{% url 'admins:del_client_file' %}" id="delete-form_{{ file.id }}" method="post">
+                            <form action="{% url 'admins:del_client_file' %}" id="delete-file-form{{ file.id }}" method="post">
                               {% csrf_token %}
                               <input type="hidden" name="url" value="{{ request.get_full_path }}">
                               <input type="hidden" name="obj_id" value="{{ file.id }}">

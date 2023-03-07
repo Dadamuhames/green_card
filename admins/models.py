@@ -52,6 +52,7 @@ class Clients(models.Model):
     operator = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='operator_clients')
     oper_date = models.DateTimeField(blank=True, null=True)
     agent = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='agent_users')
+    agent_name = models.CharField("Agent name", max_length=255, blank=True, null=True)
     agent_date = models.DateTimeField(blank=True, null=True)
     status = models.CharField(
         "Status", max_length=255, default='new', choices=STATUS, blank=True, null=True)

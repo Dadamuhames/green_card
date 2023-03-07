@@ -1,6 +1,7 @@
 $(document).ready(() => {
     $('.sidebar__link').each((i, e) => {
-        if (e.href == window.location.href) {
+        console.log(e.href)
+        if (e.href == window.location.href || e.href == location.protocol + '//' + location.host + location.pathname) {
             $(e).addClass('active')
         }
     })

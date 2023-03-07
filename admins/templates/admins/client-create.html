@@ -137,39 +137,6 @@
                                 <!-- ПОСТАВЬ ДРОПЗОН СЮДА -->
                                 <div class="my-dropzone dropzone" data-accept="image/*" data-key="images" data-delete="/images/delete">
                                     <div class="dz-preview-container" id="drop-image" style="padding: 0;">
-                                        {% if object %}
-                                        <div class="dz-preview dz-processing dz-complete dz-image-preview d-none">
-                                            <div class="dz-image">
-                                                <img data-dz-thumbnail="" src="" alt="">
-                                            </div>
-                                            <div class="dz-details">
-                                                <div class="dz-filename"><span data-dz-name=""></span></div>
-                                            </div>
-                                            <a class="dz-remove" data-file="" data-dz-remove>Удалить</a>
-                                        </div>
-                                            {% if object.images %}
-                                                {% for img in object.images.all %}
-                                                    <div class="dz-preview dz-processing dz-complete dz-image-preview" style="position: relative;">
-                                                        <div class="dz-image">
-                                                            <img data-dz-thumbnail="" src='{% image_thumb img.image alias="ten" request=request %}'
-                                                                alt="{{ img.image }}">
-                                                        </div>
-                                                        <div class="dz-details">
-                                                            <div class="dz-filename"><span data-dz-name="">{{ img.image }}</span>
-                                                            </div>
-                                                        </div>
-                                                        <a class="dz-remove" data-file="{{ img.id }}"
-                                                            onclick="var result = confirm('Want to delete?');if (result){submit_form('delete-form')}"
-                                                            data-dz-remove>Удалить</a>
-                                                        <div action="" id="delete-form" method="post">
-                                                            {% csrf_token %}
-                                                            <input type="hidden" name="url" value="{{ request.get_full_path }}">
-                                                            <input type="hidden" name="obj_id" value="{{ object.id }}">
-                                                        </div>
-                                                    </div>
-                                                {% endfor %}
-                                            {% endif %}
-                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -177,43 +144,8 @@
                                 <label for="passport"> Добавить PDF файл </label>
                                 <!-- ПОСТАВЬ ДРОПЗОН СЮДА -->
                                 <div class="my-dropzone dropzone" data-accept="application/pdf,.doc,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf" data-key="files" data-delete="/images/delete">
-                                    <div class="dz-preview-container" id="drop-files" style="padding: 0;">
-                                        {% if object %}
-                                        <div class="dz-preview dz-processing dz-complete dz-image-preview d-none">
-                                            <div class="dz-image">
-                                                <img data-dz-thumbnail="" src="" alt="">
-                                            </div>
-                                            <div class="dz-details">
-                                                <div class="dz-filename"><span data-dz-name=""></span></div>
-                                            </div>
-                                            <a class="dz-remove" data-file="" data-dz-remove>Удалить</a>
-                                        </div>
-                                        {% if object.files %}
-                                        {% for file in object.files.all %}
-                                        <div class="dz-preview dz-processing dz-complete dz-image-preview" style="position: relative;">
-                                            <div class="dz-image">
-                                                <a href="{{ file.file }}">
-                                                    <img data-dz-thumbnail="" src='{% static "img/pdf.png" %}'
-                                                    alt="{{ img.image }}">
-                                                </a> 
-                                            </div>
-                                            <div class="dz-details">
-                                                <div class="dz-filename"><span data-dz-name="">{{ file.file }}</span>
-                                                </div>
-                                            </div>
-                                            <a class="dz-remove" data-file="{{ img.id }}"
-                                                onclick="var result = confirm('Want to delete?');if (result){submit_form('delete-form')}"
-                                                data-dz-remove>Удалить</a>
-                                            <div action="" id="delete-form" method="post">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="url" value="{{ request.get_full_path }}">
-                                                <input type="hidden" name="obj_id" value="{{ object.id }}">
-                                            </div>
-                                        </div>
-                                        {% endfor %}
-                                        {% endif %}
-                                        {% endif %}
-                                    </div>
+                                <div class="dz-preview-container" id="drop-files" style="padding: 0;">
+                                </div>
                                 </div>
                             </div>
                             <button class="confirm">Сохранить</button>
