@@ -9,13 +9,14 @@ $(document).ready(() => {
 
 
 $('div.my-dropzone').each((i, e) => {
+    console.log($(e).attr('data-accept'))
     Dropzone.options.myAwesomeDropzone = false;
     Dropzone.autoDiscover = false;
     var myDropzone = new Dropzone(e, {
         url: '/save_images',
         parallelUploads: 1,
-        acceptFiles: $(e).attr('data-accept'),
-        //acceptFiles: 'image/*',
+        acceptedFiles: String($(e).attr('data-accept')),
+        //acceptedFiles: 'image/*',
         params: {
             "csrfmiddlewaretoken": document.querySelector('input[name="csrfmiddlewaretoken"]').value,
             "key": $(e).attr('data-key'),
