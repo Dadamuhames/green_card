@@ -385,8 +385,6 @@
                 {% if page_obj.paginator.num_pages > page_obj.number|add:"3" %}
                 <a>&hellip;</a>
                 <a href="{{ pgn_url }}page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
-                {% elif page_obj.paginator.num_pages|div:page_obj.number == 2 %}
-                <a href="{{ pgn_url }}page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
                 {% endif %}
               
               
