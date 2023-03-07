@@ -133,6 +133,9 @@ class BasedListView(ListView):
             if key != 'page':
                 pang_url += f'{key}={val}&'
 
+
+        context['pgn_url'] = pang_url
+
         return context
 
     
