@@ -349,24 +349,6 @@
         <div class="list__bottom">
           <div class="list__pagination">
             <div class="pagination">
-              {% if page_obj.paginator.num_pages %}
-                {% if page_obj.number == i %}
-                  <a href="{{ pgn_url }}page={{ i }}" class="active">{{ i }}</a>
-                {% else %} 
-                  <a href="{{ pgn_url }}page={{ i }}">{{ i }}</a>
-                {% endif %}
-              {% else %}
-                  <a href="{{ pgn_url }}page={{ 1 }}">1</a>
-
-                  {% if page_obj.number > 3 %}
-                    <a>...</a>
-                  {% endif %}
-
-                  {% if page_obj.number == page_obj.paginator.num_pages %}
-                    <a href="{{ pgn_url }}page={{ page_obj.numer - 2 }}">{{ page_obj.numer - 2 }}</a>
-                  {% endif %}
-              {% endif %}
-
               
 
 
