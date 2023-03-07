@@ -58,7 +58,7 @@
                   <label for="birthday"> Дата рождения</label>
                   <input
                     id="birthday"
-                    type="text" {% if object.bith_date %} value="{{ object.bith_date|date:'Y-m-d' }}" {% endif %}
+                    type="text" {% if object.bith_date %} value="{{ object.bith_date|date:'d.m.Y' }}" {% endif %}
                     class="item__input"
                     placeholder="Дата рождения"
                     disabled

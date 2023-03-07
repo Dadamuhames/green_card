@@ -51,7 +51,7 @@
                   </div>
                   <div class="item half__item">
                     <label for="birthday"> Дата рождения</label>
-                    <input id="birthday" name="bith_date" type="date" {% if object.bith_date %} value="{{ object.bith_date|date:'d.m.Y' }}" {% endif %} class="item__input"
+                    <input id="birthday" name="bith_date" type="date" {% if object.bith_date %} value="{{ object.bith_date|date:'Y-m-d' }}" {% endif %} class="item__input"
                       placeholder="Дата рождения"  />
                   </div>
                   <div class="item">

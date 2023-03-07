@@ -492,6 +492,7 @@ class ClientsDetailView(DetailView):
                     return redirect("admins:clients")
                 elif inst.operator is None:
                     inst.operator = user
+                    inst.status = 'recieved'
                     inst.oper_date = datetime.now()
                     inst.save()
             elif user.info.is_agent:
@@ -541,6 +542,7 @@ class ClientEdit(UpdateView):
                     return redirect("admins:clients")
                 elif inst.operator is None:
                     inst.operator = user
+                    inst.status = 'recieved'
                     inst.oper_date = datetime.now()
                     inst.save()
             elif user.info.is_agent:
