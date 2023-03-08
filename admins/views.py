@@ -843,8 +843,6 @@ class AnaliticsView(TemplateView):
         context = super(AnaliticsView, self).get_context_data(**kwargs)
         
         filials = UserInfo.objects.filter(is_filial=True)
-        context['filials'] = filials
-
         opers = []
         agents = []
         if not self.request.user.is_superuser and self.request.user.info.is_filial:
@@ -859,6 +857,8 @@ class AnaliticsView(TemplateView):
         elif self.request.user.info.is_agent:
             agents = UserInfo.objects.filter(is_agent=True).filter(user=self.request.user)
 
+        
+        context['filials'] = filials
         context['operators'] = opers
         context['agents'] = agents
 
