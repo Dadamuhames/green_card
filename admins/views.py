@@ -850,6 +850,7 @@ class AnaliticsView(TemplateView):
         if not self.request.user.is_superuser and self.request.user.info.is_filial:
             opers = UserInfo.objects.filter(filial=self.request.user.info).filter(is_filial=True)
             agents = UserInfo.objects.filter(filial=self.request.user.info).filter(is_agent=True)
+            filials = UserInfo.objects.filter(is_filial=True).filter(user=self.request.user)
         elif self.request.user.is_superuser:
             opers = UserInfo.objects.filter(is_filial=True)
             agents = UserInfo.objects.filter(is_agent=True)
@@ -857,8 +858,6 @@ class AnaliticsView(TemplateView):
             opers = UserInfo.objects.filter(is_operator=True).filter(user=self.request.user)
         elif self.request.user.info.is_agent:
             agents = UserInfo.objects.filter(is_agent=True).filter(user=self.request.user)
-        elif self.request.user.info.is_filial:
-            filials = UserInfo.objects.filter(is_filial=True).filter(user=self.request.user)
 
         context['operators'] = opers
         context['agents'] = agents
