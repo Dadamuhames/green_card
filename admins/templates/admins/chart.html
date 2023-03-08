@@ -2,7 +2,7 @@
 {% load static %}
 {% load filter_filials %}
 {% load get_index %}
-
+{% load filter_bydate %}
 
   {% block main %}
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -16,17 +16,30 @@
       ]
 
       '{% for oper in operators %}'
-        data_list.push(['{{ operators|index:oper }}', '{{ oper.user.operator_clients|filter_filial:"recieved" }}', '{{ oper.user.operator_clients|filter_filial:"paid" }}', '{{ oper.user.operator_clients|filter_filial:"cancelled" }}']),
+        '{% with oper.user.operator_clients|by_date:oper_data as queryset %}'
+          data_list.push([Number('{{ operators|index:oper }}'), 
+          Number('{{ queryset|filter_filial:"recieved" }}'), 
+          Number('{{ queryset|filter_filial:"paid" }}'), 
+          Number('{{ queryset|filter_filial:"cancelled" }}')])
+        '{% endwith %}'
       '{% endfor %}'
 
 
       let data_list2 = [
-        ["Agents", "Yaratdi"]
+        ["Agents", "Yaratdi", "Qabul qildi", "Tolov qilindi", "Bekor qilindi", 'Aloqaga Chiqildi', 'GC Bekor Qilindi']
       ]
 
-      '{% for agent in agents %}'
-        data_list2.push(['{{ agents|index:agent }}', '{{ agent.user.agent_users.count }}']),
+      '{% for obj in agents %}'
+        '{% with obj.user.agent_users|by_date:agent_data as queryset %}'
+          data_list2.push([Number('{{ agents|index:obj }}'), Number('{{ queryset.count }}'), Number('{{ queryset|filter_filial:"recieved" }}'), Number('{{ queryset|filter_filial:"paid" }}'),                 
+            Number('{{ queryset|filter_filial:"cancelled" }}'),
+            Number('{{ queryset|filter_filial:"contacted" }}'),
+            Number('{{ queryset|filter_filial:"rejected" }}')])
+        '{% endwith %}'
       '{% endfor %}'
+
+
+      console.log(data_list2)
 
       function drawChart() {
         var data = google.visualization.arrayToDataTable(data_list);
@@ -40,17 +53,21 @@
           },
         };
 
+        '{% if not request.user.info.is_agent %}'
         var chart = new google.charts.Bar(
           document.getElementById("columnchart_material")
         );
+        
+        chart.draw(data, google.charts.Bar.convertOptions(options));
+        '{% endif %}'
 
+        '{% if not request.user.info.is_operator %}'
         var chart2 = new google.charts.Bar(
           document.getElementById("columnchart_material_2")
         );
 
-        chart.draw(data, google.charts.Bar.convertOptions(options));
-
         chart2.draw(data2, google.charts.Bar.convertOptions(options));
+        '{% endif %}'
       }
     </script>
     <main class="right" id="main-layout">
@@ -62,7 +79,15 @@
           <div class="nav__right evanescence">
             <div class="operator">
               <img src="{% static 'img/operator.svg' %}" alt="" />
-              <p>Operator: Ikromova Gulbahor</p>
+              <p>{% if request.user.info.is_operator %}
+                Operator:
+                {% elif request.user.info.is_agent %}
+                Agent:
+                {% elif request.user.info.is_filial %}
+                Filial admin:
+                {% elif request.user.is_superuser %}
+                Super Admin:
+                {% endif %} {{ request.user.first_name }} {{ request.user.last_name }}</p>
             </div>
             <button class="out__btn">
               <img src="{% static 'img/log-out.svg' %}" alt="" />
@@ -76,15 +101,18 @@
           <div class="card__header mb-5">
             <h4 class="cardo__title">Filiallar</h4>
 
-            <div class="header__right date__wrap">
+            <form class="header__right date__wrap" method="">
               <p class="date">Sana</p>
               <div class="date__from">
-                <input type="text" placeholder="01.01.2020" />
+                <input name="filial_from_date" type="date" placeholder="01.01.2020" />
               </div>
               <div class="date__to">
-                <input type="text" placeholder="01.01.2020" />
+                <input name="filial_to_date" type="date" placeholder="01.01.2020" />
               </div>
-            </div>
+              <button type="submit" class="confirm">
+                Применить
+              </button>
+            </form>
           </div>
 
           <table class="stat__table">
@@ -111,6 +139,7 @@
             </tr>
 
             {% for obj in filials %}
+            {% with obj.clients|by_date:filial_data as queryset %}
             <tr>
               <td class="gringo text-start">{{ filials|index:obj }} {{ obj.name }}</td>
               <td>{{ obj.clients.count }}</td>
@@ -120,23 +149,29 @@
               <td>{{ obj.clients|filter_filial:"rejected" }}</td>
               <td>{{ obj.clients|filter_filial:"accepted" }}</td>
             </tr>
+            {% endwith %}
             {% endfor %}
           </table>
         </div>
         {% endif %}
 
+
+        {% if not request.user.info.is_agent %}
         <div class="cardo chart__card">
           <div class="card__header mb-5">
             <h4 class="cardo__title">Operatorlar</h4>
-            <div class="header__right date__wrap">
+            <form class="header__right date__wrap" method="get">
               <p class="date">Sana</p>
               <div class="date__from">
-                <input type="text" placeholder="01.01.2020" />
+                <input name="operator_from_date" type="date" placeholder="01.01.2020" />
               </div>
               <div class="date__to">
-                <input type="text" placeholder="01.01.2020" />
+                <input name="operator_to_date" type="date" placeholder="01.01.2020" />
               </div>
-            </div>
+              <button type="submit" class="confirm">
+                Применить
+              </button>
+            </form>
           </div>
           <div class="sesh">
             <div class="lefting">
@@ -154,12 +189,14 @@
                   </th>
                 </tr>
                 {% for obj in operators %}
+                {% with oper.user.operator_clients|by_date:oper_data as queryset %}
                 <tr>
                   <td class="gringo text-start">{{ operators|index:obj }} {{ obj.full_name }}</td>
-                  <td>{{ obj.user.operator_clients|filter_filial:"recieved" }}</td>
-                  <td>{{ obj.user.operator_clients|filter_filial:"paid" }}</td>
-                  <td>{{ obj.user.operator_clients|filter_filial:"cancelled" }}</td>
+                  <td>{{ queryset|filter_filial:"recieved" }}</td>
+                  <td>{{ queryset|filter_filial:"paid" }}</td>
+                  <td>{{ queryset|filter_filial:"cancelled" }}</td>
                 </tr>
+                {% endwith %}
                 {% endfor %}
               </table>
             </div>
@@ -168,20 +205,25 @@
             </div>
           </div>
         </div>
-
+        {% endif %}
+  
+        {% if not request.user.info.is_operator %}
         <div class="cardo chart__card">
           <div class="card__header mb-5">
             <h4 class="cardo__title">Agentlar</h4>
 
-            <div class="header__right date__wrap">
+            <form class="header__right date__wrap">
               <p class="date">Sana</p>
               <div class="date__from">
-                <input type="text" placeholder="01.01.2020" />
+                <input name="agent_from_date" type="date" placeholder="01.01.2020" />
               </div>
               <div class="date__to">
-                <input type="text" placeholder="01.01.2020" />
+                <input name="agent_to_date" type="date" placeholder="01.01.2020" />
               </div>
-            </div>
+              <button type="submit" class="confirm">
+                Применить
+              </button>
+            </form>
           </div>
           <div class="sesh">
             <div class="lefting">
@@ -191,12 +233,34 @@
                   <th>
                     <p class="all">Yaratdi</p>
                   </th>
+                  <th>
+                    <p class="recieved">Qabul qildi</p>
+                  </th>
+                  <th>
+                    <p class="paid">Tolov qilindi</p>
+                  </th>
+                  <th>
+                    <p class="cancelled">Bekor qilindi</p>
+                  </th>
+                  <th>
+                    <p class="cancelled"  style="color: rgb(171, 71, 188);">Aloqaga chiqildi</p>
+                  </th>
+                  <th>
+                    <p class="cancelled">GC bekor qilindi</p>
+                  </th>
                 </tr>
                 {% for obj in agents %}
+                {% with obj.user.agent_users|by_date:agent_data as queryset %}
                 <tr>
-                  <td class="text-start">Ismoilov Munisa</td>
-                  <td>24</td>
+                  <td class="text-start">{{ obj.full_name }}</td>
+                  <td>{{ queryset.count }}</td>
+                  <td>{{ queryset|filter_filial:"recieved" }}</td>
+                  <td>{{ queryset|filter_filial:"paid" }}</td>
+                  <td>{{ queryset|filter_filial:"cancelled" }}</td>
+                  <td>{{ queryset|filter_filial:"contacted" }}</td>
+                  <td>{{ queryset|filter_filial:"rejected" }}</td>
                 </tr>
+                {% endwith %}
                 {% endfor %}
               </table>
             </div>
@@ -205,6 +269,7 @@
             </div>
           </div>
         </div>
+        {% endif %}
       </div>
     </main>
 

@@ -1,6 +1,6 @@
 {% extends 'admins/base_template.html' %}
 {% load static %}
-
+{% load str  %}
 
 {% block main %}
   <main class="right" id="main-layout">
@@ -74,6 +74,16 @@
                     disabled
                   />
                 </div>
+                <div class="item">
+                  <label for="address">Адрес рождения</label>
+                  <input id="address" disabled maxlength="255" type="text" {% if object.birth_adres %} value="{{ object.birth_adres }}" {% endif %}
+                    class="item__input" placeholder="Адрес рождения" />
+                </div>
+                <div class="item">
+                  <label for="address">Регион</label>
+                  <input id="address" disabled maxlength="255" type="text" {% if object.state %} value="{{ object.get_state_display }}"
+                    {% endif %} class="item__input" placeholder="Регион" />
+                </div>
                 <div class="item half__item disabled__item">
                   <label for="education"> Образование </label>
                   <div class="custom-select" style="width: 200px">
@@ -126,12 +136,18 @@
                   <label for="children"> Дети </label>
                   <input
                     id="children"
-                    type="text" {% if object.child_count %} value="{{ object.child_count }}" {% endif %}
+                    type="number" {% if object.child_count %} value="{{ object.child_count|to_string }}" {% endif %}
                     class="item__input"
                     placeholder="Дети "
                     disabled
                   />
                 </div>
+
+                <div class="item half__item">
+                  <label for="children"> Children information </label>
+                  <textarea id="children" type="text" class="editor" placeholder="Дети" disabled>{% if object.child_information %} {{ object.child_information }} {% endif %}</textarea>
+                </div>
+
                 <hr />
                 <div class="item">
                   <label for="husband"> Супруг/Супруга </label>

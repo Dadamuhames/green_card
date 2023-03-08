@@ -267,26 +267,7 @@ class ClientsList(ListView):
             queryset = queryset.filter(status=status)
 
 
-        clients = queryset.order_by("agent_date")
-
-        if clients.exists():
-            from_date = self.request.GET.get('from_date')
-            to_date = self.request.GET.get('to_date')
-
-            if from_date:
-                from_date = datetime.strptime(from_date, '%Y-%m-%d')
-            else:
-                from_date = clients.first().agent_date
-
-
-            if to_date:
-                to_date = datetime.strptime(to_date, '%Y-%m-%d')
-            else:
-                to_date = datetime.today()
-
-            if from_date and to_date:
-                queryset = queryset.filter(agent_date__gte=from_date, agent_date__lte=to_date)
-
+        queryset = filter_by_date(queryset, self.request)
 
         return queryset
     
@@ -422,6 +403,13 @@ class ClientsCreate(CreateView):
             return redirect('admins:clients')
 
         return super().post(request, *args, **kwargs)
+    
+
+    def get_context_data(self, **kwargs):
+        context = super(ClientsCreate, self).get_context_data(**kwargs)
+        context['states'] = Clients.state.field.choices
+
+        return context
     
 
 # create clients
@@ -565,9 +553,7 @@ class ClientEdit(UpdateView):
 
         images = self.request.session.get('clients_images', [])
         images = [it for it in images if str(it['id']) == str(self.get_object().id)]
-        print('images', images)
         for file in images:
-            print(file)
             client_image = ClientImages.objects.create(client=client, image=file['name'])
             client_image.save()
             self.request.session['clients_images'].remove(file)
@@ -577,6 +563,12 @@ class ClientEdit(UpdateView):
         client.save()
 
         return redirect("admins:clients")
+    
+    def get_context_data(self, **kwargs):
+        context = super(ClientEdit, self).get_context_data(**kwargs)
+        context['states'] = Clients.state.field.choices
+
+        return context
 
     
 
@@ -847,13 +839,6 @@ def change_status(request):
 class AnaliticsView(TemplateView):
     template_name = 'admins/chart.html'
 
-
-    def get(self, request, *args, **kwargs):
-        if not request.user.is_superuser and not request.user.info.is_filial:
-            return redirect("admins:clients")
-
-        return super().get(request, *args, **kwargs)
-
     def get_context_data(self, **kwargs):
         context = super(AnaliticsView, self).get_context_data(**kwargs)
         
@@ -868,9 +853,17 @@ class AnaliticsView(TemplateView):
         elif self.request.user.is_superuser:
             opers = UserInfo.objects.filter(is_filial=True)
             agents = UserInfo.objects.filter(is_agent=True)
+        elif self.request.user.info.is_operator:
+            opers = UserInfo.objects.filter(is_operator=True).filter(user=self.request.user)
+        elif self.request.user.info.is_agent:
+            agents = UserInfo.objects.filter(is_agent=True).filter(user=self.request.user)
 
         context['operators'] = opers
         context['agents'] = agents
+
+        context['agent_data'] = {"request": self.request, "type": "agent"}
+        context['oper_data'] = {"request": self.request, "type": "operator"}
+        context['filial_data'] = {"request": self.request, "type": "filial"}
 
         return context
 

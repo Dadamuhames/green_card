@@ -1,6 +1,6 @@
 {% extends 'admins/base_template.html' %}
 {% load static %}
-
+{% load list_item %}
 
 {% block main %}
 <main class="right" id="main-layout">
@@ -29,7 +29,6 @@
     <div class="background">
         <form method="post">
             <div class="row">
-                {{ form.errors }}
                 {% csrf_token %}
                 <div class="col-8">
                     <div class="cardo client__info mb-4">
@@ -37,18 +36,34 @@
                         <div class="items">
                             <div class="item">
                                 <label for="name"> Имя Фамилия Отчество </label>
-                                <input id="name" name="full_name" type="text" value="{{ object.full_name }}"
+                                <input id="name" name="full_name" type="text" required maxlength="255"
                                     class="item__input" placeholder="Имя Фамилия Отчество" />
                             </div>
                             <div class="item half__item">
                                 <label for="birthday"> Дата рождения</label>
-                                <input id="birthday" name="bith_date" type="date" value="{{ object.bith_date }}"
+                                <input id="birthday" name="bith_date" type="date"
                                     class="item__input" placeholder="Дата рождения" />
                             </div>
                             <div class="item">
                                 <label for="address"> Полный адрес</label>
-                                <input id="address" name="adres" type="text" value="{{ object.adress }}"
+                                <input id="address" name="adres" type="text" maxlength="255"
                                     class="item__input" placeholder="Полный адрес" />
+                            </div>
+                            <div class="item">
+                                <label for="address">Адрес рождения</label>
+                                <input id="address" name="birth_adres" maxlength="255" type="text" class="item__input"
+                                    placeholder="Полный адрес" />
+                            </div>
+                            <div class="item half__item">
+                                <label for="education"> Регион </label>
+                                <div class="custom-select" style="width: 200px">
+                                    <select name="state">
+                                        <option value="">Регион</option>
+                                        {% for opt in states %}
+                                            <option value="{{ opt|list_item:1 }}">{{ opt|list_item:0 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
                             </div>
                             <div class="item half__item">
                                 <label for="education"> Образование </label>
@@ -65,7 +80,7 @@
 
                             <div class="item half__item">
                                 <label for="num"> Контактный телефон </label>
-                                <input id="num" name="nbm" type="text" value="{{ object.nbm }}" class="item__input"
+                                <input id="num" name="nbm" type="text" maxlength="255" class="item__input"
                                     placeholder="Контактный телефон " />
                             </div>
                             <div class="item radio__item">
@@ -98,14 +113,20 @@
                             </div>
                             <div class="item half__item">
                                 <label for="children"> Дети </label>
-                                <input id="children" name="child_count" type="text"
-                                    class="item__input" placeholder="Дети " />
+                                <input id="children" name="child_count" type="number"
+                                    class="item__input" placeholder="Дети" value="0" />
                             </div>
+
+                            <div class="item half__item">
+                                <label for="children"> Children information </label>
+                                <textarea id="children" name="child_information" class="editor" placeholder="Дети "></textarea>
+                            </div>
+
                             <hr />
                             <div class="item">
                                 <label for="husband"> Супруг/Супруга </label>
                                 <input id="husband" name="spouse" type="text"
-                                    class="item__input" placeholder="Супруг/Супруга " />
+                                    class="item__input" maxlength="255" placeholder="Супруг/Супруга " />
                             </div>
                             <div class="item half__item">
                                 <label for="birthday-2"> Дата рождение </label>

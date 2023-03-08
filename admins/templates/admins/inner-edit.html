@@ -46,18 +46,34 @@
                 <div class="items">
                   <div class="item">
                     <label for="name"> Имя Фамилия Отчество </label>
-                    <input id="name" name="full_name" type="text" {% if object.full_name %} value="{{ object.full_name }}" {% endif %} class="item__input"
+                    <input id="name" name="full_name" type="text" required  maxlength="255" {% if object.full_name %} value="{{ object.full_name }}" {% endif %} class="item__input"
                       placeholder="Имя Фамилия Отчество"  />
                   </div>
                   <div class="item half__item">
                     <label for="birthday"> Дата рождения</label>
-                    <input id="birthday" name="bith_date" type="date" {% if object.bith_date %} value="{{ object.bith_date|date:'Y-m-d' }}" {% endif %} class="item__input"
+                    <input id="birthday" name="bith_date" type="date"  maxlength="255" {% if object.bith_date %} value="{{ object.bith_date|date:'Y-m-d' }}" {% endif %} class="item__input"
                       placeholder="Дата рождения"  />
                   </div>
                   <div class="item">
                     <label for="address"> Полный адрес</label>
-                    <input id="address" name="adres" type="text" {% if object.adres %} value="{{ object.adres }}" {% endif %} class="item__input"
+                    <input id="address" name="adres" type="text"  maxlength="255" {% if object.adres %} value="{{ object.adres }}" {% endif %} class="item__input"
                       placeholder="Полный адрес"  />
+                  </div>
+                  <div class="item">
+                    <label for="address">Адрес рождения</label>
+                    <input id="address" name="birth_adres" maxlength="255" type="text" {% if object.birth_adres %} value="{{ object.birth_adres }}" {% endif %}
+                      class="item__input" placeholder="Адрес рождения" />
+                  </div>
+                  <div class="item half__item">
+                    <label for="education"> Регион </label>
+                    <div class="custom-select" style="width: 200px">
+                      <select name="state">
+                        <option value="">Регион</option>
+                        {% for opt in states %}
+                        <option value="{{ opt|list_item:1 }}">{{ opt|list_item:0 }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
                   </div>
                   <div class="item half__item">
                     <label for="education"> Образование </label>
@@ -72,7 +88,7 @@
     
                   <div class="item half__item">
                     <label for="num"> Контактный телефон </label>
-                    <input id="num" name="nbm" type="text" value="{{ object.nbm }}" class="item__input"
+                    <input id="num" name="nbm"  maxlength="255" type="text" value="{{ object.nbm }}" class="item__input"
                       placeholder="Контактный телефон " />
                   </div>
                   <div class="item radio__item">
@@ -105,13 +121,18 @@
                   </div>
                   <div class="item half__item">
                     <label for="children"> Дети </label>
-                    <input id="children" min="0" name="child_count" type="number" {% if object.child_count %} value="{{ object.child_count }}" {% endif %} class="item__input"
+                    <input id="children" min="0" name="child_count" type="number" {% if object.child_count %} value="{{ object.child_count }}" {% else %} value="0" {% endif %} class="item__input"
                       placeholder="Дети "  />
+                  </div>
+
+                  <div class="item half__item">
+                    <label for="children"> Children information </label>
+                    <textarea id="children" name="child_information" type="text" class="editor" placeholder="Дети">{% if object.child_information %}{{ object.child_information }}{% endif %}</textarea>
                   </div>
                   <hr />
                   <div class="item">
                     <label for="husband"> Супруг/Супруга </label>
-                    <input id="husband" name="spouse" type="text" {% if object.spouse %} value="{{ object.spouse }}" {% endif %} class="item__input"
+                    <input id="husband"  maxlength="255" name="spouse" type="text" {% if object.spouse %} value="{{ object.spouse }}" {% endif %} class="item__input"
                       placeholder="Супруг/Супруга "  />
                   </div>
                   <div class="item half__item">

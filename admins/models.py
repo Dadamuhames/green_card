@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from easy_thumbnails.fields import ThumbnailerImageField
+from django.core.validators import MaxValueValidator, MinValueValidator, FileExtensionValidator
 # Create your models here.
 
 
@@ -27,9 +28,6 @@ class UserInfo(models.Model):
         return self.workers.filter(is_agent=True)
 
 
-
-
-
 # clients
 class Clients(models.Model):
     GANDERS = [("Erkak", "Erkak"), ('Ayol', 'Ayol')]
@@ -39,15 +37,20 @@ class Clients(models.Model):
               ("accepted", "GreenCard oldi"), ("rejected", "GreenCard tomonidan bekor qilindi")]
     EDUCATIONS = [("Oliy", 'Oliy'), ('Orta', 'Orta')]
     FAMILY = [('Boydoq', 'Boydoq'), ('Uylangan', 'Uylangan'), ("Turmishga chiqgan", "Turmishga chiqgan")]
+    STATES = [('1', 'Андижанская область'), ('2', 'Бухарская область'), ('3',	'Джизакская область'), ('4', 'Кашкадарьинская область'),
+              ('5', 'Навоийская область'), ('6', 'Наманганская область'), ('7', 'Самаркандская область'), ('8', 'Сурхандарьинская область'),
+              ('9', 'Сырдарьинская область'), ('10', 'Ташкентская область'), ('11', 'Ферганская область'), ('12', 'Хорезмская область'),
+              ('13',	'Республика Каракалпакстан'), ('14', 'Город Ташкент')]
 
     full_name = models.CharField("Full name", max_length=255, blank=True, null=True)
     bith_date = models.DateField('Birth date', blank=True, null=True, default=None)
     adres = models.CharField("Adres", blank=True, null=True, max_length=255)
+    birth_adres = models.CharField('Birth adress', blank=True, null=True, max_length=255)
     nbm = models.CharField('Nbm', max_length=255, blank=True, null=True)
     sex = models.CharField("Sex", max_length=255, choices=GANDERS, blank=True, null=True)
     education = models.CharField("Education", max_length=255, blank=True, null=True, choices=EDUCATIONS)
     family_status = models.CharField('Family status', blank=True, null=True, choices=FAMILY, max_length=255)
-    child_count = models.PositiveIntegerField('Child count', blank=True, null=True, default=0)
+    child_count = models.IntegerField('Child count', blank=True, null=True, default=0, validators=[MinValueValidator(0)])
     spouse = models.CharField("Spouse", blank=True, null=True, max_length=255)
     spouse_birth_date = models.DateField(blank=True, null=True, default=None)
     spouse_education = models.CharField(max_length=255, blank=True, null=True)
@@ -60,7 +63,8 @@ class Clients(models.Model):
         "Status", max_length=255, default='new', choices=STATUS, blank=True, null=True)
     last_update = models.DateTimeField(blank=True, null=True)
     filial = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='clients', blank=True, null=True)
-
+    child_information = models.TextField('Child inf', blank=True, null=True)
+    state = models.CharField("State", max_length=255, blank=True, null=True, choices=STATES)
 
     def get_agent(self):
         if self.agent:
