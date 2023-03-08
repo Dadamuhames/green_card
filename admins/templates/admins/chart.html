@@ -189,7 +189,7 @@
                   </th>
                 </tr>
                 {% for obj in operators %}
-                {% with oper.user.operator_clients|by_date:oper_data as queryset %}
+                {% with obj.user.operator_clients|by_date:oper_data as queryset %}
                 <tr>
                   <td class="gringo text-start">{{ operators|index:obj }} {{ obj.full_name }}</td>
                   <td>{{ queryset|filter_filial:"recieved" }}</td>
