@@ -17,7 +17,7 @@
 
       '{% for oper in operators %}'
         '{% with oper.user.operator_clients|by_date:oper_data as queryset %}'
-          data_list.push([Number('{{ oper.full_name }}'), 
+          data_list.push(['{{ oper.full_name }}', 
           Number('{{ queryset|filter_filial:"recieved" }}'), 
           Number('{{ queryset|filter_filial:"paid" }}'), 
           Number('{{ queryset|filter_filial:"cancelled" }}')])
@@ -31,7 +31,7 @@
 
       '{% for obj in agents %}'
         '{% with obj.user.agent_users|by_date:agent_data as queryset %}'
-          data_list2.push([Number('{{ obj.full_name }}'), Number('{{ queryset.count }}'), Number('{{ queryset|filter_filial:"recieved" }}'), Number('{{ queryset|filter_filial:"paid" }}'),                 
+          data_list2.push(['{{ obj.full_name }}', Number('{{ queryset.count }}'), Number('{{ queryset|filter_filial:"recieved" }}'), Number('{{ queryset|filter_filial:"paid" }}'),                 
             Number('{{ queryset|filter_filial:"cancelled" }}'),
             Number('{{ queryset|filter_filial:"contacted" }}'),
             Number('{{ queryset|filter_filial:"rejected" }}')])
