@@ -54,7 +54,8 @@
                     <div class="sidebar__body">
                         <ul>
                             <li>
-                                <a href="#" class="sidebar__link">
+                                {% if request.user.is_superuser or request.user.info.is_filial %}
+                                <a href="{% url 'admins:anal' %}" class="sidebar__link">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path
                                             d="M21.333 12C21.333 17.155 17.154 21.333 12 21.333C6.84601 21.333 2.66701 17.155 2.66701 12C2.66701 6.84499 6.84501 2.66699 12 2.66699M20.436 8.00099C19.514 6.05999 17.942 4.48799 16.002 3.56599L12 12L20.436 8.00099Z"
@@ -63,6 +64,7 @@
 
                                     <p>Аналитика</p>
                                 </a>
+                                {% endif %}
                             </li>
                             <li>
                                 <a href="{% url 'admins:clients' %}" class="sidebar__link">

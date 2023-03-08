@@ -118,7 +118,6 @@ class BasedListView(ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        print(dict(context))
         paginate_by = self.get_paginate_by_castom()
         page_obj = paginate(self.get_queryset(), self.request, paginate_by)
 
@@ -846,12 +845,32 @@ def change_status(request):
 
 # analitic page view
 class AnaliticsView(TemplateView):
+    template_name = 'admins/chart.html'
+
+
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_superuser and not request.user.info.is_filial:
+            return redirect("admins:clients")
+
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
-        context = super(self, AnaliticsView).get_context_data(**kwargs)
+        context = super(AnaliticsView, self).get_context_data(**kwargs)
         
-        context['filials'] = UserInfo.objects.filter(is_filial=True)
-        context['operators'] = UserInfo.objects.filter(is_filial=True)
-        context['agents'] = UserInfo.objects.filter(is_agent=True)
+        filials = UserInfo.objects.filter(is_filial=True)
+        context['filials'] = filials
+
+        opers = []
+        agents = []
+        if not self.request.user.is_superuser and self.request.user.info.is_filial:
+            opers = UserInfo.objects.filter(filial=self.request.user.info).filter(is_filial=True)
+            agents = UserInfo.objects.filter(filial=self.request.user.info).filter(is_agent=True)
+        elif self.request.user.is_superuser:
+            opers = UserInfo.objects.filter(is_filial=True)
+            agents = UserInfo.objects.filter(is_agent=True)
+
+        context['operators'] = opers
+        context['agents'] = agents
 
         return context
 

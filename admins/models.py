@@ -17,6 +17,8 @@ class UserInfo(models.Model):
     status = models.CharField("Status", default='Active', max_length=255, choices=STATUS, blank=True, null=True)
     filial = models.ForeignKey("self", on_delete=models.CASCADE, related_name='workers', blank=True, null=True)
 
+    def full_name(self):
+        return str(self.user.first_name) + '' + str(self.user.last_name)
 
     def get_operators(self):
         return self.workers.filter(is_operator=True)

@@ -27,5 +27,6 @@ urlpatterns = [
     path("change_status", views.change_status, name='change_client_status'),
     path("images/delete", views.delete_image, name='del-img'),
     path("client_file/delete", views.dleete_client_file, name='del_client_file'),
-    path("check_username", views.check_username, name='check_username')
+    path("check_username", views.check_username, name='check_username'),
+    path("analitica", views.AnaliticsView.as_view(), name='anal')
 ]

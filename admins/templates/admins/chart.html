@@ -1,6 +1,7 @@
 {% extends 'admins/base_template.html' %}
 {% load static %}
-
+{% load filter_filials %}
+{% load get_index %}
 
 
   {% block main %}
@@ -9,23 +10,28 @@
       google.charts.load("current", { packages: ["bar"] });
       google.charts.setOnLoadCallback(drawChart);
 
-      function drawChart() {
-        var data = google.visualization.arrayToDataTable([
-          ["Year", "Sales", "Expenses", "Profit", "Endurance"],
-          ["2014", 500, 400, 200, 100],
-          ["2015", 1170, 460, 250, 90],
-          ["2016", 660, 1120, 300, 30],
-          ["2017", 1030, 540, 350, 120],
-          ["2023", 700, 10, 400, 190],
-        ]);
 
-        var data2 = google.visualization.arrayToDataTable([
-          ["Year", "Sales", "Expenses", "Profit"],
-          ["2014", 1000, 400, 200],
-          ["2015", 1170, 460, 250],
-          ["2016", 660, 1120, 300],
-          ["2017", 1030, 540, 350],
-        ]);
+      let data_list = [
+        ["Operator", "Qabul qildi", "Tolov qilindi", "Bekor qilindi"] 
+      ]
+
+      '{% for oper in operators %}'
+        data_list.push(['{{ operators|index:oper }}', '{{ oper.user.operator_clients|filter_filial:"recieved" }}', '{{ oper.user.operator_clients|filter_filial:"paid" }}', '{{ oper.user.operator_clients|filter_filial:"cancelled" }}']),
+      '{% endfor %}'
+
+
+      let data_list2 = [
+        ["Agents", "Yaratdi"]
+      ]
+
+      '{% for agent in agents %}'
+        data_list2.push(['{{ agents|index:agent }}', '{{ agent.user.agent_users.count }}']),
+      '{% endfor %}'
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable(data_list);
+
+        var data2 = google.visualization.arrayToDataTable(data_list2);
 
         var options = {
           chart: {
@@ -65,6 +71,7 @@
         </nav>
       </header>
       <div class="background">
+        {% if request.user.is_superuser %}
         <div class="cardo first__card">
           <div class="card__header mb-5">
             <h4 class="cardo__title">Filiallar</h4>
@@ -102,31 +109,25 @@
                 <p class="accepted">GreenCard oldi</p>
               </th>
             </tr>
+
+            {% for obj in filials %}
             <tr>
-              <td class="gringo text-start">1.Filial nomi</td>
-              <td>24</td>
-              <td>23</td>
-              <td>2</td>
-              <td>24</td>
-              <td>23</td>
-              <td>2</td>
+              <td class="gringo text-start">{{ filials|index:obj }} {{ obj.name }}</td>
+              <td>{{ obj.clients.count }}</td>
+              <td>{{ obj.clients|filter_filial:"recieved" }}</td>
+              <td>{{ obj.clients|filter_filial:"paid" }}</td>
+              <td>{{ obj.clients|filter_filial:"cancelled" }}</td>
+              <td>{{ obj.clients|filter_filial:"rejected" }}</td>
+              <td>{{ obj.clients|filter_filial:"accepted" }}</td>
             </tr>
-            <tr>
-              <td class="gringo text-start">1.Filial nomi</td>
-              <td>24</td>
-              <td>23</td>
-              <td>2</td>
-              <td>24</td>
-              <td>23</td>
-              <td>2</td>
-            </tr>
+            {% endfor %}
           </table>
         </div>
+        {% endif %}
 
         <div class="cardo chart__card">
           <div class="card__header mb-5">
-            <h4 class="cardo__title">Filiallar</h4>
-
+            <h4 class="cardo__title">Operatorlar</h4>
             <div class="header__right date__wrap">
               <p class="date">Sana</p>
               <div class="date__from">
@@ -152,18 +153,14 @@
                     <p class="cancelled">Bekor qilindi</p>
                   </th>
                 </tr>
+                {% for obj in operators %}
                 <tr>
-                  <td class="gringo text-start">1.Filial nomi</td>
-                  <td>24</td>
-                  <td>23</td>
-                  <td>2</td>
+                  <td class="gringo text-start">{{ operators|index:obj }} {{ obj.full_name }}</td>
+                  <td>{{ obj.user.operator_clients|filter_filial:"recieved" }}</td>
+                  <td>{{ obj.user.operator_clients|filter_filial:"paid" }}</td>
+                  <td>{{ obj.user.operator_clients|filter_filial:"cancelled" }}</td>
                 </tr>
-                <tr>
-                  <td class="gringo text-start">1.Filial nomi</td>
-                  <td>24</td>
-                  <td>23</td>
-                  <td>2</td>
-                </tr>
+                {% endfor %}
               </table>
             </div>
             <div class="righting">
@@ -174,7 +171,7 @@
 
         <div class="cardo chart__card">
           <div class="card__header mb-5">
-            <h4 class="cardo__title">Filiallar</h4>
+            <h4 class="cardo__title">Agentlar</h4>
 
             <div class="header__right date__wrap">
               <p class="date">Sana</p>
@@ -195,14 +192,12 @@
                     <p class="all">Yaratdi</p>
                   </th>
                 </tr>
+                {% for obj in agents %}
                 <tr>
                   <td class="text-start">Ismoilov Munisa</td>
                   <td>24</td>
                 </tr>
-                <tr>
-                  <td class="text-start">Bahtiyorov Akmal</td>
-                  <td>24</td>
-                </tr>
+                {% endfor %}
               </table>
             </div>
             <div class="righting">
