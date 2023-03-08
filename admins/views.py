@@ -843,19 +843,16 @@ class AnaliticsView(TemplateView):
         context = super(AnaliticsView, self).get_context_data(**kwargs)
         
         filials = UserInfo.objects.filter(is_filial=True)
-        opers = []
-        agents = []
+        opers = UserInfo.objects.filter(is_operator=True)
+        agents = UserInfo.objects.filter(is_agent=True)
         if not self.request.user.is_superuser and self.request.user.info.is_filial:
-            opers = UserInfo.objects.filter(filial=self.request.user.info).filter(is_filial=True)
-            agents = UserInfo.objects.filter(filial=self.request.user.info).filter(is_agent=True)
-            filials = UserInfo.objects.filter(is_filial=True).filter(user=self.request.user)
-        elif self.request.user.is_superuser:
-            opers = UserInfo.objects.filter(is_filial=True)
-            agents = UserInfo.objects.filter(is_agent=True)
+            opers = opers.filter(filial=self.request.user.info)
+            agents = agents.filter(filial=self.request.user.info)
+            filials = filials.filter(user=self.request.user)
         elif self.request.user.info.is_operator:
-            opers = UserInfo.objects.filter(is_operator=True).filter(user=self.request.user)
+            opers = opers.filter(user=self.request.user)
         elif self.request.user.info.is_agent:
-            agents = UserInfo.objects.filter(is_agent=True).filter(user=self.request.user)
+            agents = agents.filter(user=self.request.user)
 
         
         context['filials'] = filials
