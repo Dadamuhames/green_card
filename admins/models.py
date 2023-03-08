@@ -19,7 +19,7 @@ class UserInfo(models.Model):
     filial = models.ForeignKey("self", on_delete=models.CASCADE, related_name='workers', blank=True, null=True)
 
     def full_name(self):
-        return str(self.user.first_name) + '' + str(self.user.last_name)
+        return str(self.user.first_name) + ' ' + str(self.user.last_name)
 
     def get_operators(self):
         return self.workers.filter(is_operator=True)
