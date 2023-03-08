@@ -857,6 +857,8 @@ class AnaliticsView(TemplateView):
             opers = UserInfo.objects.filter(is_operator=True).filter(user=self.request.user)
         elif self.request.user.info.is_agent:
             agents = UserInfo.objects.filter(is_agent=True).filter(user=self.request.user)
+        elif self.request.user.info.is_filial:
+            filials = UserInfo.objects.filter(is_filial=True).filter(user=self.request.user)
 
         context['operators'] = opers
         context['agents'] = agents

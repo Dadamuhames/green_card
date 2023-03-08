@@ -96,7 +96,7 @@
         </nav>
       </header>
       <div class="background">
-        {% if request.user.is_superuser %}
+        {% if request.user.is_superuser or request.user.info.is_filial %}
         <div class="cardo first__card">
           <div class="card__header mb-5">
             <h4 class="cardo__title">Filiallar</h4>
@@ -142,12 +142,12 @@
             {% with obj.clients|by_date:filial_data as queryset %}
             <tr>
               <td class="gringo text-start">{{ filials|index:obj }} {{ obj.name }}</td>
-              <td>{{ obj.clients.count }}</td>
-              <td>{{ obj.clients|filter_filial:"recieved" }}</td>
-              <td>{{ obj.clients|filter_filial:"paid" }}</td>
-              <td>{{ obj.clients|filter_filial:"cancelled" }}</td>
-              <td>{{ obj.clients|filter_filial:"rejected" }}</td>
-              <td>{{ obj.clients|filter_filial:"accepted" }}</td>
+              <td>{{ queryset.count }}</td>
+              <td>{{ queryset|filter_filial:"recieved" }}</td>
+              <td>{{ queryset|filter_filial:"paid" }}</td>
+              <td>{{ queryset|filter_filial:"cancelled" }}</td>
+              <td>{{ queryset|filter_filial:"rejected" }}</td>
+              <td>{{ queryset|filter_filial:"accepted" }}</td>
             </tr>
             {% endwith %}
             {% endfor %}
@@ -208,7 +208,7 @@
         {% endif %}
   
         {% if not request.user.info.is_operator %}
-        <div class="cardo chart__card">
+        <div class="cardo chart__card" style="margin-top: 30px;">
           <div class="card__header mb-5">
             <h4 class="cardo__title">Agentlar</h4>
 
