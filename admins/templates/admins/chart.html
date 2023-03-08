@@ -104,10 +104,10 @@
             <form class="header__right date__wrap" method="">
               <p class="date">Sana</p>
               <div class="date__from">
-                <input name="filial_from_date" type="date" placeholder="01.01.2020" />
+                <input name="filial_from_date" {% if request.GET.filial_from_date %} value="{{ request.GET.filial_from_date }}" {% endif %} type="date" placeholder="01.01.2020" />
               </div>
               <div class="date__to">
-                <input name="filial_to_date" type="date" placeholder="01.01.2020" />
+                <input name="filial_to_date" {% if request.GET.filial_to_date %} value="{{ request.GET.filial_to_date }}" {% endif %} type="date" placeholder="01.01.2020" />
               </div>
               <button type="submit" class="confirm">
                 Применить
@@ -163,10 +163,10 @@
             <form class="header__right date__wrap" method="get">
               <p class="date">Sana</p>
               <div class="date__from">
-                <input name="operator_from_date" type="date" placeholder="01.01.2020" />
+                <input name="operator_from_date" {% if request.GET.operator_from_date %} value="{{ request.GET.operator_from_date }}" {% endif %} type="date" placeholder="01.01.2020" />
               </div>
               <div class="date__to">
-                <input name="operator_to_date" type="date" placeholder="01.01.2020" />
+                <input name="operator_to_date" {% if request.GET.operator_to_date %} value="{{ request.GET.operator_to_date }}" {% endif %} type="date" placeholder="01.01.2020" />
               </div>
               <button type="submit" class="confirm">
                 Применить
@@ -215,10 +215,10 @@
             <form class="header__right date__wrap">
               <p class="date">Sana</p>
               <div class="date__from">
-                <input name="agent_from_date" type="date" placeholder="01.01.2020" />
+                <input name="agent_from_date"  {% if request.GET.agent_from_date %} value="{{ request.GET.agent_from_date }}" {% endif %} type="date" placeholder="01.01.2020" />
               </div>
               <div class="date__to">
-                <input name="agent_to_date" type="date" placeholder="01.01.2020" />
+                <input name="agent_to_date" {% if request.GET.agent_to_date %} value="{{ request.GET.agent_to_date }}" {% endif %} type="date" placeholder="01.01.2020" />
               </div>
               <button type="submit" class="confirm">
                 Применить
