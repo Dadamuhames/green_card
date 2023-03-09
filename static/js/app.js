@@ -226,6 +226,10 @@ var maskOptions = {
 };
 var mask = IMask(element, maskOptions);
 
+
+var element2 = document.getElementById("num2");
+var mask2 = IMask(element2, maskOptions);
+
 const tabs = document.querySelectorAll("[data-target]"),
   tabContents = document.querySelectorAll("[data-content]");
 
