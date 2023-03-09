@@ -714,7 +714,9 @@ def delete_user(request):
     url = request.POST.get("url")
 
     try:
-        User.objects.get(id=int(id)).delete()
+        user = User.objects.get(id=int(id))
+        user.info.delete()
+        user.delete()
     except:
         pass
 
