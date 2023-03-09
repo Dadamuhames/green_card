@@ -172,12 +172,12 @@
 
                 <div class="item">
                   <label for="address">To'liq manzil</label>
-                  <input id="address" name="spouse_adres" type="text" {% if object.spouse_adres %} value="{{ object.spouse_adres }}" 
+                  <input id="address" disabled name="spouse_adres" type="text" {% if object.spouse_adres %} value="{{ object.spouse_adres }}" 
                   {% endif %} maxlength="255" class="item__input" placeholder="To'liq manzil" />
                 </div>
                 <div class="item">
                   <label for="address">Tug'ilgan manzil</label>
-                  <input id="address" name="spouse_birth_adres" {% if object.spouse_birth_adres %}
+                  <input id="address" name="spouse_birth_adres" disabled {% if object.spouse_birth_adres %}
                     value="{{ object.spouse_birth_adres }}" {% endif %} maxlength="255" type="text" class="item__input"
                     placeholder="Tug'ilgan manzil" />
                 </div>
@@ -195,21 +195,21 @@
                 
                 <div class="item half__item">
                   <label for="num"> Telefon raqami </label>
-                  <input id="num" name="spouse_nbm" {% if object.spouse_nbm %} value="{{ object.spouse_nbm }}" {% endif %} type="text"
+                  <input id="num" name="spouse_nbm" disabled {% if object.spouse_nbm %} value="{{ object.spouse_nbm }}" {% endif %} type="text"
                     maxlength="255" class="item__input" placeholder="Контактный телефон " />
                 </div>
-                <div class="item radio__item">
+                <div class="item radio__item disabled__item">
                   <label class="">Jinsi</label>
                   <div class="flexer__select m-0">
                     <div class="">
-                      <input type="radio" value="Erkak" id="test3" name="spouse_sex" {% if object.spouse_sex == 'Erkak' %} checked 
+                      <input type="radio" disabled value="Erkak" id="test3" name="spouse_sex" {% if object.spouse_sex == 'Erkak' %} checked 
                       {% endif %} />
                       <label class="radiohead radio-1" for="test3">
                         <p class="radio__txt">Erkak</p>
                       </label>
                     </div>
                     <div class="">
-                      <input type="radio" value="Ayol" id="test4" name="spouse_sex" {% if object.spouse_sex == 'Ayol' %} checked 
+                      <input type="radio" disabled value="Ayol" id="test4" name="spouse_sex" {% if object.spouse_sex == 'Ayol' %} checked 
                       {% endif %} />
                       <label class="radiohead radio-2" for="test4">
                         <p class="radio__txt">Ayol</p>
