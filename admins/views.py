@@ -584,7 +584,7 @@ def save_user(is_operator=False, is_agent=False, is_filial=False, request=None):
 
         full_name = request.POST.get("full_name", '')
 
-        if '' in full_name:
+        if ' ' in full_name:
             first_name = full_name.split(' ')[0]
             last_name = full_name.split(' ')[-1]
             new_user.first_name = first_name
@@ -719,6 +719,27 @@ def delete_user(request):
         pass
 
     return redirect(url)
+
+
+# delete filial
+def filial_delete(request):
+    id = request.POST.get("id")
+    url = request.POST.get("url")
+
+    try:
+        user = User.objects.filter(info__is_filial=True).get(id=int(id))
+        user.is_active = False
+        user.save()
+
+        for worker in user.info.workers.all():
+            worker.user.is_active = False
+            worker.user.save()
+    except:
+        pass
+
+    return redirect(url)
+
+
 
 
 # logout

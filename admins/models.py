@@ -51,9 +51,19 @@ class Clients(models.Model):
     education = models.CharField("Education", max_length=255, blank=True, null=True, choices=EDUCATIONS)
     family_status = models.CharField('Family status', blank=True, null=True, choices=FAMILY, max_length=255)
     child_count = models.IntegerField('Child count', blank=True, null=True, default=0, validators=[MinValueValidator(0)])
+
+    # spouse
     spouse = models.CharField("Spouse", blank=True, null=True, max_length=255)
     spouse_birth_date = models.DateField(blank=True, null=True, default=None)
     spouse_education = models.CharField(max_length=255, blank=True, null=True)
+    spouse_sex = models.CharField("Sex", max_length=255, choices=GANDERS, blank=True, null=True)
+    spouse_birth_adres = models.CharField('Birth adress', blank=True, null=True, max_length=255)
+    spouse_adres = models.CharField("Adres", blank=True, null=True, max_length=255)
+    spouse_nbm = models.CharField('Nbm', max_length=255, blank=True, null=True)
+    spouse_state = models.CharField("State", max_length=255, blank=True, null=True, choices=STATES)
+    # end spouse
+
+
     operator = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='operator_clients')
     oper_date = models.DateTimeField(blank=True, null=True)
     agent = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, related_name='agent_users')
@@ -62,7 +72,7 @@ class Clients(models.Model):
     status = models.CharField(
         "Status", max_length=255, default='new', choices=STATUS, blank=True, null=True)
     last_update = models.DateTimeField(blank=True, null=True)
-    filial = models.ForeignKey(UserInfo, on_delete=models.CASCADE, related_name='clients', blank=True, null=True)
+    filial = models.ForeignKey(UserInfo, on_delete=models.SET_NULL, related_name='clients', blank=True, null=True)
     child_information = models.TextField('Child inf', blank=True, null=True)
     state = models.CharField("State", max_length=255, blank=True, null=True, choices=STATES)
 

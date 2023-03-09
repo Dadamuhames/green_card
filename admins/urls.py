@@ -28,5 +28,6 @@ urlpatterns = [
     path("images/delete", views.delete_image, name='del-img'),
     path("client_file/delete", views.dleete_client_file, name='del_client_file'),
     path("check_username", views.check_username, name='check_username'),
-    path("analitica", views.AnaliticsView.as_view(), name='anal')
+    path("analitica", views.AnaliticsView.as_view(), name='anal'),
+    path("filial_delete", views.filial_delete, name='del_filial')
 ]
