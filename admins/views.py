@@ -411,47 +411,6 @@ class ClientsCreate(CreateView):
 
         return context
     
-
-# create clients
-def client_create(request):
-    agent = request.user
-
-    if agent.is_superuser:
-        return redirect("admins:clients")
-
-    if agent.info.is_agent:
-        form = ClientForm(request.POST)
-
-        if form.is_valid():
-            client = form.save()
-
-            client.agent = agent
-            client.filial = agent.info.filial
-            client.agent_date = datetime.now()
-            client.last_update = datetime.now()
-            client.save()
-
-            files = request.session.get('clients_files')
-            if files:
-                files = [it for it in files if it['id'] == '']
-                for file in files:
-                    client_file = ClientFiles(client=client, file=file['name'])
-                    client_file.save()
-
-            images = request.session.get('clients_images')
-            if images:
-                images = [it for it in files if it['id'] == '']
-                for file in images:
-                    client_image = ClientImages(
-                        client=client, file=file['name'])
-                    client_image.save()
-        else:
-            print(form.errors)
-
-    
-    return redirect('admins:clients')
-
-    
 # clients detail view
 class ClientsDetailView(DetailView):
     model = Clients
@@ -849,9 +808,9 @@ class AnaliticsView(TemplateView):
             opers = opers.filter(filial=self.request.user.info)
             agents = agents.filter(filial=self.request.user.info)
             filials = filials.filter(user=self.request.user)
-        elif self.request.user.info.is_operator:
+        elif not self.request.user.is_superuser and self.request.user.info.is_operator:
             opers = opers.filter(user=self.request.user)
-        elif self.request.user.info.is_agent:
+        elif not self.request.user.is_superuser and self.request.user.info.is_agent:
             agents = agents.filter(user=self.request.user)
 
         
