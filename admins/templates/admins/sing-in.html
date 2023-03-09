@@ -42,7 +42,11 @@
                     Free access to our dashboard.
                 </p>
 
-                <div class="invalid-feedback" style="display: block;">{{ form.errors.all }}</div>
+                <div class="invalid-feedback" style="display: block;">
+                    {% for error in form.errors.values %}
+                    {{ error }}
+                    {% endfor %}
+                </div>
 
                 <!-- Form -->
                 <form method="post">
