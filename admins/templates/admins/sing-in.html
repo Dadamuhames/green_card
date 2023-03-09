@@ -31,7 +31,8 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-12 col-md-5 col-xl-4 my-5">
-
+                <div class="invalid-feedback" style="display: block;">{{ form.errors }}</div>
+                
                 <!-- Heading -->
                 <h1 class="display-4 text-center mb-3">
                     Sign in
@@ -57,8 +58,8 @@
                         <!-- Input -->
                         <input type="text" name="username" class="form-control" placeholder="name@address.com">
                         <div class="invalid-feedback" style="display: block;">
-                            {% if form.errors.usernames %}
-                            {{ form.errors.usernames }}
+                            {% if form.errors.username %}
+                            {{ form.errors.username }}
                             {% endif %}
                         </div>
                     </div>
