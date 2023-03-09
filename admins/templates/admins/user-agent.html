@@ -9,7 +9,7 @@
         <div class="nav__left">
           <h1 class="title">Agentlar</h1>
           <button type="button" class="create" id="create-btn">
-            <i class="bx bx-plus"></i>Создать агента
+            <i class="bx bx-plus"></i>Agent yaratish
           </button>
         </div>
         <div class="nav__right evanescence">
@@ -281,7 +281,7 @@
       <div class="create__wrapper">
         <div class="kreator gwyn">
           <div class="create__header">
-            <h4 class="create__title">Создать клиента</h4>
+            <h4 class="create__title">Mijoz yaratish</h4>
             <button class="create__x" id="create-x">
               <i class="bx bx-x"></i>
             </button>
@@ -291,7 +291,7 @@
             <input type="hidden" name="url" value="{{ request.get_full_path }}">
             <div class="create__body">
               <div class="user__info">
-                <p class="info__title">Filial malumotlar</p>
+                <p class="info__title">Filial malumotlari</p>
                 <div class="">
                   {% if request.user.is_superuser %}
                   <div class="item d-flex flex-column align-items-start mb-3">
@@ -341,8 +341,8 @@
               </div>
             </div>
             <div class="create__bottom">
-              <button class="create__cancel">Отмена</button>
-              <button type="submit" class="create__confirm">Создать клиента</button>
+              <button class="create__cancel">Bekor qilish</button>
+              <button type="submit" class="create__confirm">Mijoz yaratish</button>
             </div>
           </form>
         </div>
@@ -434,8 +434,8 @@
               </div>
             </div>
             <div class="create__bottom">
-              <button class="create__cancel">Отмена</button>
-              <button class="create__confirm">Создать клиента</button>
+              <button class="create__cancel">Bekor qilish</button>
+              <button class="create__confirm">Mijoz yaratish</button>
             </div>
           </form>
         </div>

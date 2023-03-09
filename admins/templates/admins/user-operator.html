@@ -9,7 +9,7 @@
           <div class="nav__left">
             <h1 class="title">Operatorlar</h1>
             <button type="button" class="create" id="create-btn">
-              <i class="bx bx-plus"></i>Создать оператора
+              <i class="bx bx-plus"></i>Operator yaratish
             </button>
           </div>
           <div class="nav__right evanescence">
@@ -57,13 +57,13 @@
                       id="search" name="q"
                       {% if request.GET.q %} value="{{ request.GET.q }}" {% endif %}
                       type="text"
-                      placeholder="Поиск клиентов"
+                      placeholder="Qidirish"
                     />
                     <label for="search">
                       <i class="bx bx-search"></i>
                     </label>
                   </div>
-                  <button type="submit" class="search__btn">Поиск</button>
+                  <button type="submit" class="search__btn">Qidirish</button>
                 </form>
               </div>
             </div>
@@ -183,7 +183,7 @@
                   </td>
                   <td>
                     <div class="list__item">
-                      <p class="list__item-txt">{{ obj.agent_users.count }}</p>
+                      <p class="list__item-txt">{{ obj.operator_clients.count }}</p>
                     </div>
                   </td>
                   <td>
@@ -257,7 +257,7 @@
                   <input type="hidden" name="{{ key }}" value="{{ val }}">
                 {% endif %}
               {% endfor %}
-              <label for="select">Показать по: </label>
+              <label for="select">Ko'rsatish soni </label>
               <select name="page_size" id="select-page-size" class="list__select">
                 <option value="16" {% if page_size == 16 %} selected {% endif %}>16</option>
                 <option value="12" {% if page_size == 12 %} selected {% endif %}>12</option>
@@ -357,8 +357,8 @@
               </div>
             </div>
             <div class="create__bottom">
-              <button class="create__cancel">Отмена</button>
-              <button class="create__confirm">Создать клиента</button>
+              <button class="create__cancel">Bekor qilish</button>
+              <button class="create__confirm">Mijoz yaratish</button>
             </div>
           </form>
         </div>
@@ -450,8 +450,8 @@
               </div>
             </div>
             <div class="create__bottom">
-              <button class="create__cancel">Отмена</button>
-              <button class="create__confirm">Создать клиента</button>
+              <button class="create__cancel">Bekor qilish</button>
+              <button class="create__confirm">Mijoz yaratish</button>
             </div>
           </form>
         </div>

@@ -12,6 +12,7 @@ class LoginRequiredMiddleware(MiddlewareMixin):
             return redirect('/login')
 
         if request.user.is_authenticated and not request.user.is_superuser:
-            if request.user.info.is_operator and request.get_full_path() == '/clients':
-                return redirect("/clients?status=new")
+            if request.user.info:
+                if request.user.info.is_operator and request.get_full_path() == '/clients':
+                    return redirect("/clients?status=new")
 

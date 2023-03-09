@@ -32,33 +32,33 @@
                 {% csrf_token %}
                 <div class="col-8">
                     <div class="cardo client__info mb-4">
-                        <h4 class="card__title">Информация о клиенте</h4>
+                        <h4 class="card__title">Mijoz haqida ma'lumot</h4>
                         <div class="items">
                             <div class="item">
-                                <label for="name"> Имя Фамилия Отчество </label>
+                                <label for="name"> F.I.Sh </label>
                                 <input id="name" name="full_name" type="text" required maxlength="255"
-                                    class="item__input" placeholder="Имя Фамилия Отчество" />
+                                    class="item__input" placeholder="F.I.Sh" />
                             </div>
                             <div class="item half__item">
-                                <label for="birthday"> Дата рождения</label>
+                                <label for="birthday"> Tug'ilgan sana</label>
                                 <input id="birthday" name="bith_date" type="date"
                                     class="item__input" placeholder="Дата рождения" />
                             </div>
                             <div class="item">
-                                <label for="address"> Полный адрес</label>
+                                <label for="address"> To'liq manzil</label>
                                 <input id="address" name="adres" type="text" maxlength="255"
-                                    class="item__input" placeholder="Полный адрес" />
+                                    class="item__input" placeholder="To'liq manzil" />
                             </div>
                             <div class="item">
-                                <label for="address">Адрес рождения</label>
+                                <label for="address">Tug'ilgan manzil</label>
                                 <input id="address" name="birth_adres" maxlength="255" type="text" class="item__input"
-                                    placeholder="Полный адрес" />
+                                    placeholder="Tug'ilgan manzil" />
                             </div>
                             <div class="item half__item">
-                                <label for="education"> Регион </label>
+                                <label for="education"> Viloyat </label>
                                 <div class="custom-select" style="width: 200px">
                                     <select name="state">
-                                        <option value="">Регион</option>
+                                        <option value="">Viloyat</option>
                                         {% for opt in states %}
                                             <option value="{{ opt|list_item:1 }}">{{ opt|list_item:0 }}</option>
                                         {% endfor %}
@@ -66,10 +66,10 @@
                                 </div>
                             </div>
                             <div class="item half__item">
-                                <label for="education"> Образование </label>
+                                <label for="education"> Ma'lumoti </label>
                                 <div class="custom-select" style="width: 200px">
                                     <select name="education">
-                                        <option value="">Образование</option>
+                                        <option value="">Ma'lumoti</option>
                                         <option value="Oliy">Oliy
                                         </option>
                                         <option value="Orta">Orta
@@ -79,12 +79,12 @@
                             </div>
 
                             <div class="item half__item">
-                                <label for="num"> Контактный телефон </label>
+                                <label for="num"> Telefon raqami </label>
                                 <input id="num" name="nbm" type="text" maxlength="255" class="item__input"
                                     placeholder="Контактный телефон " />
                             </div>
                             <div class="item radio__item">
-                                <label class="">Пол клиента</label>
+                                <label class="">Jinsi</label>
                                 <div class="flexer__select m-0">
                                     <div class="">
                                         <input type="radio" value="Erkak" id="test1" name="sex" checked/>
@@ -112,49 +112,91 @@
                                 </div>
                             </div>
                             <div class="item half__item">
-                                <label for="children"> Дети </label>
+                                <label for="children"> Farzandlari </label>
                                 <input id="children" name="child_count" type="number"
                                     class="item__input" placeholder="Дети" value="0" />
                             </div>
 
                             <div class="item half__item">
-                                <label for="children"> Children information </label>
+                                <label for="children"> Farzandlari </label>
                                 <textarea id="children" name="child_information" class="editor" placeholder="Дети "></textarea>
                             </div>
 
                             <hr />
                             <div class="item">
-                                <label for="husband"> Супруг/Супруга </label>
+                                <label for="husband"> Turmush o'rtog'i </label>
                                 <input id="husband" name="spouse" type="text"
                                     class="item__input" maxlength="255" placeholder="Супруг/Супруга " />
                             </div>
                             <div class="item half__item">
-                                <label for="birthday-2"> Дата рождение </label>
+                                <label for="birthday-2"> Tug'ilgan sana </label>
                                 <input id="birthday-2" name="spouse_birth_date" type="date" class="item__input"
                                     placeholder="Дата рождение" />
                             </div>
 
+                            <div class="item">
+                                <label for="address">To'liq manzil</label>
+                                <input id="address" name="spouse_adres" type="text" maxlength="255" class="item__input" placeholder="To'liq manzil" />
+                            </div>
+                            <div class="item">
+                                <label for="address">Tug'ilgan manzil</label>
+                                <input id="address" name="spouse_birth_adres" maxlength="255" type="text" class="item__input" placeholder="Tug'ilgan manzil" />
+                            </div>
                             <div class="item half__item">
-                                <label for="education-1"> Образование </label>
+                                <label for="education"> Viloyat </label>
+                                <div class="custom-select" style="width: 200px">
+                                    <select name="spouse_state">
+                                        <option value="">Viloyat</option>
+                                        {% for opt in states %}
+                                        <option value="{{ opt|list_item:1 }}">{{ opt|list_item:0 }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="item half__item">
+                                <label for="education-1"> Ma'lumoti </label>
                                 <div class="custom-select" style="width: 200px">
                                     <select name="spouse_education">
-                                        <option value="">Образование</option>
+                                        <option value="">Ma'lumoti</option>
                                         <option value="Oliy">Oliy</option>
                                         <option value="Orta">Orta</option>
                                     </select>
                                 </div>
                             </div>
+
+                            <div class="item half__item">
+                                <label for="num"> Telefon raqami </label>
+                                <input id="num2" name="spouse_nbm" type="text" maxlength="255" class="item__input" placeholder="Контактный телефон " />
+                            </div>
+                            <div class="item radio__item">
+                                <label class="">Jinsi</label>
+                                <div class="flexer__select m-0">
+                                    <div class="">
+                                        <input type="radio" value="Erkak" id="test3" name="spouse_sex"/>
+                                        <label class="radiohead radio-1" for="test3">
+                                            <p class="radio__txt">Erkak</p>
+                                        </label>
+                                    </div>
+                                    <div class="">
+                                        <input type="radio" value="Ayol" id="test4" name="spouse_sex" checked/>
+                                        <label class="radiohead radio-2" for="test4">
+                                            <p class="radio__txt">Ayol</p>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <hr />
-                        <button class="confirm">Сохранить</button>
+                        <button class="confirm">Saqlash</button>
                     </div>
 
                     <div class="cardo file__card">
-                        <h4 class="card__title">Файлы</h4>
+                        <h4 class="card__title">Fayllar</h4>
 
                         <div class="file__items">
                             <div class="file__item mb-4">
-                                <label for="passport"> Добавить копия паспорта </label>
+                                <label for="passport"> Pasport nusxasini yuklash </label>
                                 <!-- ПОСТАВЬ ДРОПЗОН СЮДА -->
                                 <div class="my-dropzone dropzone" data-accept="image/*" data-key="images" data-delete="/images/delete">
                                     <div class="dz-preview-container" id="drop-image" style="padding: 0;">
@@ -162,14 +204,14 @@
                                 </div>
                             </div>
                             <div class="file__item mb-4">
-                                <label for="passport"> Добавить PDF файл </label>
+                                <label for="passport"> PDF-fayl yuklash </label>
                                 <!-- ПОСТАВЬ ДРОПЗОН СЮДА -->
                                 <div class="my-dropzone dropzone" data-accept="application/pdf,.doc,.docx,.xls,.xlsx,.csv,.tsv,.ppt,.pptx,.pages,.odt,.rtf" data-key="files" data-delete="/images/delete">
                                 <div class="dz-preview-container" id="drop-files" style="padding: 0;">
                                 </div>
                                 </div>
                             </div>
-                            <button class="confirm">Сохранить</button>
+                            <button class="confirm">Saqlash</button>
                         </div>
                     </div>
                 </div>

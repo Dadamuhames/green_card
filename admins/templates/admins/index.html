@@ -326,12 +326,12 @@
               </td>
               <td>
                 <div class="list__item">
-                  <p class="list__item-txt">Andijan</p>
+                  <p class="list__item-txt">{{ obj.get_state_display }}</p>
                 </div>
               </td>
               <td>
                 <div class="list__item">
-                  <p class="list__item-txt">{{ obj.agent_date|date:'d.m.Y H:i' }}</p>
+                  <p class="list__item-txt">{{ obj.agent_date|date:'d.m.Y' }} {{ obj.agent_date|time:'H:i' }}</p>
                 </div>
               </td>
               <td>

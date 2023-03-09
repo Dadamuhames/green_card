@@ -7,7 +7,7 @@
     <header>
       <nav class="navbar" style="height: 83px">
         <div class="nav__left">
-          <h1 class="title">Клиент: {{ object.full_name }}</h1>
+          <h1 class="title">Mijoz: {{ object.full_name }}</h1>
           <div class="two__btns d-flex align-items-center">
             {% if request.user == object.agent or request.user.is_superuser or request.user.info == object.filial %}
             <button id="clear-btn" class="list__item-btn me-1">
@@ -30,7 +30,7 @@
               {% endif %} {{ request.user.first_name }} {{ request.user.last_name }}</p>
           </div>
           <button class="back" onclick="history.back();">
-            <i class="bx bx-left-arrow-alt"></i> Назад
+            <i class="bx bx-left-arrow-alt"></i> Ortga
           </button>
         </div>
       </nav>
@@ -42,22 +42,22 @@
           {% csrf_token %}
           <div class="col-6">
             <div class="cardo client__info mb-4">
-              <h4 class="card__title">Информация о клиенте</h4>
+              <h4 class="card__title">Mijoz haqida ma'lumot</h4>
                 <div class="items">
                   <div class="item">
-                    <label for="name"> Имя Фамилия Отчество </label>
+                    <label for="name"> F.I.Sh </label>
                     <input id="name" name="full_name" type="text" required  maxlength="255" {% if object.full_name %} value="{{ object.full_name }}" {% endif %} class="item__input"
-                      placeholder="Имя Фамилия Отчество"  />
+                      placeholder="F.I.Sh"  />
                   </div>
                   <div class="item half__item">
-                    <label for="birthday"> Дата рождения</label>
+                    <label for="birthday"> Tug'ilgan sana </label>
                     <input id="birthday" name="bith_date" type="date"  maxlength="255" {% if object.bith_date %} value="{{ object.bith_date|date:'Y-m-d' }}" {% endif %} class="item__input"
-                      placeholder="Дата рождения"  />
+                      placeholder="Tug'ilgan sana"  />
                   </div>
                   <div class="item">
-                    <label for="address"> Полный адрес</label>
+                    <label for="address"> To'liq manzil</label>
                     <input id="address" name="adres" type="text"  maxlength="255" {% if object.adres %} value="{{ object.adres }}" {% endif %} class="item__input"
-                      placeholder="Полный адрес"  />
+                      placeholder="To'liq manzil"  />
                   </div>
                   <div class="item">
                     <label for="address">Адрес рождения</label>
@@ -70,7 +70,7 @@
                       <select name="state">
                         <option value="">Регион</option>
                         {% for opt in states %}
-                        <option value="{{ opt|list_item:1 }}">{{ opt|list_item:0 }}</option>
+                        <option value="{{ opt|list_item:1 }}" {% if object.state == opt|list_item:1 %} selected {% endif %}>{{ opt|list_item:0 }}</option>
                         {% endfor %}
                       </select>
                     </div>
@@ -140,6 +140,27 @@
                     <input id="birthday-2" name="spouse_birth_date" type="date" {% if object.spouse_birth_date %} value="{{ object.spouse_birth_date|date:'d.m.Y' }}" {% endif %} class="item__input"
                       placeholder="Дата рождение"  />
                   </div>
+
+                  <div class="item">
+                    <label for="address">To'liq manzil</label>
+                    <input id="address" name="spouse_adres" type="text" {% if object.spouse_adres %} value="{{ object.spouse_adres }}" {% endif %} maxlength="255" class="item__input" placeholder="To'liq manzil" />
+                  </div>
+                  <div class="item">
+                    <label for="address">Tug'ilgan manzil</label>
+                    <input id="address" name="spouse_birth_adres" {% if object.spouse_birth_adres %} value="{{ object.spouse_birth_adres }}" {% endif %} maxlength="255" type="text" class="item__input"
+                      placeholder="Tug'ilgan manzil" />
+                  </div>
+                  <div class="item half__item">
+                    <label for="education"> Viloyat </label>
+                    <div class="custom-select" style="width: 200px">
+                      <select name="spouse_state">
+                        <option value="">Viloyat</option>
+                        {% for opt in states %}
+                        <option value="{{ opt|list_item:1 }}" {% if object.spouse_state == opt|list_item:1 %} selected {% endif %}>{{ opt|list_item:0 }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
     
                   <div class="item half__item">
                     <label for="education-1"> Образование </label>
@@ -151,7 +172,30 @@
                       </select>
                     </div>
                   </div>
+
+                  <div class="item half__item">
+                    <label for="num2"> Telefon raqami </label>
+                    <input id="num2" name="spouse_nbm" {% if object.spouse_nbm %} value="{{ object.spouse_nbm }}" {% endif %} type="text" maxlength="255" class="item__input" placeholder="Контактный телефон " />
+                  </div>
+                  <div class="item radio__item">
+                    <label class="">Jinsi</label>
+                    <div class="flexer__select m-0">
+                      <div class="">
+                        <input type="radio" value="Erkak" id="test3" name="spouse_sex" {% if object.spouse_sex == 'Erkak' %} checked {% endif %}/>
+                        <label class="radiohead radio-1" for="test3">
+                          <p class="radio__txt">Erkak</p>
+                        </label>
+                      </div>
+                      <div class="">
+                        <input type="radio" value="Ayol" id="test4" name="spouse_sex" {% if object.spouse_sex == 'Ayol' %} checked {% endif %}/>
+                        <label class="radiohead radio-2" for="test4">
+                          <p class="radio__txt">Ayol</p>
+                        </label>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
                 <hr />
                 <button class="confirm">Сохранить</button>
             </div>
@@ -343,7 +387,7 @@
               <div class="info__item">
                 <label class="info__sup">Дата добавление</label>
                 <div class="input__wrap">
-                  <input type="text" disabled {% if object.agent_date %} value="{{ object.agent_date|date:'d.m.Y' }}" {% endif %} placeholder="Дата добавление " />
+                  <input type="text" disabled {% if object.agent_date %} value="{{ object.agent_date|date:'d.m.Y' }} {{ object.agent_date|time:'H:i' }}" {% endif %} placeholder="Дата добавление " />
                   <i class="bi bi-clock"></i>
                 </div>
               </div>
@@ -365,7 +409,7 @@
                       <div class="comment">
                         <div class="com__header">
                           <p class="com__name">{{ comment.user.first_name }} {{ comment.user.last_name }}</p>
-                          <p class="com__date">{{ comment.date|date:'d.m.Y' }}</p>
+                          <p class="com__date">{{ comment.date|date:'d.m.Y' }} {{ comment.date|time:'H:i' }}</p>
                         </div>
                         <p class="com__txt">
                           {{ comment.text }}

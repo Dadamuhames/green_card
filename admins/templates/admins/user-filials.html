@@ -9,7 +9,7 @@
         <div class="nav__left">
           <h1 class="title">Filiallar</h1>
           <button type="button" class="create" id="create-btn">
-            <i class="bx bx-plus"></i>Создать филиал
+            <i class="bx bx-plus"></i>Filial qo'shish
           </button>
         </div>
         <div class="nav__right evanescence">
@@ -63,7 +63,7 @@
                     <i class="bx bx-search"></i>
                   </label>
                 </div>
-                <button type="submit" class="search__btn">Поиск</button>
+                <button type="submit" class="search__btn">Qidirish</button>
               </form>
             </div>
           </div>
@@ -195,7 +195,7 @@
                     onclick="var result = confirm('Want to delete?');if (result){event.preventDefault();document.getElementById('del_user_{{ obj.id }}').submit();}">
                       <img src="{% static 'img/delete.svg' %}" alt="" />
                     </button>
-                    <form action="{% url 'admins:del_user' %}" id="del_user_{{ obj.id }}" style="display: none;" method="post">
+                    <form action="{% url 'admins:del_filial' %}" id="del_user_{{ obj.id }}" style="display: none;" method="post">
                         {% csrf_token %}
                         <input type="hidden" name="id" value="{{ obj.user.id }}">
                         <input type="hidden" name="url" value="{{ request.get_full_path }}">
@@ -245,7 +245,7 @@
             <input type="hidden" name="{{ key }}" value="{{ val }}">
             {% endif %}
             {% endfor %}
-            <label for="select">Показать по: </label>
+            <label for="select">Ko'rsatish soni: </label>
             <select name="page_size" id="select-page-size" class="list__select">
               <option value="16" {% if page_size == 16 %} selected {% endif %}>16</option>
               <option value="12" {% if page_size == 12 %} selected {% endif %}>12</option>
@@ -331,8 +331,8 @@
             </div>
           </div>
           <div class="create__bottom">
-            <button class="create__cancel">Отмена</button>
-            <button type="submit" class="create__confirm">Создать клиента</button>
+            <button class="create__cancel">Bekor qilish</button>
+            <button type="submit" class="create__confirm">Mijoz yaratish</button>
           </div>
         </form>
       </div>
@@ -343,7 +343,7 @@
     <div class="create__wrapper">
       <div class="kreator gwyn">
         <div class="create__header">
-          <h4 class="create__title">Filial yaratish</h4>
+          <h4 class="create__title">Filial ozgartirizh</h4>
           <button class="create__x" id="edit-x">
             <i class="bx bx-x"></i>
           </button>
@@ -408,8 +408,8 @@
             </div>
           </div>
           <div class="create__bottom">
-            <button class="create__cancel" id="edit-cancel">Отмена</button>
-            <button class="create__confirm">Создать клиента</button>
+            <button class="create__cancel" id="edit-cancel">Bekor qilish</button>
+            <button class="create__confirm">Mijoz ozgartirish</button>
           </div>
         </form>
       </div>
