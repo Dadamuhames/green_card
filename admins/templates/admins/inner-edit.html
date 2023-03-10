@@ -59,16 +59,16 @@
                     <input id="address" name="adres" type="text"  maxlength="255" {% if object.adres %} value="{{ object.adres }}" {% endif %} class="item__input"
                       placeholder="To'liq manzil"  />
                   </div>
-                  <div class="item">
+                  <!--<div class="item">
                     <label for="address">Адрес рождения</label>
                     <input id="address" name="birth_adres" maxlength="255" type="text" {% if object.birth_adres %} value="{{ object.birth_adres }}" {% endif %}
                       class="item__input" placeholder="Адрес рождения" />
-                  </div>
+                  </div>-->
                   <div class="item half__item">
-                    <label for="education"> Регион </label>
+                    <label for="education"> Tug'ilgan manzil </label>
                     <div class="custom-select" style="width: 200px">
                       <select name="state">
-                        <option value="">Регион</option>
+                        <option value="">Tug'ilgan manzil</option>
                         {% for opt in states %}
                         <option value="{{ opt|list_item:1 }}" {% if object.state == opt|list_item:1 %} selected {% endif %}>{{ opt|list_item:0 }}</option>
                         {% endfor %}
@@ -145,13 +145,13 @@
                     <label for="address">To'liq manzil</label>
                     <input id="address" name="spouse_adres" type="text" {% if object.spouse_adres %} value="{{ object.spouse_adres }}" {% endif %} maxlength="255" class="item__input" placeholder="To'liq manzil" />
                   </div>
-                  <div class="item">
+                  <!--<div class="item">
                     <label for="address">Tug'ilgan manzil</label>
                     <input id="address" name="spouse_birth_adres" {% if object.spouse_birth_adres %} value="{{ object.spouse_birth_adres }}" {% endif %} maxlength="255" type="text" class="item__input"
                       placeholder="Tug'ilgan manzil" />
-                  </div>
+                  </div>-->
                   <div class="item half__item">
-                    <label for="education"> Viloyat </label>
+                    <label for="education"> Tug'ilgan manzil </label>
                     <div class="custom-select" style="width: 200px">
                       <select name="spouse_state">
                         <option value="">Viloyat</option>

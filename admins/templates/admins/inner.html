@@ -74,13 +74,13 @@
                     disabled
                   />
                 </div>
-                <div class="item">
+                <!--<div class="item">
                   <label for="address">Адрес рождения</label>
                   <input id="address" disabled maxlength="255" type="text" {% if object.birth_adres %} value="{{ object.birth_adres }}" {% endif %}
                     class="item__input" placeholder="Адрес рождения" />
-                </div>
+                </div>-->
                 <div class="item">
-                  <label for="address">Регион</label>
+                  <label for="address">Tug'ilgan manzil</label>
                   <input id="address" disabled maxlength="255" type="text" {% if object.state %} value="{{ object.get_state_display }}"
                     {% endif %} class="item__input" placeholder="Регион" />
                 </div>
@@ -175,14 +175,14 @@
                   <input id="address" disabled name="spouse_adres" type="text" {% if object.spouse_adres %} value="{{ object.spouse_adres }}" 
                   {% endif %} maxlength="255" class="item__input" placeholder="To'liq manzil" />
                 </div>
-                <div class="item">
+                <!--<div class="item">
                   <label for="address">Tug'ilgan manzil</label>
                   <input id="address" name="spouse_birth_adres" disabled {% if object.spouse_birth_adres %}
                     value="{{ object.spouse_birth_adres }}" {% endif %} maxlength="255" type="text" class="item__input"
                     placeholder="Tug'ilgan manzil" />
-                </div>
+                </div>-->
                 <div class="item half__item">
-                  <label for="education"> Viloyat </label>
+                  <label for="education"> Tug'ilgan manzil </label>
                   <input id="address" disabled maxlength="255" type="text" {% if object.spouse_state %} value="{{ object.get_spouse_state_display }}" 
                   {% endif %} class="item__input" placeholder="Регион" />
                 </div>

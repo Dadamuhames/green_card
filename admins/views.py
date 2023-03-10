@@ -123,7 +123,7 @@ class BasedListView(ListView):
 
         context['objects'] = get_lst_data(self.get_queryset(), self.request, paginate_by)
         context['page_obj'] = page_obj
-        context['filials'] = UserInfo.objects.filter(is_filial=True)
+        context['filials'] = UserInfo.objects.filter(is_filial=True).filter(user__is_active=True)
         context['page_size'] = paginate_by
 
         pang_url = self.request.path + '?'
