@@ -137,7 +137,7 @@
                   </div>
                   <div class="item half__item">
                     <label for="birthday-2"> Дата рождение </label>
-                    <input id="birthday-2" name="spouse_birth_date" type="date" {% if object.spouse_birth_date %} value="{{ object.spouse_birth_date|date:'d.m.Y' }}" {% endif %} class="item__input"
+                    <input id="birthday-2" name="spouse_birth_date" type="date" {% if object.spouse_birth_date %} value="{{ object.spouse_birth_date|date:'Y-m-d' }}" {% endif %} class="item__input"
                       placeholder="Дата рождение"  />
                   </div>
 
@@ -223,24 +223,26 @@
                             <form action="{% url 'admins:del_client_file' %}" id="delete-form" method="post"></form>
                           </div>
                           {% for img in object.images.all %}
-                          <div class="dz-preview dz-processing dz-complete dz-image-preview" style="position: relative;">
-                            <div class="dz-image">
-                              <img data-dz-thumbnail="" src='{% image_thumb img.image alias="ten" request=request %}' alt="{{ img.image }}">
-                            </div>
-                            <div class="dz-details">
-                              <div class="dz-filename"><span data-dz-name="">{{ img.image }}</span>
+                          <a class="dz-remove" href="{{ img.image.url }}" download="">
+                            <div class="dz-preview dz-processing dz-complete dz-image-preview" style="position: relative;">
+                              <div class="dz-image">
+                                <img data-dz-thumbnail="" src='{% image_thumb img.image alias="ten" request=request %}' alt="{{ img.image }}">
                               </div>
+                              <div class="dz-details">
+                                <div class="dz-filename"><span data-dz-name="">{{ img.image }}</span>
+                                </div>
+                              </div>
+                              <a class="dz-remove" data-file="{{ img.id }}"
+                                onclick="var result = confirm('Want to delete?');if (result){submit_form('delete-form_{{ img.id }}');}"
+                                data-dz-remove>Удалить</a>
+                                <form action="{% url 'admins:del_client_file' %}" id="delete-form_{{ img.id }}" method="post">
+                                  {% csrf_token %}
+                                  <input type="hidden" name="url" value="{{ request.get_full_path }}">
+                                  <input type="hidden" name="obj_id" value="{{ img.id }}">
+                                  <input type="hidden" name="key" value="image">
+                                </form>
                             </div>
-                            <a class="dz-remove" data-file="{{ img.id }}"
-                              onclick="var result = confirm('Want to delete?');if (result){submit_form('delete-form_{{ img.id }}');}"
-                              data-dz-remove>Удалить</a>
-                              <form action="{% url 'admins:del_client_file' %}" id="delete-form_{{ img.id }}" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="url" value="{{ request.get_full_path }}">
-                                <input type="hidden" name="obj_id" value="{{ img.id }}">
-                                <input type="hidden" name="key" value="image">
-                              </form>
-                          </div>
+                          </a>
                           {% endfor %}
                         {% endif %}
                       </div>
@@ -264,26 +266,28 @@
                         </div>
                         {% if object.files %}
                           {% for file in object.files.all %}
-                          <div class="dz-preview dz-processing dz-complete dz-image-preview" style="position: relative;">
-                            <div class="dz-image">
-                              <a href="{{ file.file.url }}" style="position: relative; z-index: 9;">
-                                <img data-dz-thumbnail="" src='{% static "img/pdf.png" %}' alt="{{ img.image }}">
-                              </a>
-                            </div>
-                            <div class="dz-details">
-                              <div class="dz-filename"><span data-dz-name="">{{ file.file }}</span>
+                          <a class="dz-remove" href="{{ file.file.url }}" download> 
+                            <div class="dz-preview dz-processing dz-complete dz-image-preview" style="position: relative;">
+                              <div class="dz-image">
+                                <a href="{{ file.file.url }}" style="position: relative; z-index: 9;">
+                                  <img data-dz-thumbnail="" src='{% static "img/pdf.png" %}' alt="{{ img.image }}">
+                                </a>
                               </div>
+                              <div class="dz-details">
+                                <div class="dz-filename"><span data-dz-name="">{{ file.file }}</span>
+                                </div>
+                              </div>
+                              <a class="dz-remove" data-file="{{ img.id }}"
+                                onclick="var result = confirm('Want to delete?');if (result){submit_form('delete-file-form{{ file.id }}')}"
+                                data-dz-remove>Удалить</a>
+                              <form action="{% url 'admins:del_client_file' %}" id="delete-file-form{{ file.id }}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="url" value="{{ request.get_full_path }}">
+                                <input type="hidden" name="obj_id" value="{{ file.id }}">
+                                <input type="hidden" name="key" value="file">
+                              </form>
                             </div>
-                            <a class="dz-remove" data-file="{{ img.id }}"
-                              onclick="var result = confirm('Want to delete?');if (result){submit_form('delete-file-form{{ file.id }}')}"
-                              data-dz-remove>Удалить</a>
-                            <form action="{% url 'admins:del_client_file' %}" id="delete-file-form{{ file.id }}" method="post">
-                              {% csrf_token %}
-                              <input type="hidden" name="url" value="{{ request.get_full_path }}">
-                              <input type="hidden" name="obj_id" value="{{ file.id }}">
-                              <input type="hidden" name="key" value="file">
-                            </form>
-                          </div>
+                          </a>
                           {% endfor %}
                         {% endif %}
                       </div>

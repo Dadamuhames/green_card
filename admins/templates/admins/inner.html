@@ -231,7 +231,7 @@
                   <label for="passport"> Добавить копия паспорта </label>
                   <br><br>
                   {% if object.images %}
-                  <div class="my-dropzone dropzone disabled__item" data-key="images" data-delete="/images/delete">
+                  <div class="dropzone" data-key="images" data-delete="/images/delete">
                     <div class="dz-preview-container" id="drop-image" style="padding: 0;">
                       <div class="dz-preview dz-processing dz-complete dz-image-preview d-none">
                         <div class="dz-image">
@@ -252,6 +252,7 @@
                           <div class="dz-filename"><span data-dz-name="">{{ img.image }}</span>
                           </div>
                         </div>
+                        <a class="dz-remove" href="{{ img.image.url }}" download>Скачать</a>
                       </div>
                       {% endfor %}
                     </div>
@@ -263,7 +264,7 @@
                   <label for="passport"> Добавить PDF файл </label>
                   <br><br>
                   {% if object.files %}
-                  <div class="my-dropzone dropzone disabled__item" data-key="files" data-delete="/images/delete">
+                  <div class="dropzone" data-key="files" data-delete="/images/delete">
                     <div class="dz-preview-container" id="drop-files" style="padding: 0;">
                       <div class="dz-preview dz-processing dz-complete dz-image-preview d-none">
                         <div class="dz-image">
@@ -272,8 +273,6 @@
                         <div class="dz-details">
                           <div class="dz-filename"><span data-dz-name=""></span></div>
                         </div>
-                        <a class="dz-remove" data-file="" data-dz-remove>Удалить</a>
-                        <form action="{% url 'admins:del_client_file' %}" id="delete-form" method="post"></form>
                       </div>
                       {% for file in object.files.all %}
                       <div class="dz-preview dz-processing dz-complete dz-image-preview" style="position: relative;">
@@ -286,6 +285,7 @@
                           <div class="dz-filename"><span data-dz-name="">{{ file.file }}</span>
                           </div>
                         </div>
+                        <a class="dz-remove" href="{{ file.file.url }}">Скачать</a>
                       </div>
                       {% endfor %}
                     </div>
