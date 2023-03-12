@@ -140,7 +140,7 @@ class BasedListView(ListView):
     
 # fillials view
 class FilialList(BasedListView):
-    queryset = UserInfo.objects.filter(is_filial=True)
+    queryset = UserInfo.objects.filter(is_filial=True).filter(user__is_active=True)
     template_name = 'admins/user-filials.html'
     cache_key = 'filials_list'
 
