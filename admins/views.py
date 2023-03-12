@@ -739,8 +739,8 @@ def filial_delete(request):
             worker.user.is_active = False
             worker.user.save()
 
-            worker.info.status = 'Inactive'
-            worker.info.save()
+            worker.status = 'Inactive'
+            worker.save()
     except:
         pass
 
