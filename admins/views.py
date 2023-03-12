@@ -731,11 +731,16 @@ def filial_delete(request):
     try:
         user = User.objects.filter(info__is_filial=True).get(id=int(id))
         user.is_active = False
+        user.info.status = 'Inactive'
+        user.info.save()
         user.save()
 
         for worker in user.info.workers.all():
             worker.user.is_active = False
             worker.user.save()
+
+            worker.info.status = 'Inactive'
+            worker.info.save()
     except:
         pass
 
