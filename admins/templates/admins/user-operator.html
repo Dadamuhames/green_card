@@ -184,8 +184,8 @@
                   <td>
                     <div class="list__item">
                       <p class="list__item-txt">
-                        {% if obj.operator_clients.exists %}
-                          {{ obj.operator_clients.count }}
+                        {% if obj.user.operator_clients.exists %}
+                          {{ obj.user.operator_clients.count }}
                         {% else %}
                           0
                         {% endif %}
