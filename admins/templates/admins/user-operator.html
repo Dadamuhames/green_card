@@ -183,7 +183,13 @@
                   </td>
                   <td>
                     <div class="list__item">
-                      <p class="list__item-txt">{{ obj.operator_clients.count }}</p>
+                      <p class="list__item-txt">
+                        {% if obj.operator_clients.exists %}
+                          {{ obj.operator_clients.count }}
+                        {% else %}
+                          0
+                        {% endif %}
+                        </p>
                     </div>
                   </td>
                   <td>
