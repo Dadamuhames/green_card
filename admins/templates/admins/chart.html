@@ -26,7 +26,7 @@
 
 
       let data_list2 = [
-        ["Agents", "Yaratdi", "Qabul qildi", "Tolov qilindi", "Bekor qilindi", 'Aloqaga Chiqildi', 'GC Bekor Qilindi']
+        ["Agents", "Yaratdi", "Qabul qildi", "Tolov qilindi", "Bekor qilindi", 'Aloqaga Chiqildi', 'GC Bekor Qilindi'],
       ]
 
       '{% for obj in agents %}'
@@ -51,6 +51,26 @@
             title: "Company Performance",
             subtitle: "Sales, Expenses, and Profit: 2014-2017",
           },
+          series: {
+            0: { color: '#44b220' },
+            1: { color: '#f2994a' },
+            2: { color: '#1878f3' },
+            3: { color: '#eb5757' },
+            4: { color: 'rgb(171, 71, 188)'},
+            5: { color: '#bb2649' },
+          }
+        };
+
+        var options2 = {
+          chart: {
+            title: "Company Performance",
+            subtitle: "Sales, Expenses, and Profit: 2014-2017",
+          },
+          series: {
+            0: { color: '#f2994a' },
+            1: { color: '#1878f3' },
+            2: { color: '#eb5757' },
+          }
         };
 
         '{% if not request.user.info.is_agent %}'
@@ -58,7 +78,7 @@
           document.getElementById("columnchart_material")
         );
         
-        chart.draw(data, google.charts.Bar.convertOptions(options));
+        chart.draw(data, google.charts.Bar.convertOptions(options2));
         '{% endif %}'
 
         '{% if not request.user.info.is_operator %}'
@@ -231,7 +251,7 @@
                 <tr>
                   <th class="text-start">Agent FISH</th>
                   <th>
-                    <p class="all">Yaratdi</p>
+                    <p class="all" style="color: #44b220d9;">Yaratdi</p>
                   </th>
                   <th>
                     <p class="recieved">Qabul qildi</p>
@@ -246,7 +266,7 @@
                     <p class="cancelled"  style="color: rgb(171, 71, 188);">Aloqaga chiqildi</p>
                   </th>
                   <th>
-                    <p class="cancelled">GC bekor qilindi</p>
+                    <p class="cancelled-cg">GC bekor qilindi</p>
                   </th>
                 </tr>
                 {% for obj in agents %}
