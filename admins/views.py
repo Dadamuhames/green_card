@@ -458,13 +458,7 @@ class ClientEdit(UpdateView):
     def get_queryset(self):
         queryset = Clients.objects.all()
         user = self.request.user
-
-        if not user.is_superuser:
-            if user.info.is_filial:
-                queryset = queryset.filter(filial=user.info)
-            elif user.info.is_agent or user.info.is_operator:
-                queryset = queryset.filter(filial=user.info.filial)
-
+        queryset = get_clients_queryset(user, queryset, '')
         return queryset
 
     def get(self, request, *args, **kwargs):

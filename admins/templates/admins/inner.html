@@ -374,7 +374,7 @@
               <div class="input__wrap">
                 <input
                   type="text" 
-                  disabled {% if object.operator %} value="{{ object.operator.firts_name }} {{ object.operator.last_name }}" 
+                  disabled {% if object.operator %} value="{{ object.operator.first_name }} {{ object.operator.last_name }}" 
                   {% endif %}
                   placeholder="Принял(а) оператор "
                 />
@@ -394,7 +394,7 @@
               <div class="input__wrap">
                 <input
                   type="text" disabled {% if object.agent %}
-                  value="{{ object.agent.firts_name }} {{ object.agent.last_name }}" {% endif %}
+                  value="{{ object.agent.first_name }} {{ object.agent.last_name }}" {% endif %}
                   placeholder="Добавил(а) (Agent) "
                 />
                 <i class="bi bi-person"></i>
