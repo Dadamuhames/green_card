@@ -298,6 +298,7 @@
           </div>
         </div>
         <div class="col-3">
+          {% if request.user.is_superuser or not request.user.info.is_agent %}
           <div class="cardo mb-4">
             <h4 class="card__title">Клиент:</h4>
             <form action="{% url 'admins:change_client_status' %}" method="post">
@@ -366,6 +367,7 @@
               <button type="submit" class="confirm w-50">Изменить статус</button>
             </form>
           </div>
+          {% endif %}
           <div class="cardo mb-4">
             <div class="info__item">
               <label class="info__sup">Принял(а) оператор</label>
